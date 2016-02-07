@@ -244,7 +244,7 @@ class ticker():
 				
 	def ROIgt(self, rate, year = 5, country=['USA'], yearsaround = 0):
 
-		print rate, year, country, yearsaround
+		#print rate, year, country, yearsaround
 
 		if year > 5:
 			year = 5
