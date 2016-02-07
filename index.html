@@ -5,101 +5,8 @@
 
 <h1> 請輸入股票代號: (yahoo finance上所定義的代號)</h1>
 <form action="/cgiplot.py" method="post" target="_blank">
-	<textarea style="font-size: 16pt" name="textcontent" cols="20" rows="10">PFD
-AWF
-GOF
-GDF
-EHI
-FCO
-HHY
-HIX
-MCR
-PCN
-PFL
-PFN
-PHK
-PTY
-RCS
-WEA
-MMT
-FFC
-CGO
-ETO
-PFD
-PFO
-CHI
-CLM
-LOR
-GGT
-UTG
-GOOD
-LTC
-O
-ORC
-OLP
-WPC
-HCP
-NNN
-SNH
-MNR
-MFA
-NYMT
-PSA
-UHT
-JNK
-SJNK
-HYG
-PHB
-YYY
-REM
-VIG
-VNQ
-PFF
-CEFL
-PCEF
-PGX
-SPFF
-AMLP
-AMJ
-MLPI
-MLPN
-AMU
-MLPA
-PFLT
-SBR
-CODI
-DPM
-NGLS
-TGP
-TOO
-AHGP
-ARLP
-APU
-BPL
-CLMT
-CPLP
-EEP
-ETP
-GLP
-HHS
-MMLP
-NS
-NSH
-OKE
-OKS
-PAA
-SPH
-Ston
-TCP
-TLP
-CTL
-FGP
-PNNT
-SFL
-SSI
-TDW
-TK
-WMB
+	<textarea style="font-size: 16pt" name="textcontent" cols="60" rows="5" >PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFD PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG
+VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB
 </textarea><br>
 	<br>
 	<br>
@@ -117,4 +24,117 @@ WMB
 	<br><br>
 
 	<input type="submit" value="Submit" /><br>
+</form>
+
+<hr>
+<hr>
+<h2>國家：</h2>
+<form action="/select.py">
+	<table style="width:100%">
+	<tr>
+		<td><input type="checkbox" name="country" value="Argentina">Argentina<br></td>
+		<td><input type="checkbox" name="country" value="Australia">Australia<br></td>
+		<td><input type="checkbox" name="country" value="Austria">Austria<br></td>
+		<td><input type="checkbox" name="country" value="Belgium">Belgium<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="Brazil">Brazil<br></td>
+		<td><input type="checkbox" name="country" value="Canada">Canada<br></td>
+		<td><input type="checkbox" name="country" value="Denmark">Denmark<br></td>
+		<td><input type="checkbox" name="country" value="Finland">Finland<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="France">France<br></td>
+		<td><input type="checkbox" name="country" value="Germany">Germany<br></td>
+		<td><input type="checkbox" name="country" value="Greece">Greece<br></td>
+		<td><input type="checkbox" name="country" value="Hong">Hong<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="Iceland">Iceland<br></td>
+		<td><input type="checkbox" name="country" value="India">India<br></td>
+		<td><input type="checkbox" name="country" value="Indonesia">Indonesia<br></td>
+		<td><input type="checkbox" name="country" value="International">International<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="Israel">Israel<br></td>
+		<td><input type="checkbox" name="country" value="Italy">Italy<br></td>
+		<td><input type="checkbox" name="country" value="Korea">Korea<br></td>
+		<td><input type="checkbox" name="country" value="Latvia">Latvia<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="Lithuania">Lithuania<br></td>
+		<td><input type="checkbox" name="country" value="Malaysia">Malaysia<br></td>
+		<td><input type="checkbox" name="country" value="Mexico">Mexico<br></td>
+		<td><input type="checkbox" name="country" value="Netherlands">Netherlands<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="New">New<br></td>
+		<td><input type="checkbox" name="country" value="Norway">Norway<br></td>
+		<td><input type="checkbox" name="country" value="Portugal">Portugal<br></td>
+		<td><input type="checkbox" name="country" value="Qatar">Qatar<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="Singapore">Singapore<br></td>
+		<td><input type="checkbox" name="country" value="South">South<br></td>
+		<td><input type="checkbox" name="country" value="Spain">Spain<br></td>
+		<td><input type="checkbox" name="country" value="Sweden">Sweden<br></td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="country" value="Taiwan">Taiwan<br></td>
+		<td><input type="checkbox" name="country" value="Thailand">Thailand<br></td>
+		<td><input type="checkbox" name="country" value="Turkey">Turkey<br></td>
+		<td><input type="checkbox" name="country" value="UK">UK<br></td>
+	</tr>
+	<tr>
+	<td><input type="checkbox" name="country" value="USA" checked>USA<br></td>
+	<td><input type="checkbox" name="country" value="Venezuela">Venezuela<br></td>
+	</tr>
+</table>
+
+<table style="width:100%">
+	<tr>
+		<td>
+			<h2>報酬率：</h2>
+			<select>
+			<option name="ROI" value="5"> 5% 以上</option>
+			<option name="ROI" value="10">10% 以上</option>
+			<option name="ROI" value="15">15% 以上</option>
+			<option name="ROI" value="20">20% 以上</option>
+			<option name="ROI" value="25">25% 以上</option>
+			<option name="ROI" value="30">30% 以上</option>
+			</select>
+		</td>
+		<td>
+			<h2>年ROI：</h2>
+			<select>
+			<option name="yearROI" value="1">1年</option>
+			<option name="yearROI" value="2">2年</option>
+			<option name="yearROI" value="3">3年</option>
+			<option name="yearROI" value="4">4年</option>
+			<option name="yearROI" value="5">5年</option>
+			</select>
+		</td>
+		<td>
+			<h2>公司成立年數：</h2>
+			<select>
+			<option name="yearCompany" value="1"> 1年以上</option>
+			<option name="yearCompany" value="3"> 3年以上</option>
+			<option name="yearCompany" value="4"> 5年以上</option>
+			<option name="yearCompany" value="10">10年以上</option>
+			</select>
+		</td>
+		<td>
+			<h2>股價：</h2>
+			<select>
+			<option name="price" value="0">不限</option>
+			<option name="price" value="1">1.0以上</option>
+			<option name="price" value="5">5.0以上</option>
+			<option name="price" value="10">10.0以上</option>
+			</select>
+		</td>
+	</tr>
+
+</table>
+
+	<td><input type="submit" value="Submit">
 </form>
