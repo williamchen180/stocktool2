@@ -66,7 +66,7 @@ if sortedBy == '0':
 		print u'<h2><center>過去選擇年數平均股利: %.3f, 過去%s年平均股利: %.3f</center></h2>'.encode('UTF-8') % ( stocks[x]['lastAvg'], years, stocks[x]['totalAvg'] )
 		print u'<h2><center>根據當前股價與過去選擇年數股利計算出的報酬率: %.2f %%</center></h2>'.encode('UTF-8') % stocks[x]['yearsROI'] 
 		print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % x
-                print '<center><textarea style="font-size: 16pt" rows="4" cols="20">'
+                print '<center><textarea style="font-size: 16pt" rows="6" cols="40">'
                 for d in stocks[x]['all_dividends']:
                     print d,
                 print '</textarea></center>'
@@ -81,7 +81,7 @@ else:
 		print u'<h2><center>過去一年股利 %.3f USD, 過去%s年股利: %.3f USD</center></h2>'.encode('UTF-8') % ( stocks[x]['last'], years, stocks[x]['total'] )
 		print u'<h2><center>過去一年平均股利: %.3f, 過去%s年平均股利: %.3f</center></h2>'.encode('UTF-8') % ( stocks[x]['lastAvg'], years, stocks[x]['totalAvg'] )
 		print u'<h2><center>根據當前股價與過去一年股利計算出的報酬率: %.2f %%</center></h2>'.encode('UTF-8') % stocks[x]['nowROI'] 
-                print '<center><textarea style="font-size: 16pt" rows="4" cols="20">'
+                print '<center><textarea style="font-size: 16pt" rows="6" cols="40">'
                 for d in stocks[x]['all_dividends']:
                     print d,
                 print '</textarea></center>'

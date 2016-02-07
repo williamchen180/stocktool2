@@ -274,6 +274,10 @@ class ticker():
 					continue
 
 				if self.ticker[c][t]['ROI'][year-1] > float(rate):
+                                        #print t
+                                        #print self.ticker[c][t]['ROI'][year-1], float(rate)
+                                        #print self.ticker[c][t]['YEARSAROUND']
+
 					ret.append( t )
 		return ret
 
