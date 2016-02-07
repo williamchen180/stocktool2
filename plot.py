@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os.path
+import get_history
 import Gnuplot
 import time
 from mechanize import Browser
@@ -31,9 +32,16 @@ class	plot:
 		dividend_file = 'history/%s.dividend' % symbol 
 		price_file = 'history/%s.price' % symbol 
 
+
 		if os.path.isfile( dividend_file ) == False or os.path.isfile( price_file) == False:
-			#print "can't get dividend or history price from yahoo"
-			return
+			get_history.get_history().get(symbol)
+
+		if os.path.isfile( dividend_file ) == False or os.path.isfile( price_file) == False:
+			# Symbol not found
+			ret = {}
+			ret['yearsROI'] = 0.0
+			return ret
+
 
 		if os.path.isdir( path ) == False:
 			os.mkdir( path )
@@ -177,4 +185,9 @@ if __name__ == '__main__':
                 p = plot()
 		ret = p.plot( x, path='PNG' )
                 print ret
+
+
+
+
+
 
