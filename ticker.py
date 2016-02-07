@@ -183,6 +183,11 @@ class ticker():
 						month_index = year * 12 + month
 						years_around = int((self.now_month_index - month_index) / 12)
 
+
+						if month_index < self.now_month_index:
+							self.ticker[c][t]['AVAILABLE'] = False
+							continue
+
 					#print 'last price:', last_price
 					#print 'years:', years_around
 
