@@ -1,0 +1,120 @@
+
+<html lang="zh-Hant" >
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+<meta http-equiv="cache-control" content="no-cache">
+
+<h1> 請輸入股票代號: (yahoo finance上所定義的代號)</h1>
+<form action="/cgiplot.py" method="post" target="_blank">
+	<textarea style="font-size: 16pt" name="textcontent" cols="20" rows="10">PFD
+AWF
+GOF
+GDF
+EHI
+FCO
+HHY
+HIX
+MCR
+PCN
+PFL
+PFN
+PHK
+PTY
+RCS
+WEA
+MMT
+FFC
+CGO
+ETO
+PFD
+PFO
+CHI
+CLM
+LOR
+GGT
+UTG
+GOOD
+LTC
+O
+ORC
+OLP
+WPC
+HCP
+NNN
+SNH
+MNR
+MFA
+NYMT
+PSA
+UHT
+JNK
+SJNK
+HYG
+PHB
+YYY
+REM
+VIG
+VNQ
+PFF
+CEFL
+PCEF
+PGX
+SPFF
+AMLP
+AMJ
+MLPI
+MLPN
+AMU
+MLPA
+PFLT
+SBR
+CODI
+DPM
+NGLS
+TGP
+TOO
+AHGP
+ARLP
+APU
+BPL
+CLMT
+CPLP
+EEP
+ETP
+GLP
+HHS
+MMLP
+NS
+NSH
+OKE
+OKS
+PAA
+SPH
+Ston
+TCP
+TLP
+CTL
+FGP
+PNNT
+SFL
+SSI
+TDW
+TK
+WMB
+</textarea><br>
+	<br>
+	<br>
+	
+	選擇ROI要根據過去幾年平均計算：1<br>
+	<input type="radio" name="years" value="10"> 10 年<br>
+	<input type="radio" name="years" value="5" checked>  5 年<br>
+	<input type="radio" name="years" value="3">  3 年<br>
+	<input type="radio" name="years" value="1">  1 年<br>
+
+	<br><br>
+	選擇排序方式：<br>
+	<input type="radio" name="sort" value="0" checked>根據選擇年數之股利所計算之ROI排序<br>
+	<input type="radio" name="sort" value="1">根據最近一年之股利所計算之ROI排序<br>
+	<br><br>
+
+	<input type="submit" value="Submit" /><br>
+</form>
