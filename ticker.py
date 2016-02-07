@@ -28,18 +28,6 @@ class ticker():
 		with open(self.pickle_file, 'rb') as f:
 			self.ticker = cPickle.load(f)
 
-		for c in self.ticker:
-			for t in self.ticker[c]:
-				dividend_file = 'history/' + t + '.dividend'
-				price_file = 'history/' + t + '.price'
-
-				if os.path.isfile( dividend_file ) == True and os.path.isfile( price_file) == True:
-					self.ticker[c][t]['AVAILABLE'] = True
-				else:
-					self.ticker[c][t]['AVAILABLE'] = False
-
-		self.save()
-
 
 	def __getitem__(self, key):
 		return self.ticker[key]
@@ -157,7 +145,14 @@ class ticker():
 		for c in self.ticker:
 			for t in self.ticker[c]:
 				
-				if self.ticker[c][t]['AVAILABLE'] == False:
+
+				dividend_file = 'history/' + t + '.dividend'
+				price_file = 'history/' + t + '.price'
+
+				if os.path.isfile( dividend_file ) == True and os.path.isfile( price_file) == True:
+					self.ticker[c][t]['AVAILABLE'] = True
+				else:
+					self.ticker[c][t]['AVAILABLE'] = False
 					continue
 
 				price_file = self.price_file_format % t
@@ -176,7 +171,20 @@ class ticker():
 
 					last_price = float( l.split(',')[-1] )
 
+					# Calculate how many years this company around
+					try:
+						lines = f.readlines()
+						l = lines[-1]
+					except Exception as e:
+						years_around = 0
+					finally:
+						year = int(l[0:4])
+						month = int(l[5:7])
+						month_index = year * 12 + month
+						years_around = int((self.now_month_index - month_index) / 12)
+
 					#print 'last price:', last_price
+					#print 'years:', years_around
 
 				dividend_one_year = 0.0
 				dividend_two_year = 0.0
@@ -215,24 +223,28 @@ class ticker():
 						if month_index > (self.now_month_index - 12*5):
 							dividend_five_year += dividend 
 
-					if last_price != 0:
-						ROI1 = 100.0 * dividend_one_year / 1.0 / last_price
-						ROI2 = 100.0 * dividend_two_year / 2.0 / last_price
-						ROI3 = 100.0 * dividend_three_year / 3.0 / last_price
-						ROI4 = 100.0 * dividend_four_year / 4.0 / last_price
-						ROI5 = 100.0 * dividend_five_year / 5.0 / last_price
+				if last_price != 0:
+					ROI1 = 100.0 * dividend_one_year / 1.0 / last_price
+					ROI2 = 100.0 * dividend_two_year / 2.0 / last_price
+					ROI3 = 100.0 * dividend_three_year / 3.0 / last_price
+					ROI4 = 100.0 * dividend_four_year / 4.0 / last_price
+					ROI5 = 100.0 * dividend_five_year / 5.0 / last_price
 
-					dividends = ( dividend_one_year, dividend_two_year, dividend_three_year, dividend_four_year, dividend_five_year )
-					ROI = (ROI1, ROI2, ROI3, ROI4, ROI5 )
+				dividends = ( dividend_one_year, dividend_two_year, dividend_three_year, dividend_four_year, dividend_five_year )
+				ROI = (ROI1, ROI2, ROI3, ROI4, ROI5 )
 
-					#print "DIVIDEND", dividends
-					#print "ROI", ROI
+				#print "DIVIDEND", dividends
+				#print "ROI", ROI
 
-					self.ticker[c][t]['DIVIDEND'] = dividends
-					self.ticker[c][t]['ROI'] = ROI
+				self.ticker[c][t]['DIVIDEND'] = dividends
+				self.ticker[c][t]['ROI'] = ROI
+				self.ticker[c][t]['LASTPRICE'] = last_price
+				self.ticker[c][t]['YEARSAROUND'] = years_around
 
 				
-	def ROIgt(self, rate, year = 5, country=['USA']):
+	def ROIgt(self, rate, year = 5, country=['USA'], yearsaround = 0):
+
+		print rate, year, country, yearsaround
 
 		if year > 5:
 			year = 5
@@ -255,6 +267,9 @@ class ticker():
 				if self.ticker[c][t]['AVAILABLE'] == False:
 					continue
 
+				if yearsaround != 0 and self.ticker[c][t]['YEARSAROUND'] < yearsaround:
+					continue
+
 				if self.ticker[c][t].has_key('ROI') == False:
 					continue
 
@@ -264,18 +279,28 @@ class ticker():
 
 
 if __name__ == '__main__':
-	t = ticker()
-	
 
-	if False:
+	if len(sys.argv) == 1:
+		print 'Usage: %s [update_price_and_dividend | update]'
+		sys.exit(0)
+
+	t = ticker()
+
+	if sys.argv[1] == 'update_price_and_dividend':
 		t.update_price()
 		t.update_dividend()
+
+	elif sys.argv[1] == 'update':
 		t.update_ROI()
 		t.save()
 	else:
-		ret = t.ROIgt(10)
+		numbers = 0
+		ret = t.ROIgt( rate = 40, year = 5, country = ['USA'], yearsaround = 5 )
 		for x in ret:
-			print x, 
+			numbers += 1
+			print x
+	
+		print numbers,  'stocks'
 
 
 
