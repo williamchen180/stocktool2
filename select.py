@@ -41,4 +41,12 @@ yearCompany = int(yearCompany)
 price = int(price)
 
 
-print ROI, yearROI, yearCompany, price
+print "Content-type:text/html; charset=utf-8\r\n\r\n"
+print '<html>'
+print '<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />'
+print "<head>";
+print "<title>Stock information</title>"
+print "</head>"
+print "<body>"
+print country, ROI, yearROI, yearCompany, price
+print "</body>"
