@@ -184,9 +184,9 @@ class ticker():
 						years_around = int((self.now_month_index - month_index) / 12)
 
 
-						if month_index < self.now_month_index:
-							self.ticker[c][t]['AVAILABLE'] = False
-							continue
+                                if month_index < self.now_month_index:
+                                        self.ticker[c][t]['AVAILABLE'] = False
+                                        continue
 
 					#print 'last price:', last_price
 					#print 'years:', years_around
@@ -247,7 +247,7 @@ class ticker():
 				self.ticker[c][t]['YEARSAROUND'] = years_around
 
 				
-	def ROIgt(self, rate, year = 5, country=['USA'], yearsaround = 0):
+	def ROIgt(self, rate, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0):
 
 		#print rate, year, country, yearsaround
 
@@ -277,6 +277,9 @@ class ticker():
 
 				if self.ticker[c][t].has_key('ROI') == False:
 					continue
+
+                                if pricelimit != 0 and self.ticker[c][t]['LASTPRICE'] < pricelimit:
+                                        continue
 
 				if self.ticker[c][t]['ROI'][year-1] > float(rate):
                                         #print t

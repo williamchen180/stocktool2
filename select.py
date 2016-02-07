@@ -40,7 +40,7 @@ else:
 _ROI = int(_ROI)
 _yearROI = int(_yearROI)
 _yearCompany = int(_yearCompany)
-_price = int(_price)
+_price = float(_price)
 
 if type(_country) == str:
     _country = [_country]
@@ -62,11 +62,8 @@ t = ticker()
 
 #print _ROI, _yearROI, _country, _yearCompany
 
-ret = t.ROIgt( rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany )
+ret = t.ROIgt( rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price )
 
-for x in ret:
-    print x, 
-print '<br>'
 
 stocks = {}
 
@@ -116,5 +113,6 @@ if True:
                     print '<img border=10 src="/%s"/>' % pngfile 
                     print '</a>'
 
-
-
+print "</p>"
+print "</body>"
+print "</html>"
