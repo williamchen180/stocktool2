@@ -24,6 +24,8 @@ with open('ticker.txt','r') as ticket:
 				T[c][t] = {}
 				T[c][t]['EXCHANGE'] = e
 				T[c][t]['INDEX'] = idx
+				T[c][t]['COUNTRY'] = c
+				T[c][t]['SYMBOL'] = t
 				idx += 1
 
 with open('pickle/ticker.cpickle2', 'wb') as f:

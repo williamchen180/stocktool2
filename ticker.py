@@ -292,7 +292,7 @@ class ticker():
 					#print self.ticker[c][t]['ROI'][year-1], float(rate)
 					#print self.ticker[c][t]['YEARSAROUND']
 
-					ret.append( t )
+					ret.append( self.ticker[c][t] )
 		return ret
 
 

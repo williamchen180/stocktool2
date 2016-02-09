@@ -64,11 +64,15 @@ t = ticker()
 
 ret = t.ROIgt( rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price )
 
+print u'<center><h2>搜尋出 %d 項目</h2></center>'.encode('UTF-8') % len(ret)
 
 stocks = {}
 
+country_map = {}
+
 for x in ret:
-	stocks[x] = []
+	stocks[x['SYMBOL']] = []
+	country_map[x['SYMBOL']] = x['COUNTRY']
 
 for x in stocks:
         p = plot()
@@ -85,7 +89,7 @@ if True:
                 pngfile =  'PNG/' + x + '.PNG';
                 if os.path.isfile( pngfile ):
                     print '<hr>' 
-                    print '<h1><center>%s</center></h1>' % x
+                    print u'<h1><center>代號：%s 國家：%s</center></h1>'.encode('UTF-8') % (x, country_map[x])
                     print u'<h2><center>過去選擇年數股利 %.3f USD, 過去%s年股利: %.3f USD</center></h2>'.encode('UTF-8') % ( stocks[x]['last'], _yearROI, stocks[x]['total'] )
                     print u'<h2><center>過去選擇年數平均股利: %.3f, 過去%s年平均股利: %.3f</center></h2>'.encode('UTF-8') % ( stocks[x]['lastAvg'], _yearROI, stocks[x]['totalAvg'] )
                     print u'<h2><center>根據當前股價與過去選擇年數股利計算出的報酬率: %.2f %%</center></h2>'.encode('UTF-8') % stocks[x]['yearsROI'] 
