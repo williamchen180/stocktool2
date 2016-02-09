@@ -155,11 +155,8 @@ class	plot:
 		p('set multiplot')
 		p('set size 1, 0.4')
 		p('set origin 0, 0.6')
-		p('plot '\
-                        'RRI9(x) title "9%", '\
-                        'RRI11(x) title "11%", '\
-                        'RRI14(x) title "14%", "' \
-                        + price_file + '" using 1:5 notitle with lines')
+		p('plot RRI9(x) title "9%",RRI11(x) title "11%", RRI14(x) title "14%", "' + price_file + '" using 1:5 notitle with lines')
+		#p('plot RRI9(x) title "9%",RRI11(x) title "11%", RRI14(x) title "14%", "' + price_file + '" using 1:7 notitle with lines')
 
 		p('set grid')
 		p('set title ""')
