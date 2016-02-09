@@ -140,23 +140,18 @@ class ticker():
 
 	def update_ROI(self):
 
-		month_index = self.year * 12 + self.month
 
 		for c in self.ticker:
 			for t in self.ticker[c]:
 				
-
-				dividend_file = 'history/' + t + '.dividend'
-				price_file = 'history/' + t + '.price'
+				price_file = self.price_file_format % t
+				dividend_file = self.dividend_file_format % t
 
 				if os.path.isfile( dividend_file ) == True and os.path.isfile( price_file) == True:
 					self.ticker[c][t]['AVAILABLE'] = True
 				else:
 					self.ticker[c][t]['AVAILABLE'] = False
 					continue
-
-				price_file = self.price_file_format % t
-				dividend_file = self.dividend_file_format % t
 
 				#print '-->', t
 
@@ -170,26 +165,32 @@ class ticker():
 						continue
 
 					last_price = float( l.split(',')[-1] )
+					year = int(l[0:4])
+					month = int(l[5:7])
+					month_index = year * 12 + month
+
+					if month_index < self.now_month_index:
+						self.ticker[c][t]['AVAILABLE'] = False
+						#print month_index, self.now_month_index, year, month
+						continue
 
 					# Calculate how many years this company around
 					try:
+						f.seek(0,0)
 						lines = f.readlines()
 						l = lines[-1]
 					except Exception as e:
 						years_around = 0
+						month_index = 0
 					finally:
 						year = int(l[0:4])
 						month = int(l[5:7])
 						month_index = year * 12 + month
 						years_around = int((self.now_month_index - month_index) / 12)
+						
 
-
-                                if month_index < self.now_month_index:
-                                        self.ticker[c][t]['AVAILABLE'] = False
-                                        continue
-
-					#print 'last price:', last_price
-					#print 'years:', years_around
+				#print 'last price:', last_price
+				#print 'years:', years_around
 
 				dividend_one_year = 0.0
 				dividend_two_year = 0.0
@@ -261,10 +262,13 @@ class ticker():
 
 			if len(country) != 0:
 				found = False
-				for x in country:
-					if c == x: 
-						found = True
-						break
+				if country[0] == 'All':
+					found = True
+				else:
+					for x in country:
+						if c == x: 
+							found = True
+							break
 				if found == False:
 					continue
 
@@ -278,13 +282,13 @@ class ticker():
 				if self.ticker[c][t].has_key('ROI') == False:
 					continue
 
-                                if pricelimit != 0 and self.ticker[c][t]['LASTPRICE'] < pricelimit:
-                                        continue
+				if pricelimit != 0 and self.ticker[c][t]['LASTPRICE'] < pricelimit:
+					continue
 
 				if self.ticker[c][t]['ROI'][year-1] > float(rate):
-                                        #print t
-                                        #print self.ticker[c][t]['ROI'][year-1], float(rate)
-                                        #print self.ticker[c][t]['YEARSAROUND']
+					#print t
+					#print self.ticker[c][t]['ROI'][year-1], float(rate)
+					#print self.ticker[c][t]['YEARSAROUND']
 
 					ret.append( t )
 		return ret
