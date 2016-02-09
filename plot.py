@@ -47,10 +47,26 @@ class	plot:
 			os.mkdir( path )
 
 		with open( price_file, 'r') as f:
-			f.readline()
-			l = f.readline()
+			lines = f.readlines()
+			for l in lines:
+				if l[0] != '#':
+					break
 
-			current_price = float( l.split(',')[-1] )
+			x = l.split(',')
+			current_price = float( x[-1] )
+
+			right_x = x[0]
+			left_x = lines[-1].split(',')[0]
+
+		if True:
+			date = datetime.datetime( int( right_x[0:4] ), int( right_x[5:7] ), int( right_x[8:10] ) )
+			date += datetime.timedelta( days = 90 )
+			right_x = '%d-%2.2d-%2.2d' % (date.year, date.month, date.day )
+
+			date = datetime.datetime( int( left_x[0:4] ), int( left_x[5:7] ), int( left_x[8:10] ) )
+			date += datetime.timedelta( days = -90 )
+			left_x = '%d-%2.2d-%2.2d' % (date.year, date.month, date.day )
+
 
                 all_dividends = []
 
@@ -128,8 +144,9 @@ class	plot:
 		#print cmd
 		p(cmd)
 		p('set datafile sep ","')
-		p('set xdata time')
 		p('set timefmt "%Y-%m-%d"')
+		p('set xdata time')
+		p('set xrange [ "%s":"%s" ]' % (left_x, right_x))
 		p('set format x ""')
 		p('unset grid')
 		p('set tmargin')
@@ -150,6 +167,7 @@ class	plot:
 		p('set bmargin 0')
 		p('set xdata time')
 		p('set timefmt "%Y-%m-%d"')
+		p('set xrange [ "%s":"%s" ]' % (left_x, right_x))
 		p('set format x ""')
 		p('set size 1.0, 0.3')
 		p('set origin 0.0, 0.3')
@@ -162,6 +180,7 @@ class	plot:
 		p('set size 1.0, 0.3')
 		p('set origin 0.0, 0.0')
 		p('set bmargin')
+		p('set xrange [ "%s":"%s" ]' % (left_x, right_x))
 		p('plot "' + dividend_file + '" using 1:2 title "dividend" with linespoints')
 		p('unset multiplot')
 
