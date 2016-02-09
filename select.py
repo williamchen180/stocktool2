@@ -15,7 +15,7 @@ form = cgi.FieldStorage()
 if form.getvalue('country'):
 	_country = form.getvalue('country')
 else:
-	_country = ['USA']
+	_country = ['All']
 
 if form.getvalue('ROI'):
 	_ROI = form.getvalue('ROI')

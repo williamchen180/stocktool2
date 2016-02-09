@@ -158,10 +158,12 @@ class ticker():
 				with open( price_file, 'r') as f:
 					l = f.readline()
 					if len(l) == 0:
+						self.ticker[c][t]['AVAILABLE'] = False
 						continue
 					if l[0] == '#':
 						l = f.readline()
 					if len(l) == 0:
+						self.ticker[c][t]['AVAILABLE'] = False
 						continue
 
 					last_price = float( l.split(',')[-1] )
