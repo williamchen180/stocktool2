@@ -208,6 +208,9 @@ class ticker():
 
 				with open( dividend_file, 'r') as f:
 
+					
+					dividends_last_year = 0
+
 					for l in f.readlines():
 						if len(l) == 0:
 							continue
@@ -231,6 +234,9 @@ class ticker():
 						if month_index > (self.now_month_index - 12*5):
 							dividend_five_year += dividend 
 
+						if self.year == year:
+							dividends_last_year += 1
+
 				if last_price != 0:
 					ROI1 = 100.0 * dividend_one_year / 1.0 / last_price
 					ROI2 = 100.0 * dividend_two_year / 2.0 / last_price
@@ -248,9 +254,10 @@ class ticker():
 				self.ticker[c][t]['ROI'] = ROI
 				self.ticker[c][t]['LASTPRICE'] = last_price
 				self.ticker[c][t]['YEARSAROUND'] = years_around
+				self.ticker[c][t]['DIVIDENDS'] = dividends_last_year
 
 				
-	def ROIgt(self, rate, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0):
+	def ROIgt(self, rate, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0, dividends = 0):
 
 		#print rate, year, country, yearsaround
 
@@ -278,6 +285,9 @@ class ticker():
 				if self.ticker[c][t]['AVAILABLE'] == False:
 					continue
 
+				if dividends != 0 and self.ticker[c][t]['DIVIDENDS'] < dividends:
+					continue
+
 				if yearsaround != 0 and self.ticker[c][t]['YEARSAROUND'] < yearsaround:
 					continue
 
@@ -287,12 +297,14 @@ class ticker():
 				if pricelimit != 0 and self.ticker[c][t]['LASTPRICE'] < pricelimit:
 					continue
 
-				if self.ticker[c][t]['ROI'][year-1] > float(rate):
-					#print t
-					#print self.ticker[c][t]['ROI'][year-1], float(rate)
-					#print self.ticker[c][t]['YEARSAROUND']
+				if self.ticker[c][t]['ROI'][year-1] < float(rate):
+					continue
 
-					ret.append( self.ticker[c][t] )
+				#print t
+				#print self.ticker[c][t]['ROI'][year-1], float(rate)
+				#print self.ticker[c][t]['YEARSAROUND']
+
+				ret.append( self.ticker[c][t] )
 		return ret
 
 

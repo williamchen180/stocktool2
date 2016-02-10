@@ -37,10 +37,16 @@ if form.getvalue('price'):
 else:
 	_price = "1" 
 
+if form.getvalue('dividends'):
+	_dividends = form.getvalue('dividends')
+else:
+	_dividends = "0"
+
 _ROI = int(_ROI)
 _yearROI = int(_yearROI)
 _yearCompany = int(_yearCompany)
 _price = float(_price)
+_dividends = int(_dividends)
 
 if type(_country) == str:
     _country = [_country]
@@ -62,7 +68,7 @@ t = ticker()
 
 #print _ROI, _yearROI, _country, _yearCompany
 
-ret = t.ROIgt( rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price )
+ret = t.ROIgt( rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price, dividends = _dividends )
 
 print u'<center><h2>搜尋出 %d 項目</h2></center>'.encode('UTF-8') % len(ret)
 
