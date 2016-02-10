@@ -29,65 +29,151 @@ VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TG
 <hr>
 <hr>
 <h2>國家：</h2>
+<button onclick="check()">全選</button>
+<button onclick="uncheck()">全不選</button>
+
+<script>
+function check() {
+	document.getElementById("1").checked = true;
+	document.getElementById("2").checked = true;
+	document.getElementById("3").checked = true;
+	document.getElementById("4").checked = true;
+	document.getElementById("5").checked = true;
+	document.getElementById("6").checked = true;
+	document.getElementById("7").checked = true;
+	document.getElementById("8").checked = true;
+	document.getElementById("9").checked = true;
+	document.getElementById("10").checked = true;
+	document.getElementById("11").checked = true;
+	document.getElementById("12").checked = true;
+	document.getElementById("13").checked = true;
+	document.getElementById("14").checked = true;
+	document.getElementById("15").checked = true;
+	document.getElementById("16").checked = true;
+	document.getElementById("17").checked = true;
+	document.getElementById("18").checked = true;
+	document.getElementById("19").checked = true;
+	document.getElementById("20").checked = true;
+	document.getElementById("21").checked = true;
+	document.getElementById("22").checked = true;
+	document.getElementById("23").checked = true;
+	document.getElementById("24").checked = true;
+	document.getElementById("25").checked = true;
+	document.getElementById("26").checked = true;
+	document.getElementById("27").checked = true;
+	document.getElementById("28").checked = true;
+	document.getElementById("29").checked = true;
+	document.getElementById("30").checked = true;
+	document.getElementById("31").checked = true;
+	document.getElementById("32").checked = true;
+	document.getElementById("33").checked = true;
+	document.getElementById("34").checked = true;
+	document.getElementById("35").checked = true;
+	document.getElementById("36").checked = true;
+	document.getElementById("37").checked = true;
+}
+
+function uncheck() {
+	document.getElementById("1").checked = false;
+	document.getElementById("2").checked = false;
+	document.getElementById("3").checked = false;
+	document.getElementById("4").checked = false;
+	document.getElementById("5").checked = false;
+	document.getElementById("6").checked = false;
+	document.getElementById("7").checked = false;
+	document.getElementById("8").checked = false;
+	document.getElementById("9").checked = false;
+	document.getElementById("10").checked = false;
+	document.getElementById("11").checked = false;
+	document.getElementById("12").checked = false;
+	document.getElementById("13").checked = false;
+	document.getElementById("14").checked = false;
+	document.getElementById("15").checked = false;
+	document.getElementById("16").checked = false;
+	document.getElementById("17").checked = false;
+	document.getElementById("18").checked = false;
+	document.getElementById("19").checked = false;
+	document.getElementById("20").checked = false;
+	document.getElementById("21").checked = false;
+	document.getElementById("22").checked = false;
+	document.getElementById("23").checked = false;
+	document.getElementById("24").checked = false;
+	document.getElementById("25").checked = false;
+	document.getElementById("26").checked = false;
+	document.getElementById("27").checked = false;
+	document.getElementById("28").checked = false;
+	document.getElementById("29").checked = false;
+	document.getElementById("30").checked = false;
+	document.getElementById("31").checked = false;
+	document.getElementById("32").checked = false;
+	document.getElementById("33").checked = false;
+	document.getElementById("34").checked = false;
+	document.getElementById("35").checked = false;
+	document.getElementById("36").checked = false;
+	document.getElementById("37").checked = false;
+}
+</script>
+
+
 <form action="/select.py" target="_blank">
 	<table style="width:100%">
 	<tr>
-		<td><input type="checkbox" name="country" value="Argentina">Argentina<br></td>
-		<td><input type="checkbox" name="country" value="Australia">Australia<br></td>
-		<td><input type="checkbox" name="country" value="Austria">Austria<br></td>
-		<td><input type="checkbox" name="country" value="Belgium">Belgium<br></td>
+		<td><input type="checkbox" id="1" name="country" value="Argentina">Argentina<br></td>
+		<td><input type="checkbox" id="2" name="country" value="Australia">Australia<br></td>
+		<td><input type="checkbox" id="3" name="country" value="Austria">Austria<br></td>
+		<td><input type="checkbox" id="4" name="country" value="Belgium">Belgium<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="Brazil">Brazil<br></td>
-		<td><input type="checkbox" name="country" value="Canada">Canada<br></td>
-		<td><input type="checkbox" name="country" value="Denmark">Denmark<br></td>
-		<td><input type="checkbox" name="country" value="Finland">Finland<br></td>
+		<td><input type="checkbox" id="5" name="country" value="Brazil">Brazil<br></td>
+		<td><input type="checkbox" id="6" name="country" value="Canada">Canada<br></td>
+		<td><input type="checkbox" id="7" name="country" value="Denmark">Denmark<br></td>
+		<td><input type="checkbox" id="8" name="country" value="Finland">Finland<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="France">France<br></td>
-		<td><input type="checkbox" name="country" value="Germany">Germany<br></td>
-		<td><input type="checkbox" name="country" value="Greece">Greece<br></td>
-		<td><input type="checkbox" name="country" value="Hong Kong">Hong Kong<br></td>
+		<td><input type="checkbox" id="9" name="country" value="France">France<br></td>
+		<td><input type="checkbox" id="10" name="country" value="Germany">Germany<br></td>
+		<td><input type="checkbox" id="11" name="country" value="Greece">Greece<br></td>
+		<td><input type="checkbox" id="12" name="country" value="Hong Kong">Hong Kong<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="Iceland">Iceland<br></td>
-		<td><input type="checkbox" name="country" value="India">India<br></td>
-		<td><input type="checkbox" name="country" value="Indonesia">Indonesia<br></td>
-		<td><input type="checkbox" name="country" value="International">International<br></td>
+		<td><input type="checkbox" id="13" name="country" value="Iceland">Iceland<br></td>
+		<td><input type="checkbox" id="14" name="country" value="India">India<br></td>
+		<td><input type="checkbox" id="15" name="country" value="Indonesia">Indonesia<br></td>
+		<td><input type="checkbox" id="16" name="country" value="International">International<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="Israel">Israel<br></td>
-		<td><input type="checkbox" name="country" value="Italy">Italy<br></td>
-		<td><input type="checkbox" name="country" value="Korea">Korea<br></td>
-		<td><input type="checkbox" name="country" value="Latvia">Latvia<br></td>
+		<td><input type="checkbox" id="17" name="country" value="Israel">Israel<br></td>
+		<td><input type="checkbox" id="18" name="country" value="Italy">Italy<br></td>
+		<td><input type="checkbox" id="19" name="country" value="Korea">Korea<br></td>
+		<td><input type="checkbox" id="20" name="country" value="Latvia">Latvia<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="Lithuania">Lithuania<br></td>
-		<td><input type="checkbox" name="country" value="Malaysia">Malaysia<br></td>
-		<td><input type="checkbox" name="country" value="Mexico">Mexico<br></td>
-		<td><input type="checkbox" name="country" value="Netherlands">Netherlands<br></td>
+		<td><input type="checkbox" id="21" name="country" value="Lithuania">Lithuania<br></td>
+		<td><input type="checkbox" id="22" name="country" value="Malaysia">Malaysia<br></td>
+		<td><input type="checkbox" id="23" name="country" value="Mexico">Mexico<br></td>
+		<td><input type="checkbox" id="24" name="country" value="Netherlands">Netherlands<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="New Zealand">New Zealand<br></td>
-		<td><input type="checkbox" name="country" value="Norway">Norway<br></td>
-		<td><input type="checkbox" name="country" value="Portugal">Portugal<br></td>
-		<td><input type="checkbox" name="country" value="Qatar">Qatar<br></td>
+		<td><input type="checkbox" id="25" name="country" value="New Zealand">New Zealand<br></td>
+		<td><input type="checkbox" id="26" name="country" value="Norway">Norway<br></td>
+		<td><input type="checkbox" id="27" name="country" value="Portugal">Portugal<br></td>
+		<td><input type="checkbox" id="28" name="country" value="Qatar">Qatar<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="Singapore">Singapore<br></td>
-		<td><input type="checkbox" name="country" value="South">South<br></td>
-		<td><input type="checkbox" name="country" value="Spain">Spain<br></td>
-		<td><input type="checkbox" name="country" value="Sweden">Sweden<br></td>
+		<td><input type="checkbox" id="29" name="country" value="Singapore">Singapore<br></td>
+		<td><input type="checkbox" id="30" name="country" value="South">South<br></td>
+		<td><input type="checkbox" id="31" name="country" value="Spain">Spain<br></td>
+		<td><input type="checkbox" id="32" name="country" value="Sweden">Sweden<br></td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="country" value="Taiwan">Taiwan<br></td>
-		<td><input type="checkbox" name="country" value="Thailand">Thailand<br></td>
-		<td><input type="checkbox" name="country" value="Turkey">Turkey<br></td>
-		<td><input type="checkbox" name="country" value="UK">UK<br></td>
+		<td><input type="checkbox" id="33" name="country" value="Taiwan">Taiwan<br></td>
+		<td><input type="checkbox" id="34" name="country" value="Thailand">Thailand<br></td>
+		<td><input type="checkbox" id="35" name="country" value="Turkey">Turkey<br></td>
+		<td><input type="checkbox" id="36" name="country" value="UK">UK<br></td>
 	</tr>
 	<tr>
-	<td><input type="checkbox" name="country" value="USA" checked>USA<br></td>
-	<td><input type="checkbox" name="country" value="Venezuela">Venezuela<br></td>
+		<td><input type="checkbox" id="37" name="country" value="USA" checked>USA<br></td>
+		<td><input type="checkbox" id="38" name="country" value="Venezuela">Venezuela<br></td>
 	</tr>
 </table>
 
