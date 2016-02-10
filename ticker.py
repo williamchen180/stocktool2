@@ -234,8 +234,10 @@ class ticker():
 						if month_index > (self.now_month_index - 12*5):
 							dividend_five_year += dividend 
 
-						if self.year == year:
+						if (self.year-1) == year:
 							dividends_last_year += 1
+
+				#print dividends_last_year
 
 				if last_price != 0:
 					ROI1 = 100.0 * dividend_one_year / 1.0 / last_price
@@ -285,8 +287,11 @@ class ticker():
 				if self.ticker[c][t]['AVAILABLE'] == False:
 					continue
 
-				if dividends != 0 and self.ticker[c][t]['DIVIDENDS'] < dividends:
-					continue
+                                if dividends != 0:
+                                        if dividends < 0 and self.ticker[c][t]['DIVIDENDS'] < -dividends:
+                                                continue
+                                        if dividends > 0 and self.ticker[c][t]['DIVIDENDS'] != dividends:
+                                                continue
 
 				if yearsaround != 0 and self.ticker[c][t]['YEARSAROUND'] < yearsaround:
 					continue

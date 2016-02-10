@@ -20,7 +20,7 @@ else:
 if form.getvalue('ROI'):
 	_ROI = form.getvalue('ROI')
 else:
-	_ROI = "10"
+	_ROI = "0"
 
 if form.getvalue('yearROI'):
 	_yearROI = form.getvalue('yearROI')
@@ -40,7 +40,7 @@ else:
 if form.getvalue('dividends'):
 	_dividends = form.getvalue('dividends')
 else:
-	_dividends = "0"
+	_dividends = "12"
 
 _ROI = int(_ROI)
 _yearROI = int(_yearROI)
