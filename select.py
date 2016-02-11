@@ -49,7 +49,7 @@ _price = float(_price)
 _dividends = int(_dividends)
 
 if type(_country) == str:
-    _country = [_country]
+	_country = [_country]
 
 
 print '<html>'
@@ -75,53 +75,57 @@ print u'<center><h2>搜尋出 %d 項目</h2></center>'.encode('UTF-8') % len(ret
 stocks = {}
 
 country_map = {}
+short_map = {}
 
 for x in ret:
 	stocks[x['SYMBOL']] = []
 	country_map[x['SYMBOL']] = x['COUNTRY']
+	short_map[x['SYMBOL']] = x['SHORT']
 
 for x in stocks:
-        p = plot()
-        ret = p.plot(symbol = x, path='PNG', years = _yearROI)
-        stocks[x] = ret
+	p = plot()
+	ret = p.plot(symbol = x, path='PNG', years = _yearROI)
+	stocks[x] = ret
 
 time.sleep(1)
 
 if True:
 
-    sortedBy = '0'
-    if sortedBy == '0':
-            for x, value in sorted( stocks.iteritems(), key=lambda(k,v): (v['yearsROI'],k), reverse=True):
-                pngfile =  'PNG/' + x + '.PNG';
-                if os.path.isfile( pngfile ):
-                    print '<hr>' 
-                    print u'<h1><center>代號：%s 國家：%s</center></h1>'.encode('UTF-8') % (x, country_map[x])
-                    print u'<h2><center>過去選擇年數股利 %.3f USD, 過去%s年股利: %.3f USD</center></h2>'.encode('UTF-8') % ( stocks[x]['last'], _yearROI, stocks[x]['total'] )
-                    print u'<h2><center>過去選擇年數平均股利: %.3f, 過去%s年平均股利: %.3f</center></h2>'.encode('UTF-8') % ( stocks[x]['lastAvg'], _yearROI, stocks[x]['totalAvg'] )
-                    print u'<h2><center>根據當前股價與過去選擇年數股利計算出的報酬率: %.2f %%</center></h2>'.encode('UTF-8') % stocks[x]['yearsROI'] 
-                    print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % x
-                    print '<center><textarea style="font-size: 16pt" rows="6" cols="40">'
-                    for d in stocks[x]['all_dividends']:
-                        print d,
-                    print '</textarea></center>'
-                    print '<img border=10 src="/%s"/>' % pngfile 
-                    print '</a>'
-    else:
-            for x, value in sorted( stocks.iteritems(), key=lambda(k,v): (v['nowROI'],k), reverse=True):
-                pngfile =  'PNG/' + x + '.PNG';
-                if os.path.isfile( pngfile ):
-                    print '<hr>' 
-                    print '<h1><center>%s</center></h1>' % x
-                    print u'<h2><center>過去一年股利 %.3f USD, 過去%s年股利: %.3f USD</center></h2>'.encode('UTF-8') % ( stocks[x]['last'], _yearROI, stocks[x]['total'] )
-                    print u'<h2><center>過去一年平均股利: %.3f, 過去%s年平均股利: %.3f</center></h2>'.encode('UTF-8') % ( stocks[x]['lastAvg'], _yearROI, stocks[x]['totalAvg'] )
-                    print u'<h2><center>根據當前股價與過去一年股利計算出的報酬率: %.2f %%</center></h2>'.encode('UTF-8') % stocks[x]['nowROI'] 
-                    print '<center><textarea style="font-size: 16pt" rows="6" cols="40">'
-                    for d in stocks[x]['all_dividends']:
-                        print d,
-                    print '</textarea></center>'
-                    print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % x
-                    print '<img border=10 src="/%s"/>' % pngfile 
-                    print '</a>'
+	sortedBy = '0'
+	if sortedBy == '0':
+		for x, value in sorted( stocks.iteritems(), key=lambda(k,v): (v['yearsROI'],k), reverse=True):
+			pngfile =  'PNG/' + x + '.PNG';
+			if os.path.isfile( pngfile ):
+				print '<hr>' 
+				print u'<h1><center>代號：%s 國家：%s</center></h1>'.encode('UTF-8') % (x, country_map[x])
+				print u'<h1><center>簡介：%s</h1>'.encode('UTF-8') % short_map[x]
+				print u'<h2><center>過去選擇年數股利 %.3f USD, 過去%s年股利: %.3f USD</center></h2>'.encode('UTF-8') % ( stocks[x]['last'], _yearROI, stocks[x]['total'] )
+				print u'<h2><center>過去選擇年數平均股利: %.3f, 過去%s年平均股利: %.3f</center></h2>'.encode('UTF-8') % ( stocks[x]['lastAvg'], _yearROI, stocks[x]['totalAvg'] )
+				print u'<h2><center>根據當前股價與過去選擇年數股利計算出的報酬率: %.2f %%</center></h2>'.encode('UTF-8') % stocks[x]['yearsROI'] 
+				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % x
+				print '<center><textarea style="font-size: 16pt" rows="6" cols="40">'
+				for d in stocks[x]['all_dividends']:
+					print d,
+					print '</textarea></center>'
+					print '<img border=10 src="/%s"/>' % pngfile 
+					print '</a>'
+	else:
+		for x, value in sorted( stocks.iteritems(), key=lambda(k,v): (v['nowROI'],k), reverse=True):
+			pngfile =  'PNG/' + x + '.PNG';
+			if os.path.isfile( pngfile ):
+				print '<hr>' 
+				print u'<h1><center>代號：%s 國家：%s</center></h1>'.encode('UTF-8') % (x, country_map[x])
+				print u'<h1><center>簡介：%s</h1>'.encode('UTF-8') % short_map[x]
+				print u'<h2><center>過去一年股利 %.3f USD, 過去%s年股利: %.3f USD</center></h2>'.encode('UTF-8') % ( stocks[x]['last'], _yearROI, stocks[x]['total'] )
+				print u'<h2><center>過去一年平均股利: %.3f, 過去%s年平均股利: %.3f</center></h2>'.encode('UTF-8') % ( stocks[x]['lastAvg'], _yearROI, stocks[x]['totalAvg'] )
+				print u'<h2><center>根據當前股價與過去一年股利計算出的報酬率: %.2f %%</center></h2>'.encode('UTF-8') % stocks[x]['nowROI'] 
+				print '<center><textarea style="font-size: 16pt" rows="6" cols="40">'
+				for d in stocks[x]['all_dividends']:
+					print d,
+					print '</textarea></center>'
+					print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % x
+					print '<img border=10 src="/%s"/>' % pngfile 
+					print '</a>'
 
 print "</p>"
 print "</body>"
