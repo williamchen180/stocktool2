@@ -12,6 +12,11 @@ print "Content-type:text/html; charset=utf-8\r\n\r\n"
 
 form = cgi.FieldStorage()
 
+if form.getvalue('kind'):
+	_kind = form.getvalue('kind')
+else:
+	_kind = 'all'
+
 if form.getvalue('country'):
 	_country = form.getvalue('country')
 else:
@@ -20,7 +25,7 @@ else:
 if form.getvalue('ROI'):
 	_ROI = form.getvalue('ROI')
 else:
-	_ROI = "20"
+	_ROI = "5"
 
 if form.getvalue('yearROI'):
 	_yearROI = form.getvalue('yearROI')
@@ -68,7 +73,7 @@ t = ticker()
 
 #print _ROI, _yearROI, _country, _yearCompany
 
-ret = t.ROIgt( rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price, dividends = _dividends )
+ret = t.ROIgt( kind = _kind, rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price, dividends = _dividends )
 
 print u'<center><h2>搜尋出 %d 項目</h2></center>'.encode('UTF-8') % len(ret)
 

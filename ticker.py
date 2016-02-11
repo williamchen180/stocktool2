@@ -60,6 +60,63 @@ class ticker():
 	def dividend_file(self, t):
 		return self.dividend_file_format % t
 
+	def get_price_and_dividend(self):
+		mech = Browser()
+		skip_to = 'DSVX.AS'
+
+		for c in self.ticker:
+			print c
+			for t in self.ticker[c]:
+				print t
+
+				if skip_to != None:
+					if skip_to == t:
+						skip_to = None
+					else:
+						continue
+
+				divurl = self.divurl % (t, 1990, 1, 1, self.year, self.month, self.day ) 
+				try:
+					page = mech.open( divurl )
+				except Exception as e:
+					#print 'get dividend', e
+					#print divurl
+					pass
+				else:
+					try:
+						html = page.read()
+					except Exception as e:
+						with open('history/errorlist.txt', 'a') as f:
+							f.write( t + '\n')
+					else:
+						name = self.dividend_file_format % t
+						print name
+						with open( name, 'w') as f:
+							f.write( '#' + html)
+
+				priurl = self.priurl % (t, 1990, 1, 1, self.year, self.month, self.day )
+				try:
+					page = mech.open( priurl )
+				except Exception as e:
+					#print 'get price', e
+					#print priurl
+					pass
+				else:
+					try:
+						html = page.read()
+					except Exception as e:
+						with open('history/errorlist.txt', 'a') as f:
+							f.write( t + '\n')
+					else:
+						name = self.price_file_format % t
+						print name
+						with open( name, 'w') as f:
+							f.write( '#' + html)
+						
+
+
+
+
 	def update_price( self, skip_to = None ):
 		self.update_item( self.price_file_format, self.priurl, skip_to ) 
 
@@ -259,7 +316,7 @@ class ticker():
 				self.ticker[c][t]['DIVIDENDS'] = dividends_last_year
 
 				
-	def ROIgt(self, rate, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0, dividends = 0):
+	def ROIgt(self, kind = 'all', rate = 5, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0, dividends = 0):
 
 		#print rate, year, country, yearsaround
 
@@ -286,6 +343,10 @@ class ticker():
 			for t in self.ticker[c]:
 				if self.ticker[c][t]['AVAILABLE'] == False:
 					continue
+
+				if kind != 'all':
+					if self.ticker[c][t]['KIND'] != kind:
+						continue
 
                                 if dividends != 0:
                                         if dividends < 0 and self.ticker[c][t]['DIVIDENDS'] < -dividends:
@@ -316,21 +377,23 @@ class ticker():
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
-		print 'Usage: %s [update_price_and_dividend | update]'
+		print 'Usage: %s [get_price_and_dividend | update_price_and_dividend | update]'
 		sys.exit(0)
 
 	t = ticker()
 
-	if sys.argv[1] == 'update_price_and_dividend':
+	if sys.argv[1] == 'update':
 		t.update_price()
 		t.update_dividend()
+	elif sys.argv[1] == 'get':
+		t.get_price_and_dividend()
 
-	elif sys.argv[1] == 'update':
+	elif sys.argv[1] == 'build':
 		t.update_ROI()
 		t.save()
 	else:
 		numbers = 0
-		ret = t.ROIgt( rate = 40, year = 5, country = ['USA'], yearsaround = 5 )
+		ret = t.ROIgt( kind = 'all', rate = 40, year = 5, country = ['USA'], yearsaround = 5 )
 		for x in ret:
 			numbers += 1
 			print x
