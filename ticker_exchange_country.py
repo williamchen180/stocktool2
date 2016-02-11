@@ -47,6 +47,8 @@ for t in t_array:
 	T[c][t]['SYMBOL'] = t
 	T[c][t]['SHORT'] = s
 
+	idx += 1
+
 with open('pickle/ticker.cpickle2', 'wb') as f:
 	cPickle.dump( T, f, protocol=2)
 
