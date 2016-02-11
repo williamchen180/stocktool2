@@ -18,13 +18,13 @@ c_array = []
 
 
 for t in sheet.col(0)[4:]:
-	t_array.append(t.value)
+	t_array.append(t.value.encode('ascii','ignore'))
 for t in sheet.col(1)[4:]:
-	s_array.append(t.value)
+	s_array.append(t.value.encode('ascii','ignore'))
 for t in sheet.col(2)[4:]:
-	e_array.append(t.value)
+	e_array.append(t.value.encode('ascii','ignore'))
 for t in sheet.col(3)[4:]:
-	c_array.append(t.value)
+	c_array.append(t.value.encode('ascii','ignore'))
 
 idx = 0
 
