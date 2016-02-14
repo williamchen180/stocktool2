@@ -188,10 +188,6 @@ class	plot:
 
 		return ret
 
-
-
-
-
 if __name__ == '__main__':
 	if len(sys.argv) == 1:
 		print "Usage: ", sys.argv[0], " SYMBOL"
@@ -201,9 +197,3 @@ if __name__ == '__main__':
                 p = plot()
 		ret = p.plot( x, path='PNG' )
                 print ret
-
-
-
-
-
-

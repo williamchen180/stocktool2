@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import pprint
 import cPickle
 import os
 import sys
@@ -8,6 +9,7 @@ import time
 import socket
 import mechanize
 from mechanize import Browser
+from xlrd import open_workbook
 
 class ticker():
 
@@ -25,8 +27,13 @@ class ticker():
 		self.divurl = 'http://ichart.yahoo.com/table.csv?s=%s&c=%d&a=%d&b=%d&f=%d&d=%d&e=%d&g=v&ignore=.csv'
 		self.priurl = 'http://ichart.yahoo.com/table.csv?s=%s&c=%d&a=%d&b=%d&f=%d&d=%d&e=%d&g=d&ignore=.csv'
 
-		with open(self.pickle_file, 'rb') as f:
-			self.ticker = cPickle.load(f)
+		try:
+			with open(self.pickle_file, 'rb') as f:
+				self.ticker = cPickle.load(f)
+		except Exception as e:
+			self.init_data()
+		finally:
+			pass
 
 
 	def __getitem__(self, key):
@@ -60,62 +67,107 @@ class ticker():
 	def dividend_file(self, t):
 		return self.dividend_file_format % t
 
+	def init_data(self, excel = 'Yahoo Ticker Symbols - Jan 2016.xlsx', sheets = ['Stock', 'ETF' ] ):
+		T = {}
+		ret = {}
+		ret['DB'] = None
+		ret['KIND'] = {}
+
+		with open_workbook( excel ) as book:
+
+			print 'Open:', excel
+
+
+			for K in sheets:
+				print 'process sheet:', K
+				sheet = book.sheet_by_name( K )
+
+				ticker_array = []
+				short_array = []
+				exchange_array = []
+				country_array = []
+
+
+				for t in sheet.col(0)[4:]:
+					ticker_array.append(t.value.encode('ascii','ignore'))
+				for t in sheet.col(1)[4:]:
+					short_array.append(t.value.encode('ascii','ignore'))
+				for t in sheet.col(2)[4:]:
+					exchange_array.append(t.value.encode('ascii','ignore'))
+				for t in sheet.col(3)[4:]:
+					country_array.append(t.value.encode('ascii','ignore'))
+
+				idx = 0
+
+				for ticker in ticker_array:
+					short = short_array[idx]
+					exchange = exchange_array[idx]
+					country = country_array[idx]
+
+					T[ ticker ] = {}
+					T[ ticker ]['EXCHANGE'] = exchange
+					T[ ticker ]['INDEX'] = idx
+					T[ ticker ]['COUNTRY'] = country
+					T[ ticker ]['SYMBOL'] = ticker
+					T[ ticker ]['SHORT' ] = short
+					T[ ticker ]['KIND' ] = K 
+					
+					idx += 1
+
+				print idx , ' items processed'
+
+				ret['KIND'][K] = idx
+
+		ret['DB'] = T
+		with open( self.pickle_file, 'wb' ) as f:
+			cPickle.dump( ret, f, protocol=2)
+
 	def get_price_and_dividend(self):
 		mech = Browser()
-		skip_to = 'DSVX.AS'
+		skip_to = None 
 
-		for c in self.ticker:
-			print c
-			for t in self.ticker[c]:
-				print t
 
-				if skip_to != None:
-					if skip_to == t:
-						skip_to = None
-					else:
-						continue
+		for t in self.ticker['DB']:
 
-				divurl = self.divurl % (t, 1990, 1, 1, self.year, self.month, self.day ) 
+			print t
+
+			divurl = self.divurl % (t, 1990, 1, 1, self.year, self.month, self.day ) 
+			try:
+				page = mech.open( divurl )
+			except Exception as e:
+				#print 'get dividend', e
+				#print divurl
+				pass
+			else:
 				try:
-					page = mech.open( divurl )
+					html = page.read()
 				except Exception as e:
-					#print 'get dividend', e
-					#print divurl
-					pass
+					with open('history/errorlist.txt', 'a') as f:
+						f.write( t + '\n')
 				else:
-					try:
-						html = page.read()
-					except Exception as e:
-						with open('history/errorlist.txt', 'a') as f:
-							f.write( t + '\n')
-					else:
-						name = self.dividend_file_format % t
-						print name
-						with open( name, 'w') as f:
-							f.write( '#' + html)
+					name = self.dividend_file_format % t
+					print name
+					with open( name, 'w') as f:
+						f.write( '#' + html)
 
-				priurl = self.priurl % (t, 1990, 1, 1, self.year, self.month, self.day )
+			priurl = self.priurl % (t, 1990, 1, 1, self.year, self.month, self.day )
+			try:
+				page = mech.open( priurl )
+			except Exception as e:
+				#print 'get price', e
+				#print priurl
+				pass
+			else:
 				try:
-					page = mech.open( priurl )
+					html = page.read()
 				except Exception as e:
-					#print 'get price', e
-					#print priurl
-					pass
+					with open('history/errorlist.txt', 'a') as f:
+						f.write( t + '\n')
 				else:
-					try:
-						html = page.read()
-					except Exception as e:
-						with open('history/errorlist.txt', 'a') as f:
-							f.write( t + '\n')
-					else:
-						name = self.price_file_format % t
-						print name
-						with open( name, 'w') as f:
-							f.write( '#' + html)
-						
-
-
-
+					name = self.price_file_format % t
+					print name
+					with open( name, 'w') as f:
+						f.write( '#' + html)
 
 	def update_price( self, skip_to = None ):
 		self.update_item( self.price_file_format, self.priurl, skip_to ) 
@@ -125,198 +177,198 @@ class ticker():
 
 	def update_item(self, filename, _url, skip_to = None):
 		mech = Browser()
-		for c in self.ticker:
-			for t in self.ticker[c]:
-				if self.ticker[c][t]['AVAILABLE'] == True:
-					print t, self.ticker[c][t]['INDEX']
+		for tname in self.ticker['DB']:
 
-					if skip_to != None:
-						if t == skip_to:
-							skip_to = None
-						else:
-							print 'skip'
-							continue
+			t = self.ticker['DB'][tname]
 
-					with open( filename % t , 'r+') as f:
-						l = f.readline()
-						if len(l) == 0:
-							continue
-						if l[0] != '2':
-							l = f.readline()
-						if len(l) == 0:
-							continue
-						(year, month, day) = l[0:10].split('-')
-						date = datetime.datetime( int(year), int(month), int(day) )
-						date += datetime.timedelta(days=1)
+			if t['AVAILABLE'] == False:
+				continue
 
-						#print year, month, day, date.year, date.month, date.day
+			print t['KIND'], tname, t['INDEX']
 
-						if self.year == date.year and self.month == date.month and self.day == date.day:
-							print 'No need to update'
-							continue
-
-						url = _url % (t, date.year, date.month-1, date.day, self.year, self.month, self.day )
-
-						#print '(%d,%d,%d) to (%d,%d,%d)' % (date.year, date.month, date.day, self.year, self.month, self.day )
-						#print	url 
-
-
-						while True:
-							try:
-								page = mech.open(url, timeout=5)
-								#page = mech.open(url)
-								html = page.read()
-							except mechanize.URLError as exc:
-								if isinstance(exc.reason, socket.timeout):
-									print 'Timed out', exc
-									continue
-								else:
-									print exc, url
-									break
-							else:
-								#print html.split('\n')[1:]
-								f.seek(0,0)
-								lines = f.readlines()
-								f.seek(0,0)
-								f.truncate()
-								
-								for l in html.split('\n'):
-									if len(l) == 0:
-										continue
-									if l[0] != '2':
-										continue
-									f.write(l+'\n')
-								for l in lines:
-									if len(l) == 0:
-										continue
-									if l[0] != '2':
-										continue
-									f.write(l)
-
-								break
-
-	def update_ROI(self):
-
-
-		for c in self.ticker:
-			for t in self.ticker[c]:
-				
-				price_file = self.price_file_format % t
-				dividend_file = self.dividend_file_format % t
-
-				if os.path.isfile( dividend_file ) == True and os.path.isfile( price_file) == True:
-					self.ticker[c][t]['AVAILABLE'] = True
+			if skip_to != None:
+				if tname == skip_to:
+					skip_to = None
 				else:
-					self.ticker[c][t]['AVAILABLE'] = False
+					print 'skip'
 					continue
 
-				#print '-->', t
-
-				with open( price_file, 'r') as f:
+			with open( filename % tname , 'r+') as f:
+				l = f.readline()
+				if len(l) == 0:
+					continue
+				if l[0] != '2':
 					l = f.readline()
-					if len(l) == 0:
-						self.ticker[c][t]['AVAILABLE'] = False
-						continue
-					if l[0] == '#':
-						l = f.readline()
-					if len(l) == 0:
-						self.ticker[c][t]['AVAILABLE'] = False
-						continue
+				if len(l) == 0:
+					continue
+				(year, month, day) = l[0:10].split('-')
+				date = datetime.datetime( int(year), int(month), int(day) )
+				date += datetime.timedelta(days=1)
 
-					last_price = float( l.split(',')[-1] )
+				#print year, month, day, date.year, date.month, date.day
+
+				if self.year == date.year and self.month == date.month and self.day == date.day:
+					print 'No need to update'
+					continue
+
+				url = _url % (tname, date.year, date.month-1, date.day, self.year, self.month, self.day )
+
+				#print '(%d,%d,%d) to (%d,%d,%d)' % (date.year, date.month, date.day, self.year, self.month, self.day )
+				#print	url 
+
+
+				while True:
+					try:
+						page = mech.open(url, timeout=5)
+						#page = mech.open(url)
+						html = page.read()
+					except mechanize.URLError as exc:
+						if isinstance(exc.reason, socket.timeout):
+							print 'Timed out', exc
+							continue
+						else:
+							print exc, url
+							break
+					else:
+						#print html.split('\n')[1:]
+						f.seek(0,0)
+						lines = f.readlines()
+						f.seek(0,0)
+						f.truncate()
+						
+						for l in html.split('\n'):
+							if len(l) == 0:
+								continue
+							if l[0] != '2':
+								continue
+							f.write(l+'\n')
+						for l in lines:
+							if len(l) == 0:
+								continue
+							if l[0] != '2':
+								continue
+							f.write(l)
+
+						break
+
+	def build_data(self):
+		for tname in self.ticker['DB']:
+
+			t = self.ticker['DB'][tname]
+			
+			price_file = self.price_file_format % tname
+			dividend_file = self.dividend_file_format % tname
+
+			if os.path.isfile( dividend_file ) == True and os.path.isfile( price_file) == True:
+				t['AVAILABLE'] = True
+			else:
+				t['AVAILABLE'] = False
+				continue
+
+			#print '-->', t
+
+			with open( price_file, 'r') as f:
+				l = f.readline()
+				if len(l) == 0:
+					t['AVAILABLE'] = False
+					continue
+				if l[0] == '#':
+					l = f.readline()
+				if len(l) == 0:
+					t['AVAILABLE'] = False
+					continue
+
+				last_price = float( l.split(',')[-1] )
+				year = int(l[0:4])
+				month = int(l[5:7])
+				month_index = year * 12 + month
+
+				if month_index < self.now_month_index:
+					t['AVAILABLE'] = False
+					#print month_index, self.now_month_index, year, month
+					continue
+
+				# Calculate how many years this company around
+				try:
+					f.seek(0,0)
+					lines = f.readlines()
+					l = lines[-1]
+				except Exception as e:
+					years_around = 0
+					month_index = 0
+				finally:
 					year = int(l[0:4])
 					month = int(l[5:7])
 					month_index = year * 12 + month
-
-					if month_index < self.now_month_index:
-						self.ticker[c][t]['AVAILABLE'] = False
-						#print month_index, self.now_month_index, year, month
-						continue
-
-					# Calculate how many years this company around
-					try:
-						f.seek(0,0)
-						lines = f.readlines()
-						l = lines[-1]
-					except Exception as e:
-						years_around = 0
-						month_index = 0
-					finally:
-						year = int(l[0:4])
-						month = int(l[5:7])
-						month_index = year * 12 + month
-						years_around = int((self.now_month_index - month_index) / 12)
-						
-
-				#print 'last price:', last_price
-				#print 'years:', years_around
-
-				dividend_one_year = 0.0
-				dividend_two_year = 0.0
-				dividend_three_year = 0.0
-				dividend_four_year = 0.0
-				dividend_five_year = 0.0
-
-				ROI1 = 0
-				ROI2 = 0
-				ROI3 = 0
-				ROI4 = 0
-				ROI5 = 0
-
-				with open( dividend_file, 'r') as f:
-
+					years_around = int((self.now_month_index - month_index) / 12)
 					
-					dividends_last_year = 0
 
-					for l in f.readlines():
-						if len(l) == 0:
-							continue
-						if l[0] == '#':
-							continue
-						year = int(l[0:4])
-						month = int(l[5:7])
+			#print 'last price:', last_price
+			#print 'years:', years_around
 
-						month_index = year * 12 + month
+			dividend_one_year = 0.0
+			dividend_two_year = 0.0
+			dividend_three_year = 0.0
+			dividend_four_year = 0.0
+			dividend_five_year = 0.0
 
-						dividend = float( l.split(',')[1] ) 
+			ROI1 = 0
+			ROI2 = 0
+			ROI3 = 0
+			ROI4 = 0
+			ROI5 = 0
 
-						if month_index > (self.now_month_index - 12*1):
-							dividend_one_year += dividend
-						if month_index > (self.now_month_index - 12*2):
-							dividend_two_year += dividend 
-						if month_index > (self.now_month_index - 12*3):
-							dividend_three_year += dividend 
-						if month_index > (self.now_month_index - 12*4):
-							dividend_four_year += dividend
-						if month_index > (self.now_month_index - 12*5):
-							dividend_five_year += dividend 
+			with open( dividend_file, 'r') as f:
+				dividends_last_year = 0
+				for l in f.readlines():
+					if len(l) == 0:
+						continue
+					if l[0] == '#':
+						continue
+					year = int(l[0:4])
+					month = int(l[5:7])
 
-						if (self.year-1) == year:
-							dividends_last_year += 1
+					month_index = year * 12 + month
 
-				#print dividends_last_year
+					dividend = float( l.split(',')[1] ) 
 
-				if last_price != 0:
-					ROI1 = 100.0 * dividend_one_year / 1.0 / last_price
-					ROI2 = 100.0 * dividend_two_year / 2.0 / last_price
-					ROI3 = 100.0 * dividend_three_year / 3.0 / last_price
-					ROI4 = 100.0 * dividend_four_year / 4.0 / last_price
-					ROI5 = 100.0 * dividend_five_year / 5.0 / last_price
+					if month_index > (self.now_month_index - 12*1):
+						dividend_one_year += dividend
+					if month_index > (self.now_month_index - 12*2):
+						dividend_two_year += dividend 
+					if month_index > (self.now_month_index - 12*3):
+						dividend_three_year += dividend 
+					if month_index > (self.now_month_index - 12*4):
+						dividend_four_year += dividend
+					if month_index > (self.now_month_index - 12*5):
+						dividend_five_year += dividend 
 
-				dividends = ( dividend_one_year, dividend_two_year, dividend_three_year, dividend_four_year, dividend_five_year )
-				ROI = (ROI1, ROI2, ROI3, ROI4, ROI5 )
+					if (self.year-1) == year:
+						dividends_last_year += 1
 
-				#print "DIVIDEND", dividends
-				#print "ROI", ROI
+			#print dividends_last_year
 
-				self.ticker[c][t]['DIVIDEND'] = dividends
-				self.ticker[c][t]['ROI'] = ROI
-				self.ticker[c][t]['LASTPRICE'] = last_price
-				self.ticker[c][t]['YEARSAROUND'] = years_around
-				self.ticker[c][t]['DIVIDENDS'] = dividends_last_year
+			if last_price != 0:
+				ROI1 = 100.0 * dividend_one_year / 1.0 / last_price
+				ROI2 = 100.0 * dividend_two_year / 2.0 / last_price
+				ROI3 = 100.0 * dividend_three_year / 3.0 / last_price
+				ROI4 = 100.0 * dividend_four_year / 4.0 / last_price
+				ROI5 = 100.0 * dividend_five_year / 5.0 / last_price
+
+			dividends = ( dividend_one_year, dividend_two_year, dividend_three_year, dividend_four_year, dividend_five_year )
+			ROI = (ROI1, ROI2, ROI3, ROI4, ROI5 )
+
+			#print "DIVIDEND", dividends
+			#print "ROI", ROI
+
+			t['DIVIDEND'] = dividends
+			t['ROI'] = ROI
+			t['LASTPRICE'] = last_price
+			t['YEARSAROUND'] = years_around
+			t['DIVIDENDS'] = dividends_last_year
 
 				
-	def ROIgt(self, kind = 'all', rate = 5, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0, dividends = 0):
+	def filte(self, kind = 'all', rate = 5, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0, dividends = 0):
 
 		#print rate, year, country, yearsaround
 
@@ -326,79 +378,89 @@ class ticker():
 			year = 1
 
 		ret = []
-		for c in self.ticker:
 
-			if len(country) != 0:
+		for tname in self.ticker['DB']:
+
+			t = self.ticker['DB'][tname]
+
+			if t['AVAILABLE'] == False:
+				continue
+
+			if country[0] != 'all':
 				found = False
-				if country[0] == 'All':
-					found = True
-				else:
-					for x in country:
-						if c == x: 
-							found = True
-							break
-				if found == False:
+				for c  in country:
+					if c == t['COUNTRY']:
+						found = True
+						break
+				if found != False:
 					continue
 
-			for t in self.ticker[c]:
-				if self.ticker[c][t]['AVAILABLE'] == False:
+
+			if kind != 'all':
+				if t['KIND'] != kind:
 					continue
 
-				if kind != 'all':
-					if self.ticker[c][t]['KIND'] != kind:
-						continue
-
-                                if dividends != 0:
-                                        if dividends < 0 and self.ticker[c][t]['DIVIDENDS'] < -dividends:
-                                                continue
-                                        if dividends > 0 and self.ticker[c][t]['DIVIDENDS'] != dividends:
-                                                continue
-
-				if yearsaround != 0 and self.ticker[c][t]['YEARSAROUND'] < yearsaround:
+			if dividends != 0:
+				if dividends < 0 and t['DIVIDENDS'] < -dividends:
+					continue
+				if dividends > 0 and t['DIVIDENDS'] != dividends:
 					continue
 
-				if self.ticker[c][t].has_key('ROI') == False:
-					continue
+			if yearsaround != 0 and t['YEARSAROUND'] < yearsaround:
+				continue
 
-				if pricelimit != 0 and self.ticker[c][t]['LASTPRICE'] < pricelimit:
-					continue
+			if t.has_key('ROI') == False:
+				continue
 
-				if self.ticker[c][t]['ROI'][year-1] < float(rate):
-					continue
+			if pricelimit != 0 and t['LASTPRICE'] < pricelimit:
+				continue
 
-				#print t
-				#print self.ticker[c][t]['ROI'][year-1], float(rate)
-				#print self.ticker[c][t]['YEARSAROUND']
+			if t['ROI'][year-1] < float(rate):
+				continue
 
-				ret.append( self.ticker[c][t] )
+			#print t
+			#print t['ROI'][year-1], float(rate)
+			#print t['YEARSAROUND']
+
+			ret.append( t )
 		return ret
 
+	def select( self, target ):
+		ret = []
+		
+		for tname in target:
+			if self.ticker['DB'].has_key( tname ):
+				ret.append( self.ticker['DB'][tname] )
+		return ret
 
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
-		print 'Usage: %s [get_price_and_dividend | update_price_and_dividend | update]'
+		print 'Usage: %s [init | get | build | update | filte | select ]'
 		sys.exit(0)
 
 	t = ticker()
 
-	if sys.argv[1] == 'update':
+	if sys.argv[1] == 'init':
+		t.init_data()
+	elif sys.argv[1] == 'update':
 		t.update_price()
 		t.update_dividend()
 	elif sys.argv[1] == 'get':
 		t.get_price_and_dividend()
-
 	elif sys.argv[1] == 'build':
-		t.update_ROI()
+		t.build_data()
 		t.save()
-	else:
+	elif sys.argv[1] == 'filte':
 		numbers = 0
-		ret = t.ROIgt( kind = 'all', rate = 40, year = 5, country = ['USA'], yearsaround = 5 )
+		ret = t.filte( kind = 'all', rate = 40, year = 5, country = ['USA'], yearsaround = 5, pricelimit = 1  )
 		for x in ret:
 			numbers += 1
 			print x
 	
 		print numbers,  'stocks'
-
+	elif sys.argv[1] == 'select':
+		ret = t.select( ['MSFT', 'GOOD' ] )
+		pprint.pprint(ret)
 
 

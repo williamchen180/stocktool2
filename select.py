@@ -73,7 +73,7 @@ t = ticker()
 
 #print _ROI, _yearROI, _country, _yearCompany
 
-ret = t.ROIgt( kind = _kind, rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price, dividends = _dividends )
+ret = t.select( kind = _kind, rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price, dividends = _dividends )
 
 print u'<center><h2>搜尋出 %d 項目</h2></center>'.encode('UTF-8') % len(ret)
 

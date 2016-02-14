@@ -8,58 +8,63 @@ from xlrd import open_workbook
 
 
 def process_sheet( _file = 'Yahoo Ticker Symbols - Jan 2016.xlsx', sheets = ['Stock', 'ETF' ] , T = {}):
+	ret = {}
+	ret['DB'] = None
+	ret['KIND'] = {}
 	with open_workbook('Yahoo Ticker Symbols - Jan 2016.xlsx') as book:
 
 		for K in sheets:
 			print 'process sheet:', K
 			sheet = book.sheet_by_name( K )
 
-			t_array = []
-			s_array = []
-			e_array = []
-			c_array = []
+			ticker_array = []
+			short_array = []
+			exchange_array = []
+			country_array = []
 
 
 			for t in sheet.col(0)[4:]:
-				t_array.append(t.value.encode('ascii','ignore'))
+				ticker_array.append(t.value.encode('ascii','ignore'))
 			for t in sheet.col(1)[4:]:
-				s_array.append(t.value.encode('ascii','ignore'))
+				short_array.append(t.value.encode('ascii','ignore'))
 			for t in sheet.col(2)[4:]:
-				e_array.append(t.value.encode('ascii','ignore'))
+				exchange_array.append(t.value.encode('ascii','ignore'))
 			for t in sheet.col(3)[4:]:
-				c_array.append(t.value.encode('ascii','ignore'))
+				country_array.append(t.value.encode('ascii','ignore'))
 
 			idx = 0
 
-			print len(t_array)
-			print len(s_array)
-			print len(e_array)
-			print len(c_array)
+			for ticker in ticker_array:
+				short = short_array[idx]
+				exchange = exchange_array[idx]
+				country = country_array[idx]
 
-			for t in t_array:
-				s = s_array[idx]
-				e = e_array[idx]
-				c = c_array[idx]
+				T[ ticker ] = {}
+				T[ ticker ]['EXCHANGE'] = exchange
+				T[ ticker ]['INDEX'] = idx
+				T[ ticker ]['COUNTRY'] = country
+				T[ ticker ]['SYMBOL'] = ticker
+				T[ ticker ]['SHORT' ] = short
+				T[ ticker ]['KIND' ] = K 
 				
-				if T.has_key( c ) == False:
-					T[c] = {} 
-				T[c][t] = {}
-				T[c][t]['EXCHANGE'] = e
-				T[c][t]['INDEX'] = idx
-				T[c][t]['COUNTRY'] = c
-				T[c][t]['SYMBOL'] = t
-				T[c][t]['SHORT'] = s
-				T[c][t]['KIND'] = K
-
 				idx += 1
 
 			print idx , ' items processed'
-	return T
 
-T = process_sheet()
+			ret['KIND'][K] = idx
 
+	ret['DB'] = T
+	return ret
 
-with open('pickle/ticker.cpickle2', 'wb') as f:
-	cPickle.dump( T, f, protocol=2)
+if __name__ == '__main__':
+
+	T = process_sheet()
+	with open('pickle/ticker.cpickle2', 'wb') as f:
+		cPickle.dump( T, f, protocol=2)
+
+	for x in T['KIND']:
+		print x, T['KIND'][x]
+
+	
 
 
