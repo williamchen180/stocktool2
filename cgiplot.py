@@ -29,15 +29,6 @@ if form.getvalue('sort'):
 else:
 	sortedBy = '0'
 
-print "Content-type:text/html; charset=utf-8\r\n\r\n"
-print '<html>'
-print '<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />'
-print "<head>";
-print "<title>Stock information</title>"
-print "</head>"
-print "<body>"
-print "<p>"
-
 target = []
 
 for x in text_content.splitlines():
@@ -55,43 +46,10 @@ for x in target:
 time.sleep(1)
 
 
+
 T = ticker()
 stocks = T.select( target ) 
 
 
-
-dst = []
-
-for x in stocks:
-	dst.append( (x['ROI'][int(years)-1], x ) )
-
-
-ddst = sorted( dst, reverse = True )
-
-
-#pprint.pprint(ddst)
-
-
-for x in ddst:
-	t = x[1]
-
-	pngfile =  'PNG/' + t['SYMBOL'] + '.PNG';
-	if os.path.isfile( pngfile ):
-		print '<hr>' 
-		print u'<h1><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
-		for i in range(0,5):
-			print u'<h3><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</center></h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
-
-		print '<center><textarea style="font-size: 16pt" rows="2" cols="40">'
-		dividends = T.get_dividends( t['SYMBOL'] )
-		for x in dividends:
-			print x,
-		print '</textarea></center>'
-		print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % t['SYMBOL']
-		print '<img border=10 src="/%s"/>' % pngfile 
-		print '</a>'
-
-print "</p>"
-print "</body>"
-print "</html>"
+T.html_list( stocks )
 

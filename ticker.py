@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#coding=UTF-8
 
 import pprint
 import cPickle
@@ -392,7 +393,7 @@ class ticker():
 					if c == t['COUNTRY']:
 						found = True
 						break
-				if found != False:
+				if found == False:
 					continue
 
 
@@ -444,6 +445,46 @@ class ticker():
 						continue
 					ret.append(l)
 		return ret
+
+	def html_list( self, stocks ):
+		dst = []
+		for x in stocks:
+			dst.append( (x['ROI'][4], x ) )
+
+		ddst = sorted( dst, reverse = True )
+
+		print "Content-type:text/html; charset=utf-8\r\n\r\n"
+		print '<html>'
+		print '<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />'
+		print "<head>";
+		print "<title>Stock information</title>"
+		print "</head>"
+		print "<body>"
+		print "<p>"
+                print u'<center><h1>搜尋出 %d 項目</h1></center>'.encode('UTF-8') % len(stocks)
+
+		for x in ddst:
+			t = x[1]
+
+			pngfile =  'PNG/' + t['SYMBOL'] + '.PNG';
+			if os.path.isfile( pngfile ):
+				print '<hr>' 
+				print u'<h1><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
+				for i in range(0,5):
+					print u'<h3><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</center></h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
+
+				print '<center><textarea style="font-size: 16pt" rows="2" cols="40">'
+				dividends = self.get_dividends( t['SYMBOL'] )
+				for x in dividends:
+					print x,
+				print '</textarea></center>'
+				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % t['SYMBOL']
+				print '<img border=10 src="/%s"/>' % pngfile 
+				print '</a>'
+
+		print "</p>"
+		print "</body>"
+		print "</html>"
 
 
 if __name__ == '__main__':
