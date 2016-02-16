@@ -433,6 +433,19 @@ class ticker():
 				ret.append( self.ticker['DB'][tname] )
 		return ret
 
+	def get_dividends( self, tname ):
+		ret = []
+		if self.ticker['DB'].has_key( tname ):
+			with open( self.dividend_file( tname ), 'r') as f:
+				for l in f.readlines():
+					if len(l) == 0:
+						continue
+					if l[0] == '#':
+						continue
+					ret.append(l)
+		return ret
+
+
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
