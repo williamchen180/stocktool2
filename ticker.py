@@ -18,6 +18,7 @@ class ticker():
 		self.pickle_file = 'pickle/ticker.cpickle2'
 		self.dividend_file_format = 'history/%s.dividend'
 		self.price_file_format = 'history/%s.price'
+                self.png_file_format = 'PNG/%s.PNG'
 
 		self.year = int(time.strftime('%Y'))
 		self.month = int(time.strftime('%m'))
@@ -176,7 +177,7 @@ class ticker():
 	def update_dividend( self, skip_to = None):
 		self.update_item( self.dividend_file_format, self.divurl, skip_to ) 
 
-	def update_item(self, filename, _url, skip_to = None):
+	def update_item(self, filename, _url, skip_to = None, delete_cache = True):
 		mech = Browser()
 		for tname in self.ticker['DB']:
 
@@ -217,7 +218,7 @@ class ticker():
 				#print '(%d,%d,%d) to (%d,%d,%d)' % (date.year, date.month, date.day, self.year, self.month, self.day )
 				#print	url 
 
-
+   
 				while True:
 					try:
 						page = mech.open(url, timeout=5)
@@ -251,6 +252,13 @@ class ticker():
 							f.write(l)
 
 						break
+
+				if delete_cache == True:
+					png_file = self.png_file_format % tname
+                                        if os.path.isfile(png_file) == True:
+                                            os.unlink( png_file )
+					    
+
 
 	def build_data(self):
 		for tname in self.ticker['DB']:
@@ -466,7 +474,7 @@ class ticker():
 		for x in ddst:
 			t = x[1]
 
-			pngfile =  'PNG/' + t['SYMBOL'] + '.PNG';
+			pngfile =  self.png_file_format % t['SYMBOL'] 
 			if os.path.isfile( pngfile ):
 				print '<hr>' 
 				print u'<h1><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
