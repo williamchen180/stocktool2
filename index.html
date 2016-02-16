@@ -3,116 +3,41 @@
 <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
 <meta http-equiv="cache-control" content="no-cache">
 
-<h1> 請輸入股票代號: (yahoo finance上所定義的代號)</h1>
-<form action="/cgiplot.py" method="post" target="_blank">
-	<textarea style="font-size: 16pt" name="textcontent" cols="60" rows="5" >PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFD PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG
-VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB
-</textarea><br>
-	<br>
-	<br>
-	
-	選擇ROI要根據過去幾年平均計算：1<br>
-	<input type="radio" name="years" value="10"> 10 年<br>
-	<input type="radio" name="years" value="5" checked>  5 年<br>
-	<input type="radio" name="years" value="3">  3 年<br>
-	<input type="radio" name="years" value="1">  1 年<br>
+<script>
+function load_preset() {
+	document.getElementById("preset").value = "PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB";
 
-	<br><br>
-	選擇排序方式：<br>
-	<input type="radio" name="sort" value="0" checked>根據選擇年數之股利所計算之ROI排序<br>
-	<input type="radio" name="sort" value="1">根據最近一年之股利所計算之ROI排序<br>
-	<br><br>
+}
 
-	<input type="submit" value="Submit" /><br>
-</form>
+function check() {
+	for(i=1;i<38;i++) {
+		document.getElementById(i).checked = true;
+	}
+}
+
+function uncheck() {
+	for(i=1;i<38;i++) {
+		document.getElementById(i).checked = false;
+	}
+}
+</script>
+
+
+<center>
+	<h1> 請輸入股票代號: (yahoo finance上所定義的代號)</h1>
+	<form action="/cgiplot.py" method="post" target="_blank">
+		<textarea id="preset" style="font-size: 16pt" name="textcontent" cols="60" rows="1" placeholder="請輸入代號"></textarea><br>
+		<input type="submit" value="Submit" />
+	</form>
+
+	<button onclick="load_preset()">PRESET</button><br>
+</center>
 
 <hr>
 <hr>
 <h2>國家：</h2>
 <button onclick="check()">全選</button>
 <button onclick="uncheck()">全不選</button>
-
-<script>
-function check() {
-	document.getElementById("1").checked = true;
-	document.getElementById("2").checked = true;
-	document.getElementById("3").checked = true;
-	document.getElementById("4").checked = true;
-	document.getElementById("5").checked = true;
-	document.getElementById("6").checked = true;
-	document.getElementById("7").checked = true;
-	document.getElementById("8").checked = true;
-	document.getElementById("9").checked = true;
-	document.getElementById("10").checked = true;
-	document.getElementById("11").checked = true;
-	document.getElementById("12").checked = true;
-	document.getElementById("13").checked = true;
-	document.getElementById("14").checked = true;
-	document.getElementById("15").checked = true;
-	document.getElementById("16").checked = true;
-	document.getElementById("17").checked = true;
-	document.getElementById("18").checked = true;
-	document.getElementById("19").checked = true;
-	document.getElementById("20").checked = true;
-	document.getElementById("21").checked = true;
-	document.getElementById("22").checked = true;
-	document.getElementById("23").checked = true;
-	document.getElementById("24").checked = true;
-	document.getElementById("25").checked = true;
-	document.getElementById("26").checked = true;
-	document.getElementById("27").checked = true;
-	document.getElementById("28").checked = true;
-	document.getElementById("29").checked = true;
-	document.getElementById("30").checked = true;
-	document.getElementById("31").checked = true;
-	document.getElementById("32").checked = true;
-	document.getElementById("33").checked = true;
-	document.getElementById("34").checked = true;
-	document.getElementById("35").checked = true;
-	document.getElementById("36").checked = true;
-	document.getElementById("37").checked = true;
-}
-
-function uncheck() {
-	document.getElementById("1").checked = false;
-	document.getElementById("2").checked = false;
-	document.getElementById("3").checked = false;
-	document.getElementById("4").checked = false;
-	document.getElementById("5").checked = false;
-	document.getElementById("6").checked = false;
-	document.getElementById("7").checked = false;
-	document.getElementById("8").checked = false;
-	document.getElementById("9").checked = false;
-	document.getElementById("10").checked = false;
-	document.getElementById("11").checked = false;
-	document.getElementById("12").checked = false;
-	document.getElementById("13").checked = false;
-	document.getElementById("14").checked = false;
-	document.getElementById("15").checked = false;
-	document.getElementById("16").checked = false;
-	document.getElementById("17").checked = false;
-	document.getElementById("18").checked = false;
-	document.getElementById("19").checked = false;
-	document.getElementById("20").checked = false;
-	document.getElementById("21").checked = false;
-	document.getElementById("22").checked = false;
-	document.getElementById("23").checked = false;
-	document.getElementById("24").checked = false;
-	document.getElementById("25").checked = false;
-	document.getElementById("26").checked = false;
-	document.getElementById("27").checked = false;
-	document.getElementById("28").checked = false;
-	document.getElementById("29").checked = false;
-	document.getElementById("30").checked = false;
-	document.getElementById("31").checked = false;
-	document.getElementById("32").checked = false;
-	document.getElementById("33").checked = false;
-	document.getElementById("34").checked = false;
-	document.getElementById("35").checked = false;
-	document.getElementById("36").checked = false;
-	document.getElementById("37").checked = false;
-}
-</script>
 
 
 <form action="/select.py" target="_blank">

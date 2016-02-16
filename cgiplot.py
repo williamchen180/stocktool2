@@ -37,8 +37,6 @@ print "<title>Stock information</title>"
 print "</head>"
 print "<body>"
 print "<p>"
-print u"<center><h1>ROI是根據過去%s年計算</h1></center>".encode('UTF-8') % years
-print u"<Center><h2>以下根據目前的股價與過去一年的ROI由大到小排序<h2></center>".encode('UTF-8')
 
 target = []
 
@@ -71,7 +69,7 @@ for x in stocks:
 ddst = sorted( dst, reverse = True )
 
 
-pprint.pprint(ddst)
+#pprint.pprint(ddst)
 
 
 for x in ddst:
@@ -80,13 +78,11 @@ for x in ddst:
 	pngfile =  'PNG/' + t['SYMBOL'] + '.PNG';
 	if os.path.isfile( pngfile ):
 		print '<hr>' 
-		print u'<h1><center>代號：%s 國家：%s</center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'] )
-		print u'<h1><center>簡介：%s</h1>'.encode('UTF-8') % t['SHORT']
-		print '<center><textarea style="font-size: 16pt" rows="6" cols="40">'
-			
+		print u'<h1><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
 		for i in range(0,5):
-			print u'<h2><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f</center></h2>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
+			print u'<h3><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</center></h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
 
+		print '<center><textarea style="font-size: 16pt" rows="2" cols="40">'
 		dividends = T.get_dividends( t['SYMBOL'] )
 		for x in dividends:
 			print x,
