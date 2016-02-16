@@ -17,7 +17,7 @@ class	plot:
 	def __init__(self):
             pass
 
-	def plot( self, symbol, path = '', years = 5 ):
+	def plot( self, symbol, path = 'PNG', years = 5, cached = True ):
 
 		current_price = 0
 

@@ -41,7 +41,7 @@ for x in text_content.splitlines():
 
 for x in target:
 	p = plot()
-	ret = p.plot(symbol = x, path='PNG', years = int(years))
+	ret = p.plot(symbol = x, path='PNG' )
 
 time.sleep(1)
 

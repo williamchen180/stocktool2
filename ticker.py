@@ -461,7 +461,7 @@ class ticker():
 		print "</head>"
 		print "<body>"
 		print "<p>"
-                print u'<center><h1>搜尋出 %d 項目</h1></center>'.encode('UTF-8') % len(stocks)
+                print u'<center><h1>搜尋出 %d 個項目</h1></center>'.encode('UTF-8') % len(stocks)
 
 		for x in ddst:
 			t = x[1]
