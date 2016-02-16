@@ -255,8 +255,8 @@ class ticker():
 
 				if delete_cache == True:
 					png_file = self.png_file_format % tname
-                                        if os.path.isfile(png_file) == True:
-                                            os.unlink( png_file )
+					if os.path.isfile(png_file) == True:
+						os.unlink( png_file )
 					    
 
 
