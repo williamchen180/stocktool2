@@ -60,9 +60,9 @@ T = ticker()
 
 ret = T.filte( kind = _kind, rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price, dividends = _dividends )
 
+p = plot()
 for x in ret:
-    p = plot()
-    p.plot( symbol = x['SYMBOL'] )  
+	p.plot( symbol = x['SYMBOL'] )  
 
 T.html_list( ret ) 
 

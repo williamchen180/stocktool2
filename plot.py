@@ -19,6 +19,12 @@ class	plot:
 
 	def plot( self, symbol, path = 'PNG', years = 5, cached = True ):
 
+		png_file = './' + path + '/' + symbol + '.PNG'
+
+		if cached == True:
+			if os.path.isfile( png_file ):
+				return
+
 		current_price = 0
 
 		now = datetime.datetime.now()
@@ -38,9 +44,7 @@ class	plot:
 
 		if os.path.isfile( dividend_file ) == False or os.path.isfile( price_file) == False:
 			# Symbol not found
-			ret = {}
-			ret['yearsROI'] = 0.0
-			return ret
+			return
 
 
 		if os.path.isdir( path ) == False:
@@ -68,7 +72,6 @@ class	plot:
 			left_x = '%d-%2.2d-%2.2d' % (date.year, date.month, date.day )
 
 
-                all_dividends = []
 
 		with open( dividend_file, 'r') as f:
 			div_total = 0.0
@@ -77,7 +80,6 @@ class	plot:
 			for l in f.readlines():
 				if l[0] == '#':
 					continue
-                                all_dividends.append(l)
 				datestring, dividend = l.split(',')
 				( year, month, day ) = datestring.split('-')
 
@@ -109,19 +111,6 @@ class	plot:
 		RRI14Last = div_last / 0.14
 
                 
-                ret = {}
-                ret['last'] = div_last
-                ret['total'] = div_total
-                ret['lastAvg'] = div_last
-                ret['totalAvg'] = div_total / float(years)
-                if current_price != 0:
-                    ret['nowROI'] = 100.0 * div_last / current_price  
-                    ret['yearsROI'] = 100.0 * (div_total / float(years)) / current_price
-                else:
-                    ret['nowROI'] = 0.0
-                    ret['yearsROI'] = 0.0
-
-
 		p = Gnuplot.Gnuplot()
 
 		p('reset')
@@ -140,7 +129,7 @@ class	plot:
 			RRI9, RRI11, RRI14, RRI9Last, RRI11Last, RRI14Last ) )
 
 		p('set terminal png size 1200,600')
-		cmd = 'set output \'%s\'' %  ('./' + path + '/' + symbol + '.PNG')
+		cmd = 'set output \'%s\'' % png_file 
 		#print cmd
 		p(cmd)
 		p('set datafile sep ","')
@@ -184,9 +173,6 @@ class	plot:
 		#time.sleep(1)
 		#os.system( 'open %s' % (symbol + '.png') ) 
 
-                ret['all_dividends'] = all_dividends
-
-		return ret
 
 if __name__ == '__main__':
 	if len(sys.argv) == 1:
@@ -195,5 +181,4 @@ if __name__ == '__main__':
 
 	for x in sys.argv[1:]:
                 p = plot()
-		ret = p.plot( x, path='PNG' )
-                print ret
+		p.plot( x, path='PNG' )

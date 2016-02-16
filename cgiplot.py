@@ -39,9 +39,9 @@ for x in text_content.splitlines():
 
 
 
+p = plot()
 for x in target:
-	p = plot()
-	ret = p.plot(symbol = x, path='PNG' )
+	p.plot(symbol = x, path='PNG' )
 
 time.sleep(1)
 
