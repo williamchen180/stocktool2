@@ -17,17 +17,15 @@ form = cgi.FieldStorage()
 if form.getvalue('textcontent'):
     text_content = form.getvalue('textcontent')
 else:
-    text_content = 'MSFT GOOD TAXI'
+    text_content = 'MSFT GOOD TAXI FUCK NONE'
 
-if form.getvalue('years'):
-    years = form.getvalue('years')
+if form.getvalue('country'):
+    country_ext = form.getvalue('country')
 else:
-    years = '5'
+    country_ext = 'None'
 
-if form.getvalue('sort'):
-	sortedBy = form.getvalue('sort')
-else:
-	sortedBy = '0'
+ext_table = {'None':'', 'UK':'.L', 'Germany':'.DE', 'Singapore':'.SI', 'Hong Kong':'.HK' }
+
 
 target = []
 
@@ -35,7 +33,9 @@ for x in text_content.splitlines():
 	for xx in x.split('\t'):
 		for xxx in xx.split(' '):
 			if xxx != '':
-				target.append( xxx.upper() )
+				target.append( xxx.upper() + ext_table[country_ext] )
+
+
 
 
 
@@ -45,11 +45,17 @@ for x in target:
 
 time.sleep(1)
 
-
-
 T = ticker()
 stocks = T.select( target ) 
 
+result = []
+for x in stocks:
+    result.append(x['SYMBOL'])
 
-T.html_list( stocks )
+missing = list( set(target) - set(result) )
 
+
+T.html_list( stocks, missing )
+
+#print target
+#print missing

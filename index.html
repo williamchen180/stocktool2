@@ -9,6 +9,10 @@ function load_preset() {
 
 }
 
+function clear_preset() {
+	document.getElementById("preset").value = "";
+}
+
 function check() {
 	for(i=1;i<38;i++) {
 		document.getElementById(i).checked = true;
@@ -27,10 +31,16 @@ function uncheck() {
 	<h1> 請輸入股票代號: (yahoo finance上所定義的代號)</h1>
 	<form action="/cgiplot.py" method="post" target="_blank">
 		<textarea id="preset" style="font-size: 16pt" name="textcontent" cols="60" rows="1" placeholder="請輸入代號"></textarea><br>
+		<input type="radio" name="country" value="None" checked>None</input>
+		<input type="radio" name="country" value="UK">UK</input>
+		<input type="radio" name="country" value="Germany">Germany</input>
+		<input type="radio" name="country" value="Singapore">Singapore</input>
+		<input type="radio" name="country" value="Hong Kong">Hong Kong</input><br>
 		<input type="submit" value="Submit" />
 	</form>
 
-	<button onclick="load_preset()">PRESET</button><br>
+	<button onclick="load_preset()">PRESET</button>
+	<button onclick="clear_preset()">CLEAR</button><br>
 </center>
 
 <hr>

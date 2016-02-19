@@ -454,7 +454,7 @@ class ticker():
 					ret.append(l)
 		return ret
 
-	def html_list( self, stocks ):
+	def html_list( self, stocks, missing = [] ):
 		dst = []
 		for x in stocks:
 			dst.append( (x['ROI'][4], x ) )
@@ -470,6 +470,13 @@ class ticker():
 		print "<body>"
 		print "<p>"
                 print u'<center><h1>搜尋出 %d 個項目</h1></center>'.encode('UTF-8') % len(stocks)
+
+		if missing != []:
+			print '<hr>'
+			print u'<center><h1>找不到以下紀錄</h1>'.encode('UTF-8')
+			for x in missing:
+				print x + '<br>'
+			print '</center><hr>'
 
 		for x in ddst:
 			t = x[1]
