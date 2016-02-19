@@ -2,6 +2,7 @@
 
 import time
 from mechanize import Browser
+import sys
 
 class get_history:
 	
@@ -15,6 +16,11 @@ class get_history:
 		self.mech = Browser()
 
 	def get( self, symbol ):
+
+		found_price = False
+		found_dividend = False 
+
+
 		try:
 			url = self.divurl % (symbol, self.year, self.month, self.day)
 			#print url
@@ -33,6 +39,8 @@ class get_history:
 				f = open('history/' + symbol + '.dividend', 'w')
 				f.write( '#' + html )
 				f.close()
+
+				found_dividend = True
 
 		try:
 			url = self.priurl % (symbol, self.year, self.month, self.day)
@@ -54,7 +62,21 @@ class get_history:
 				f.write( '#' + html )
 				f.close()
 
+				found_price = True
+
+		if found_dividend is True and found_price is True:
+			return True
+		else:
+			return False
+
+	
+
+	
+
 if __name__ == '__main__':
 	h = get_history()
-	h.get('MSFT')
+	for x in sys.argv[1:]:
+		ret = h.get( x ) 
+		if ret == True:
+			print 'found the records for ' + x 
 
