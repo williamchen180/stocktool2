@@ -469,8 +469,54 @@ class ticker():
 		print "<title>Stock information</title>"
 		print "</head>"
 		print "<body>"
+		print '''
+<style type="text/css">
+#main {
+	padding: 5px;
+	border-collapse: collapse; 
+	border: 1px solid #000000;
+	width: 100%;
+}
+#main td {
+	border: 1px solid #000000;
+	padding: 3px;
+	font-size: .9em;
+}
+#main th {
+	border: 1px solid #000000;
+	background-color: #CCFFCC;
+}
+</style>'''
+		print '<script src="sorttable.js" type="text/javascript"></script>'
 		print "<p>"
                 print u'<center><h1>搜尋出 %d 個項目</h1></center>'.encode('UTF-8') % len(stocks)
+
+		if True:
+			print u'''<center><table id="main" class="sortable"><thead><tr>
+				<th>代號</th>
+				<th>買進日期</th>
+				<th>買進價位</th>
+				<th>當前日期</th>
+				<th>當前價位</th>
+				<th>股票成長比率</th>
+				<th>股利成長比率</th>
+				<th>市值成長比率</th>
+				</tr></thead>'''.encode('UTF-8')
+			for x in stocks:
+				if x.has_key('SIMRESULT') is False:
+					continue
+
+				sr = x['SIMRESULT']
+
+
+				print '<tr><td>%s</td>' % x['SYMBOL'] 
+				#print sr
+				print '<td>%s</td><td>%.2f</td><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % sr
+
+				
+			print '<tfoot></tfoot></table></center><hr>'
+
+
 
 		if missing != []:
 			print '<hr>'
@@ -679,7 +725,7 @@ class ticker():
 
 			#pprint.pprint( S['SIM'] )
 
-	def simulate(self):
+	def build_simulation_result(self):
 		for tname in self.ticker['DB']:
 			S = self.ticker['DB'][tname]
 
@@ -721,10 +767,12 @@ class ticker():
 				print '%-16s 買進 %s %.2f 目前 %s %.2f 股票 %.2f%% 股利 %.2f%% 市值： %.2f%%' % \
 						(tname, buy_date, buy_price, last_date, last_price, sha_avg_ROI, div_avg_ROI, all_avg_ROI)
 
+			sim_result = (buy_date, buy_price, last_date, last_price, sha_avg_ROI, div_avg_ROI, all_avg_ROI)
 
+			S['SIMRESULT'] = sim_result
 
-
-
+	def simulate(self):
+		pass
 
 if __name__ == '__main__':
 
@@ -745,6 +793,7 @@ if __name__ == '__main__':
 		t.build_data()
 		t.build_simulation_data()
 		t.do_simulation()
+		t.build_simulation_result()
 		t.save()
 	elif sys.argv[1] == 'filte':
 		numbers = 0

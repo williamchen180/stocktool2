@@ -3,7 +3,32 @@
 <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
 <meta http-equiv="cache-control" content="no-cache">
 
+<body>
+
+<style type="text/css">
+#main {
+	padding: 5px;
+	border-collapse: collapse; 
+	border: 1px solid #000000;
+	width: 100%;
+}
+#main td {
+	border: 1px solid #000000;
+	padding: 3px;
+	font-size: .9em;
+}
+#main th {
+	border: 1px solid #000000;
+	background-color: #CCFFCC;
+}
+</style>
+
+
+
+<script src="sorttable.js" type="text/javascript"></script>
 <script>
+
+
 function load_preset() {
 	document.getElementById("preset").value = "PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB";
 
@@ -125,6 +150,7 @@ function uncheck() {
 		<td>
 			<h2>報酬率：</h2>
 			<select name="ROI">
+			<option value="0"> 0% 以上</option>
 			<option value="5"> 5% 以上</option>
 			<option value="10">10% 以上</option>
 			<option value="15" selected="selected">15% 以上</option>
@@ -181,5 +207,15 @@ function uncheck() {
 
 </table>
 
+<input type="checkbox" name="simulate" value="simulate">只做模擬</input><br><br>
+
 	<td><input type="submit" value="Submit">
 </form>
+
+
+<hr>
+<hr>
+
+
+
+</body>

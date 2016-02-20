@@ -46,6 +46,11 @@ if form.getvalue('dividends'):
 else:
 	_dividends = "12"
 
+if form.getvalue('simulate'):
+	_simulate = form.getvalue('simulate')
+else:
+	_simulate = None
+
 _ROI = int(_ROI)
 _yearROI = int(_yearROI)
 _yearCompany = int(_yearCompany)
@@ -64,6 +69,6 @@ p = plot()
 for x in ret:
 	p.plot( symbol = x['SYMBOL'] )  
 
-T.html_list( ret ) 
+T.html_list( ret  ) 
 
 #print _kind, _ROI, _yearROI, _country, _yearCompany, _price, _dividends
