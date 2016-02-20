@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #coding=UTF-8
+# Note: Date,Open,High,Low,Close,Volume,Adj Close
 
 import pprint
 import cPickle
@@ -501,6 +502,11 @@ class ticker():
 		print "</body>"
 		print "</html>"
 
+
+	def month_index( self, ts): 
+		return int(ts[0:4]) * 12 + int( ts[5:7] ) 
+
+
 	def build_simulation_data(self, years = 3):
 		count = 0
 		#skip_to = 'AKSO.OL'
@@ -548,6 +554,7 @@ class ticker():
 
 			#print org
 
+			# x: [0]: timestamp, [1]: year, [2]: month, [3]: month index, [4]: dividend
 			for x in org:
 				if org[-1][3] > (x[3] - 12*years):
 					break
@@ -555,13 +562,13 @@ class ticker():
 
 				sum = 0.0
 				for z in org:
-					if z[3] <= x[3] and z[3] >= (x[3] - 12*years):
+					if z[3] <= x[3] and z[3] > (x[3] - 12*years):
 						sum += z[4]
 						#print '\t', z[0], z[4], sum
 
-				result.append( [x[0], sum, sum/float(years) ] )
+				result.append( [x[0], sum, sum/float(years), x[4] ] )
 
-			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg
+			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: this dividend
 			#pprint.pprint(result)
 
 			idx = 0
@@ -579,7 +586,7 @@ class ticker():
 						continue
 
 					now_timestamp = l.split(',')[0]
-					now_price = float( l.split(',')[1] )
+					now_price = float( l.split(',')[4] )
 
 					if result[idx][0] == now_timestamp: 
 						#print result[idx][0]
@@ -601,19 +608,19 @@ class ticker():
 
 
 			# Dividend day
-			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: price
+			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: this dividend, [4]: price
 
 			try:
 				for x in result:
 					if x[3] != 0:
-						x.append( 100.0 * x[2] / x[3] )
+						x.append( 100.0 * x[2] / x[4] )
 					else:
 						x.append( 0.0 )
 			except Exception as e:
 				continue
 
 
-			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: price, [4] ROI
+			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: this dividend, [4]: price, [5] ROI
 			#pprint.pprint(result)
 
 
@@ -624,8 +631,100 @@ class ticker():
 
 		print count
 
+	def do_simulation(self):
+		count = 0
+		for x in self.ticker['DB']:
+			S = self.ticker['DB'][x]
+
+			if S.has_key('ROIs'):
+				count += 1
+			else:
+				continue
+
+			print x, count
+
+			#pprint.pprint( S['ROIs'] )
+
+			buy = False
+
+
+			# SIM: [0]: ROIs, [1]: shares, [2]: dividends, [3]: current shares value, [4]: All value
+			sim = []
+
+			# ROIs [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: this dividend, [4]: price, [5] ROI
+			for r in reversed( S['ROIs'] ):
+				if buy is False and r[4] > 15.0:
+					buy = True
+
+					sim.append( [ r, int(10000/r[4]), 0, 10000, 10000 ] )
+					continue
+
+				if buy is True:
+					shares = sim[-1][1]
+					last_dividends = sim[-1][2]
+					current_dividend = r[3]
+					current_price = r[4]
+
+					dividend_value = last_dividends + shares * current_dividend
+					current_shares_value = shares * current_price
+					all_value = dividend_value + current_shares_value 
+
+
+					sim.append( [ r, shares, dividend_value, current_shares_value, all_value ] )
+			
+			if len(sim) == 0:
+				continue
+
+			S['SIM'] = sim
+
+			#pprint.pprint( S['SIM'] )
+
 	def simulate(self):
-		pass
+		for tname in self.ticker['DB']:
+			S = self.ticker['DB'][tname]
+
+			if S.has_key('SIM') is False:
+				continue
+
+			#print tname
+			#pprint.pprint( S['SIM'] )
+
+			sim = S['SIM']
+
+			buy_date = sim[0][0][0]
+			buy_price = sim[0][0][4]
+			buy_dividend_value = sim[0][2]
+			buy_shares_value = sim[0][3]
+			buy_all_value = sim[0][4]
+			buy_month_index = self.month_index( buy_date )
+
+
+			last_date = sim[-1][0][0]
+			last_price = sim[-1][0][4]
+			last_dividend_value = sim[-1][2]
+			last_shares_value = sim[-1][3]
+			last_all_value = sim[-1][4]
+			last_month_index = self.month_index( last_date )
+
+			years = ( last_month_index - buy_month_index ) / 12
+
+			if years == 0:
+				continue
+
+			
+			div_avg_ROI = last_dividend_value / 10000.0 * 100 / years
+			sha_avg_ROI = (last_shares_value - buy_shares_value) / 10000.0 * 100 / years
+			all_avg_ROI = (last_all_value - buy_all_value) / 10000.0 * 100 / years
+
+
+			if False:
+				print '%-16s 買進 %s %.2f 目前 %s %.2f 股票 %.2f%% 股利 %.2f%% 市值： %.2f%%' % \
+						(tname, buy_date, buy_price, last_date, last_price, sha_avg_ROI, div_avg_ROI, all_avg_ROI)
+
+
+
+
+
 
 if __name__ == '__main__':
 
@@ -645,6 +744,7 @@ if __name__ == '__main__':
 	elif sys.argv[1] == 'build':
 		t.build_data()
 		t.build_simulation_data()
+		t.do_simulation()
 		t.save()
 	elif sys.argv[1] == 'filte':
 		numbers = 0
