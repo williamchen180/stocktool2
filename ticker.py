@@ -501,11 +501,136 @@ class ticker():
 		print "</body>"
 		print "</html>"
 
+	def build_simulation_data(self, years = 3):
+		count = 0
+		#skip_to = 'AKSO.OL'
+		skip_to = None
+
+		for tname in self.ticker['DB']:
+
+			print tname
+
+			if skip_to != None:
+				if skip_to == tname:
+					skip_to = None
+				else:
+					continue
+
+			S = self.ticker['DB'][tname]
+
+			if S['AVAILABLE'] == False:
+				continue
+
+			if S['YEARSAROUND'] > 5:
+				count += 1
+
+			with open( self.dividend_file_format % tname, 'r') as f:
+				lines = f.readlines()
+
+
+			org = []
+
+			for l in lines:
+				if len(l) is 0 or l[0] is '#':
+					continue
+				year = int(l[0:4])
+				month = int(l[5:7])
+				month_index = year * 12 + month
+				dividend = float( l.split(',')[-1] )
+
+				#print year, month, month_index, dividend
+				org.append( (l.split(',')[0], year, month, month_index, dividend) )
+
+			if len(org) is 0:
+				continue
+			
+			result = []
+
+			#print org
+
+			for x in org:
+				if org[-1][3] > (x[3] - 12*years):
+					break
+				#print x[0], 
+
+				sum = 0.0
+				for z in org:
+					if z[3] <= x[3] and z[3] >= (x[3] - 12*years):
+						sum += z[4]
+						#print '\t', z[0], z[4], sum
+
+				result.append( [x[0], sum, sum/float(years) ] )
+
+			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg
+			#pprint.pprint(result)
+
+			idx = 0
+
+			length = len(result)
+
+			if length is 0:
+				continue
+
+			with open( self.price_file_format % tname, 'r') as f:
+				lines = f.readlines()
+				for l in lines:
+
+					if len(l) is 0 or l[0] == '#':
+						continue
+
+					now_timestamp = l.split(',')[0]
+					now_price = float( l.split(',')[1] )
+
+					if result[idx][0] == now_timestamp: 
+						#print result[idx][0]
+						result[idx].append( now_price ) 
+						idx += 1
+					elif result[idx][0] > now_timestamp:
+						#print result[idx][0], now_timestamp
+						result[idx].append( now_price )
+						idx += 1
+
+					if idx > length -1:
+						break
+
+					last_timestamp = now_timestamp
+					last_price = now_price
+
+			#pprint.pprint(result)
+						
+
+
+			# Dividend day
+			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: price
+
+			try:
+				for x in result:
+					if x[3] != 0:
+						x.append( 100.0 * x[2] / x[3] )
+					else:
+						x.append( 0.0 )
+			except Exception as e:
+				continue
+
+
+			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: price, [4] ROI
+			#pprint.pprint(result)
+
+
+			self.ticker['DB'][tname]['ROIs'] = result
+
+			print '\t', count , '/', len(self.ticker['DB']) 
+
+
+		print count
+
+	def simulate(self):
+		pass
 
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
-		print 'Usage: %s [init | get | build | update | filte | select ]'
+		print 'Usage: %s [init | get | build | update | filte | select | sim ]'
 		sys.exit(0)
 
 	t = ticker()
@@ -519,6 +644,7 @@ if __name__ == '__main__':
 		t.get_price_and_dividend()
 	elif sys.argv[1] == 'build':
 		t.build_data()
+		t.build_simulation_data()
 		t.save()
 	elif sys.argv[1] == 'filte':
 		numbers = 0
@@ -526,10 +652,12 @@ if __name__ == '__main__':
 		for x in ret:
 			numbers += 1
 			print x
-	
 		print numbers,  'stocks'
 	elif sys.argv[1] == 'select':
 		ret = t.select( ['MSFT', 'GOOD' ] )
 		pprint.pprint(ret)
+	elif sys.argv[1] == 'sim':
+		t.simulate()
+
 
 
