@@ -509,8 +509,7 @@ class ticker():
 				sr = x['SIMRESULT']
 
 
-				print '<tr><td>%s</td>' % x['SYMBOL'] 
-				#print sr
+				print '<tr><td><p><a href="#%s">%s</a></p></td>' % (x['SYMBOL'], x['SYMBOL'] )
 				print '<td>%s</td><td>%.2f</td><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % sr
 
 				
@@ -531,7 +530,7 @@ class ticker():
 			pngfile =  self.png_file_format % t['SYMBOL'] 
 			if os.path.isfile( pngfile ):
 				print '<hr>' 
-				print u'<h1><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
+				print u'<h1 id="%s"><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
 				for i in range(0,5):
 					print u'<h3><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</center></h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
 
