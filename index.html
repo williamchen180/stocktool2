@@ -61,7 +61,7 @@ function uncheck() {
 		<input type="radio" name="country" value="Germany">Germany</input>
 		<input type="radio" name="country" value="Singapore">Singapore</input>
 		<input type="radio" name="country" value="Hong Kong">Hong Kong</input><br>
-		<input type="submit" value="Submit" />
+		<input type="submit" value="搜尋" style="font-size: 16pt"  />
 	</form>
 
 	<button onclick="load_preset()">PRESET</button>
@@ -211,9 +211,76 @@ function uncheck() {
 	<td><input type="submit" value="Submit">
 </form>
 
+<hr>
+<hr>
 
-<hr>
-<hr>
+<SCRIPT language="javascript">
+	function addRow(tableID) {
+
+		var table = document.getElementById(tableID);
+
+		var rowCount = table.rows.length;
+		var row = table.insertRow(rowCount);
+
+		var cell0 = row.insertCell(0);
+		var element0 = document.createElement("input");
+		element0.type = "checkbox";
+		element0.name="chkbox[]";
+		cell0.appendChild(element0);
+
+		var cell1 = row.insertCell(1);
+		cell1.innerHTML = rowCount + 1;
+
+		var cell2 = row.insertCell(2);
+		var element2 = document.createElement("input");
+		element2.type = "text";
+		element2.name = "txtbox[]";
+		cell2.appendChild(element2);
+
+		var cell3 = row.insertCell(3);
+		var element3 = document.createElement("input");
+		element3.type = "date";
+		element3.name = "date[]";
+		cell3.appendChild(element3);
+
+	}
+
+	function deleteRow(tableID) {
+		try {
+			var table = document.getElementById(tableID);
+			var rowCount = table.rows.length;
+
+			for(var i=0; i<rowCount; i++) {
+				var row = table.rows[i];
+				var chkbox = row.cells[0].childNodes[0];
+				if(null != chkbox && true == chkbox.checked) {
+					table.deleteRow(i);
+					rowCount--;
+					i--;
+				}
+			}
+		}catch(e) {
+			alert(e);
+		}
+	}
+
+</SCRIPT>
+
+<INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
+<INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" />
+<br>
+<br>
+
+<form action="/monitor.py">
+	<TABLE id="dataTable" width="350px" border="1">
+		<TR>
+		<TD><INPUT type="checkbox" name="chk"/></TD>
+		<TD> 1 </TD>
+		<TD> <INPUT type="text" /></TD><TD><input type="date" value=""/> </TD>
+		</TR>
+	</TABLE>
+	<input type="submit" value="搜尋" style="font-size: 16pt"  />
+</form>
 
 
 
