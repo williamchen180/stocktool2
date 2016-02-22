@@ -235,12 +235,14 @@ function uncheck() {
 		var element2 = document.createElement("input");
 		element2.type = "text";
 		element2.name = "txtbox[]";
+		element2.id = "watch_name" + rowCount; 
 		cell2.appendChild(element2);
 
 		var cell3 = row.insertCell(3);
 		var element3 = document.createElement("input");
 		element3.type = "date";
 		element3.name = "date[]";
+		element3.id = "watch_date" + rowCount;
 		cell3.appendChild(element3);
 
 	}
@@ -271,15 +273,41 @@ function uncheck() {
 <br>
 <br>
 
-<form action="/monitor.py">
+<script>
+
+	function save_watch(tableID)
+	{
+		try {
+			var table = document.getElementById(tableID);
+			var rowCount = table.rows.length;
+
+			alert( rowCount );
+
+			ret = ""
+			for(var i=0; i<rowCount; i++) {
+				ret += document.getElementById("watch_name" + i).value;
+				ret += "?"
+				ret += document.getElementById("watch_date" + i).value;
+				ret += "?"
+
+			
+			}
+		} catch(e) {
+			alert("here" + e);
+		}	
+	}
+
+</script>
+
+<form action="./monitor.py">
 	<TABLE id="dataTable" width="350px" border="1">
 		<TR>
 		<TD><INPUT type="checkbox" name="chk"/></TD>
 		<TD> 1 </TD>
-		<TD> <INPUT type="text" /></TD><TD><input type="date" value=""/> </TD>
+		<TD> <INPUT type="text" id="watch_name0" /></TD><TD><input type="date" value="" id="watch_date0"/> </TD>
 		</TR>
 	</TABLE>
-	<input type="submit" value="搜尋" style="font-size: 16pt"  />
+	<input type="submit" value="儲存" style="font-size: 16pt" onclick="save_watch('dataTable')"/>
 </form>
 
 
