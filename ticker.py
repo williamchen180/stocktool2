@@ -13,6 +13,34 @@ import mechanize
 from mechanize import Browser
 from xlrd import open_workbook
 
+#
+# self.ticker: type of dict
+#
+#	['DB']:	array of dict. Ticker
+#	['KIND']: type of dict
+#		{ 'Stock': 個數 }
+#		{ 'ETF': 個數 }
+#	
+#	ticker: type of dict
+#		'EXCHANGE': 交易所
+#		'INDEX': 編號，沒什麼意義
+#		'COUNTRY': 國家
+#		'SYMBOL': symbol
+#		'SHORT': 簡介
+#		'KIND': Stock or ETF
+#		'DIVIDEND': list。過去N年的股利總和 (-1, -2, -3, -4, -5)
+#		'ROI': list。根據過去N年所計算出的ROI。(-1, -2, -3, -4, -5)
+#		'LASTPRICE': 最近股價
+#		'YEARSAROUND': 公司已成立幾年
+#		'DIVIDENDS': 一年配發幾次股利。根據去年配發次數做計算
+#		'ROIs': list。過去N(3)年每次配發股利時候的資料
+#			[0]: '2011-05-31', [1]: 過去N年股利和, [2]: 過去N年股利平均, [3]: 此次股利, [4]: 當天價格 [5] 當時的ROI
+#		'SIM': list。根據'ROIs'，當ROI在15%以上即買進。之後計算每次配股後的資產價值。
+#			[0]: 當次ROI list, [1]: 配股之後股數 [2]: 配股之後股利價值總和 [3]: 目前股票市值 [3]:總值
+#		'SIMRESULT': list。模擬結果
+#			[0]: 買入日期 [1]: 買入價 [2]: 最後一次配股日期 [3]: 配股價格 [4] 股票價值ROI [5] 股利價值ROI [6] 總值ROI
+
+
 class ticker():
 
 	def __init__(self):
@@ -578,7 +606,6 @@ class ticker():
 			with open( self.dividend_file_format % tname, 'r') as f:
 				lines = f.readlines()
 
-
 			org = []
 
 			for l in lines:
@@ -654,6 +681,7 @@ class ticker():
 
 			# Dividend day
 			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: this dividend, [4]: price
+			# result [0]: '2011-05-31', [1]: 過去N年股利和, [2]: 過去N年股利平均, [3]: 此次股利, [4]: 當天價格
 
 			try:
 				for x in result:
@@ -666,6 +694,7 @@ class ticker():
 
 
 			# result [0]: '2011-05-31', [1]: dividend sum, [2]: dividend avg, [3]: this dividend, [4]: price, [5] ROI
+			# result [0]: '2011-05-31', [1]: 過去N年股利和, [2]: 過去N年股利平均, [3]: 此次股利, [4]: 當天價格 [5] 當時的ROI
 			#pprint.pprint(result)
 
 
