@@ -48,6 +48,7 @@ class ticker():
 		self.dividend_file_format = 'history/%s.dividend'
 		self.price_file_format = 'history/%s.price'
                 self.png_file_format = 'PNG/%s.PNG'
+		self.ROI_lines_data_format = 'history/%s.ROI'
 
 		self.year = int(time.strftime('%Y'))
 		self.month = int(time.strftime('%m'))
@@ -799,6 +800,46 @@ class ticker():
 
 			S['SIMRESULT'] = sim_result
 
+	def build_ROI_lines_data(self):
+		for tname in self.ticker['DB']:
+			if False:
+				if tname != 'CRF':
+					continue
+
+			print tname
+			S = self.ticker['DB'][tname]
+			if S.has_key( 'ROIs') is False:
+				continue
+
+			with open( self.ROI_lines_data_format % tname, 'w') as f:
+
+				last_divavg = 0
+				last_ROI9 = 0
+				last_ROI11 = 0
+				last_ROI14 = 0
+
+				first_record = True
+
+				for r in S['ROIs']:
+					datetime = r[0]
+					divavg = r[2]
+
+					ROI9 = divavg / 0.09
+					ROI11 = divavg / 0.11
+					ROI14 = divavg / 0.14
+
+					if first_record == True:
+						first_record = False
+					else:
+						f.write( '%s,%.2f,%.2f,%.2f,%.2f\n' % ( datetime, last_divavg,  last_ROI9, last_ROI11, last_ROI14) )
+					f.write( '%s,%.2f,%.2f,%.2f,%.2f\n' % ( datetime, divavg,  ROI9, ROI11, ROI14) )
+
+					last_divavg = divavg
+					last_ROI9 = ROI9
+					last_ROI11 = ROI11
+					last_ROI14 = ROI14
+
+
 	def simulate(self):
 		pass
 
@@ -822,6 +863,7 @@ if __name__ == '__main__':
 		t.build_simulation_data()
 		t.do_simulation()
 		t.build_simulation_result()
+		t.build_ROI_lines_data()
 		t.save()
 	elif sys.argv[1] == 'filte':
 		numbers = 0
@@ -835,6 +877,8 @@ if __name__ == '__main__':
 		pprint.pprint(ret)
 	elif sys.argv[1] == 'sim':
 		t.simulate()
+	elif sys.argv[1] == 'test':
+		pass
 
 
 

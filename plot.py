@@ -37,6 +37,7 @@ class	plot:
 
 		dividend_file = 'history/%s.dividend' % symbol 
 		price_file = 'history/%s.price' % symbol 
+		ROI_file = 'history/%s.ROI' % symbol
 
 
 		if os.path.isfile( dividend_file ) == False or os.path.isfile( price_file) == False:
@@ -144,8 +145,13 @@ class	plot:
 		p('set multiplot')
 		p('set size 1, 0.4')
 		p('set origin 0, 0.6')
-		p('plot RRI9(x) title "9%",RRI11(x) title "11%", RRI14(x) title "14%", "' + price_file + '" using 1:5 notitle with lines')
-		#p('plot RRI9(x) title "9%",RRI11(x) title "11%", RRI14(x) title "14%", "' + price_file + '" using 1:7 notitle with lines')
+		if os.path.isfile( ROI_file ) is False:
+			p('plot RRI9(x) title "9%",RRI11(x) title "11%", RRI14(x) title "14%", "' + price_file + '" using 1:7 notitle with lines')
+		else:
+			cmd = 'plot "%s" using 1:3 title "9%%" with lines, "%s" using 1:4 title "11%%" with lines, "%s" using 1:5 title "14%%" with lines, "%s" using 1:5 notitle with lines' % (ROI_file, ROI_file, ROI_file, price_file )
+
+			p(cmd)
+
 
 		p('set grid')
 		p('set title ""')
@@ -181,4 +187,4 @@ if __name__ == '__main__':
 
 	for x in sys.argv[1:]:
                 p = plot()
-		p.plot( x, path='PNG' )
+		p.plot( x, path='PNG', cached=False )
