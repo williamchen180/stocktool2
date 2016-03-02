@@ -1,9 +1,16 @@
-
+<!DOCTYPE html>
+<title>US Stock</title>
 <html lang="zh-Hant" >
 <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
 <meta http-equiv="cache-control" content="no-cache">
 
-<body>
+<script>
+function myFunction() {
+    alert("Page is loaded");
+}
+</script>
+
+<body >
 
 <style type="text/css">
 #main {
@@ -17,7 +24,8 @@
 	padding: 3px;
 	font-size: .9em;
 }
-#main th {
+#main
+ th {
 	border: 1px solid #000000;
 	background-color: #CCFFCC;
 }
@@ -52,21 +60,22 @@ function uncheck() {
 </script>
 
 
-<center>
+<div align="center">
 	<h1> 請輸入股票代號: (yahoo finance上所定義的代號)</h1>
 	<form action="/cgiplot.py" method="post" target="_blank">
-		<textarea id="preset" style="font-size: 16pt" name="textcontent" cols="60" rows="1" placeholder="請輸入代號"></textarea><br>
-		<input type="radio" name="country" value="None" checked>None</input>
-		<input type="radio" name="country" value="UK">UK</input>
-		<input type="radio" name="country" value="Germany">Germany</input>
-		<input type="radio" name="country" value="Singapore">Singapore</input>
-		<input type="radio" name="country" value="Hong Kong">Hong Kong</input><br>
+		<textarea id="preset" style="font-size: 16pt" name="textcontent" cols="60" rows="1" placeholder="請輸入代號"></textarea>
+		<br>
+		<input type="radio" name="country" value="None" checked/>None
+		<input type="radio" name="country" value="UK"/>UK
+		<input type="radio" name="country" value="Germany"/>Germany
+		<input type="radio" name="country" value="Singapore"/>Singapore
+		<input type="radio" name="country" value="Hong Kong"/>Hone Kong<br>
 		<input type="submit" value="搜尋" style="font-size: 16pt"  />
 	</form>
 
 	<button onclick="load_preset()">PRESET</button>
 	<button onclick="clear_preset()">CLEAR</button><br>
-</center>
+</div>
 
 <hr>
 <hr>
@@ -214,7 +223,7 @@ function uncheck() {
 <hr>
 <hr>
 
-<SCRIPT language="javascript">
+<SCRIPT type="text/javascript">
 	function addRow(tableID) {
 
 		var table = document.getElementById(tableID);
@@ -268,8 +277,8 @@ function uncheck() {
 
 </SCRIPT>
 
-<INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
-<INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" />
+<INPUT type="button" value="Add Row" onclick="addRow('dataTable')" >
+<INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" >
 <br>
 <br>
 
@@ -282,7 +291,7 @@ function uncheck() {
 			var rowCount = table.rows.length;
 
 
-			ret = ""
+			ret = "";
 			for(var i=0; i<rowCount; i++) {
 				var ele1 = document.getElementById("text" + i);
 				var ele2 = document.getElementById("date" + i);
@@ -314,27 +323,53 @@ function uncheck() {
 <form >
 	<TABLE id="dataTable" width="350px" border="1">
 		<TR>
-		<TD><INPUT type="checkbox" name="chk"/></TD>
+		<TD><INPUT type="checkbox" name="chk"></TD>
 		<TD> 1 </TD>
-		<TD><INPUT type="text" id="text0" name="text0" value="000"/></TD>
+		<TD><INPUT type="text" id="text0" name="text0" value="000"></TD>
 		<TD><input type="date" id="date0" name="date0" value="2016-01-01"/> </TD>
 		</TR>
 		<TR>
-		<TD><INPUT type="checkbox" name="chk"/></TD>
+		<TD><INPUT type="checkbox" name="chk"></TD>
 		<TD> 2 </TD>
-		<TD><INPUT type="text" id="text1" name="text1" value="111"/></TD>
+		<TD><INPUT type="text" id="text1" name="text1" value="111"></TD>
 		<TD><input type="date" id="date1" name="date1" value="2016-02-02"/> </TD>
 		</TR>
 		<TR>
-		<TD><INPUT type="checkbox" name="chk"/></TD>
+		<TD><INPUT type="checkbox" name="chk"></TD>
 		<TD> 3 </TD>
-		<TD><INPUT type="text" id="text2" name="text2" value="333"/></TD>
+		<TD><INPUT type="text" id="text2" name="text2" value="333"></TD>
 		<TD><input type="date" id="date2" name="date2" value="2016-03-03"/> </TD>
 		</TR>
 	</TABLE>
 </form>
 <button style="font-size: 16pt" onclick="save_watch('dataTable')">儲存</button>
-<INPUT type="button" value="Add Row" onclick="save_watch('dataTable')" />
+<INPUT type="button" value="Add Row" onclick="save_watch('dataTable')" >
+
+<p id="demo">Let AJAX change this text.</p>
+
+<button type="button" onclick="loadDoc()">Change Content</button>
+
+<script>
+function loadDoc() {
+  var xhttp;
+  if (window.XMLHttpRequest) {
+    // code for modern browsers
+    xhttp = new XMLHttpRequest();
+    } else {
+    // code for IE6, IE5
+    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      document.getElementById("demo").innerHTML = xhttp.responseText;
+    }
+  };
+  xhttp.open("GET", "cd_catalog.xml", true);
+  xhttp.send();
+}
+</script>
+
+
 </body>
 </html>
 
