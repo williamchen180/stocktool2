@@ -225,7 +225,8 @@ function uncheck() {
 		var cell0 = row.insertCell(0);
 		var element0 = document.createElement("input");
 		element0.type = "checkbox";
-		element0.name="chkbox[]";
+		element0.name="chkbox" + rowCount;
+		element0.id = "chkbox" + rowCount;
 		cell0.appendChild(element0);
 
 		var cell1 = row.insertCell(1);
@@ -234,17 +235,16 @@ function uncheck() {
 		var cell2 = row.insertCell(2);
 		var element2 = document.createElement("input");
 		element2.type = "text";
-		element2.name = "txtbox[]";
-		element2.id = "watch_name" + rowCount; 
+		element2.name = "text" + rowCount;
+		element2.id = "text" + rowCount; 
 		cell2.appendChild(element2);
 
 		var cell3 = row.insertCell(3);
 		var element3 = document.createElement("input");
 		element3.type = "date";
-		element3.name = "date[]";
-		element3.id = "watch_date" + rowCount;
+		element3.name = "date" + rowCount;
+		element3.id = "date" + rowCount;
 		cell3.appendChild(element3);
-
 	}
 
 	function deleteRow(tableID) {
@@ -275,23 +275,35 @@ function uncheck() {
 
 <script>
 
-	function save_watch(tableID)
-	{
+	function save_watch(tableID) {
+		alert("begin");
 		try {
 			var table = document.getElementById(tableID);
 			var rowCount = table.rows.length;
 
-			alert( rowCount );
 
 			ret = ""
 			for(var i=0; i<rowCount; i++) {
-				ret += document.getElementById("watch_name" + i).value;
-				ret += "?"
-				ret += document.getElementById("watch_date" + i).value;
-				ret += "?"
-
-			
+				var ele1 = document.getElementById("text" + i);
+				var ele2 = document.getElementById("date" + i);
+				if (ele1 == null || ele2 == null)
+					break;
+				ret += "text" + i + "=" + ele1.value + "&";
+				ret += "date" + i + "=" + ele2.value + "&";
 			}
+
+			if (ret != "") {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (xhttp.readyState == 4 && xhttp.status == 200) {
+						document.getElementById("demo").innerHTML = xhttp.responseText;
+					}
+				};
+				xhttp.open("POST", "monitor.py", true);
+				xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
+				xhttp.send( ret );
+			}
+			alert( ret );
 		} catch(e) {
 			alert("here" + e);
 		}	
@@ -299,17 +311,29 @@ function uncheck() {
 
 </script>
 
-<form action="./monitor.py">
+<form >
 	<TABLE id="dataTable" width="350px" border="1">
 		<TR>
 		<TD><INPUT type="checkbox" name="chk"/></TD>
 		<TD> 1 </TD>
-		<TD> <INPUT type="text" id="watch_name0" /></TD><TD><input type="date" value="" id="watch_date0"/> </TD>
+		<TD><INPUT type="text" id="text0" name="text0" value="000"/></TD>
+		<TD><input type="date" id="date0" name="date0" value="2016-01-01"/> </TD>
+		</TR>
+		<TR>
+		<TD><INPUT type="checkbox" name="chk"/></TD>
+		<TD> 2 </TD>
+		<TD><INPUT type="text" id="text1" name="text1" value="111"/></TD>
+		<TD><input type="date" id="date1" name="date1" value="2016-02-02"/> </TD>
+		</TR>
+		<TR>
+		<TD><INPUT type="checkbox" name="chk"/></TD>
+		<TD> 3 </TD>
+		<TD><INPUT type="text" id="text2" name="text2" value="333"/></TD>
+		<TD><input type="date" id="date2" name="date2" value="2016-03-03"/> </TD>
 		</TR>
 	</TABLE>
-	<input type="submit" value="儲存" style="font-size: 16pt" onclick="save_watch('dataTable')"/>
 </form>
-
-
-
+<button style="font-size: 16pt" onclick="save_watch('dataTable')">儲存</button>
+<INPUT type="button" value="Add Row" onclick="save_watch('dataTable')" />
 </body>
+</html>
