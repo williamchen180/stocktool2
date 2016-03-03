@@ -53,6 +53,7 @@ class ticker():
 		self.price_file_format = 'history/%s.price'
                 self.png_file_format = 'PNG/%s.PNG'
 		self.ROI_lines_data_format = 'history/%s.ROI'
+		self.user_db_file = 'user/favlist.cpickle' 
 
 		self.year = int(time.strftime('%Y'))
 		self.month = int(time.strftime('%m'))
@@ -73,10 +74,16 @@ class ticker():
 
 	def load_favlist(self):
 		try:
-			with open( 'user/favlist.cpickle2', 'rb') as f:
+			with open( self.user_db_file, 'rb') as f:
 				self.favlist = cPickle.load(f)
 		except Exception as e:
 			self.favlist = []
+
+	def is_fav(self, symbol ):
+		for x in self.favlist:
+			if x[0] == symbol:
+				return True
+		return False
 
 	def __getitem__(self, key):
 		return self.ticker[key]
@@ -502,6 +509,7 @@ class ticker():
 		ddst = sorted( dst, reverse = True )
 
 		print "Content-type:text/html; charset=utf-8\r\n\r\n"
+		print '<!DOCTYPE html>'
 		print '<html>'
 		print '<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />'
 		print "<head>";
@@ -526,7 +534,27 @@ class ticker():
 	background-color: #CCFFCC;
 }
 </style>'''
-		print '<script src="sorttable.js" type="text/javascript"></script>'
+		print '''<script src="sorttable.js" type="text/javascript"></script><script>
+	function add2fav(target) {
+		var xhttp;
+		if (window.XMLHttpRequest) {
+			// code for modern browsers
+			xhttp = new XMLHttpRequest();
+		} else {
+			// code for IE6, IE5
+			xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				document.getElementById("add2fav").innerHTML = "added";
+				document.getElementById("debug").innerHTML = xhttp.responseText;
+			}
+		};
+		xhttp.open("POST", "favlist.py", true);
+		xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("add_one=1&target=" + target );
+	}
+		</script>'''
 		print "<p>"
                 print u'<center><h1>搜尋出 %d 個項目</h1></center>'.encode('UTF-8') % len(stocks)
 
@@ -563,6 +591,8 @@ class ticker():
 				print x + '<br>'
 			print '</center><hr>'
 
+		self.load_favlist()
+
 		for x in ddst:
 			t = x[1]
 
@@ -570,6 +600,13 @@ class ticker():
 			if os.path.isfile( pngfile ):
 				print '<hr>' 
 				print u'<h1 id="%s"><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
+
+				if self.is_fav( t['SYMBOL'] ) == True: 
+					status = u"已加入觀察名單".encode('UTF-8')
+				else:
+					status = u"加入觀察名單".encode('UTF-8')
+				print u'<center><button id="add2fav" style="font-size: 16pt" onclick="add2fav(\'%s\')">%s</button></center>'.encode('UTF-8') % (t['SYMBOL'] , status )
+
 				for i in range(0,5):
 					print u'<h3><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</center></h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
 
@@ -578,11 +615,12 @@ class ticker():
 				for x in dividends:
 					print x,
 				print '</textarea></center>'
-				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank"/>' % t['SYMBOL']
-				print '<img border=10 src="/%s"/>' % pngfile 
+				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank">' % t['SYMBOL']
+				print '<img border=10 src="%s"/>' % pngfile 
 				print '</a>'
 
 		print "</p>"
+		print '''<br><hr><textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
 		print "</body>"
 		print "</html>"
 

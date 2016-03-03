@@ -16,6 +16,7 @@
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
 					document.getElementById("favorite_list").innerHTML = xhttp.responseText;
+					document.getElementById("debug").innerHTML = xhttp.responseText;
 				}
 			};
 			xhttp.open("POST", "favlist.py", true);
@@ -238,6 +239,7 @@
 
 				if (rowCount != 0)
 					rowCount -= 1;
+
 			
 				var cell0 = row.insertCell(0);
 				var element0 = document.createElement("input");
@@ -247,7 +249,7 @@
 				cell0.appendChild(element0);
 			
 				var cell1 = row.insertCell(1);
-				cell1.innerHTML = rowCount ;
+				cell1.innerHTML = rowCount + 1;
 			
 				var cell2 = row.insertCell(2);
 				var element2 = document.createElement("input");
@@ -316,6 +318,7 @@
 						xhttp.onreadystatechange = function() {
 							if (xhttp.readyState == 4 && xhttp.status == 200) {
 								document.getElementById("result").innerHTML = "已儲存"; 
+								document.getElementById("debug").innerHTML = xhttp.responseText; 
 							}
 						};
 						xhttp.open("POST", "favlist.py", true);
@@ -325,6 +328,10 @@
 				} catch(e) {
 					alert(e);
 				}	
+			}
+
+			function fav_onchange() {
+				document.getElementById("result").innerHTML = "未儲存"; 
 			}
 		</SCRIPT>
 		<INPUT type="button" value="增加列" onclick="addRow('dataTable')" >
@@ -341,9 +348,9 @@
 				<tr>
 					<TD><INPUT type="checkbox" name="chk"></TD>
 					<TD> 1 </TD>
-					<TD><INPUT type="text" id="text0" name="text0" value=""></TD>
-					<TD><input type="date" id="date0" name="date0" value=""/> </TD>
-					<TD><input type="text" id="memo0" name="memo0" valye=""/></TD>
+					<TD><INPUT type="text" id="text0" name="text0" value="" onchange="fav_onchange()"/></TD>
+					<TD><input type="date" id="date0" name="date0" value="" onchange="fav_onchange()"/> </TD>
+					<TD><input type="text" id="memo0" name="memo0" value="" onchange="fav_onchange()"/></TD>
 				</tr>
 					
 			</TABLE>
@@ -351,10 +358,11 @@
 		</form>
 		<button style="font-size: 16pt" onclick="save_watch('dataTable')">儲存</button>
 		<br>
+		<div id="result"><h2></h2></div><br>
 		<br>
 		<br>
-		<br>
-		<div id="result"><h2>Let AJAX change this text</h2></div>
+		<hr>
+		<textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>
 	</body>
 </html>
 

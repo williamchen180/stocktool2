@@ -37,6 +37,7 @@ for x in text_content.splitlines():
 
 
 
+#print "Content-type:text/html; charset=utf-8\r\n\r\n"
 
 
 p = plot()
