@@ -5,12 +5,29 @@
 <meta http-equiv="cache-control" content="no-cache">
 
 <script>
-function myFunction() {
-    alert("Page is loaded");
+function loadPreset() {
+  var xhttp;
+  if (window.XMLHttpRequest) {
+    // code for modern browsers
+    xhttp = new XMLHttpRequest();
+    } else {
+    // code for IE6, IE5
+    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      document.getElementById("favorite_list").innerHTML = xhttp.responseText;
+    }
+  };
+  xhttp.open("GET", "getFavorite.py", true);
+  xhttp.send();
+}
+function myInit() {
+    loadPreset()
 }
 </script>
 
-<body >
+<body onload="myInit()">
 
 <style type="text/css">
 #main {
@@ -61,7 +78,7 @@ function uncheck() {
 
 
 <div align="center">
-	<h1> 請輸入股票代號: (yahoo finance上所定義的代號)</h1>
+	<h1> 請輸入代號: (yahoo finance上所定義的代號)</h1>
 	<form action="/cgiplot.py" method="post" target="_blank">
 		<textarea id="preset" style="font-size: 16pt" name="textcontent" cols="60" rows="1" placeholder="請輸入代號"></textarea>
 		<br>
@@ -79,6 +96,9 @@ function uncheck() {
 
 <hr>
 <hr>
+<div align="center">
+<h1>條件搜尋</h1> 
+</div>
 <h2>國家：</h2>
 <button onclick="check()">全選</button>
 <button onclick="uncheck()">全不選</button>
@@ -320,55 +340,15 @@ function uncheck() {
 
 </script>
 
-<form >
-	<TABLE id="dataTable" width="350px" border="1">
-		<TR>
-		<TD><INPUT type="checkbox" name="chk"></TD>
-		<TD> 1 </TD>
-		<TD><INPUT type="text" id="text0" name="text0" value="000"></TD>
-		<TD><input type="date" id="date0" name="date0" value="2016-01-01"/> </TD>
-		</TR>
-		<TR>
-		<TD><INPUT type="checkbox" name="chk"></TD>
-		<TD> 2 </TD>
-		<TD><INPUT type="text" id="text1" name="text1" value="111"></TD>
-		<TD><input type="date" id="date1" name="date1" value="2016-02-02"/> </TD>
-		</TR>
-		<TR>
-		<TD><INPUT type="checkbox" name="chk"></TD>
-		<TD> 3 </TD>
-		<TD><INPUT type="text" id="text2" name="text2" value="333"></TD>
-		<TD><input type="date" id="date2" name="date2" value="2016-03-03"/> </TD>
-		</TR>
-	</TABLE>
+<form id="favorite_list">
 </form>
+
 <button style="font-size: 16pt" onclick="save_watch('dataTable')">儲存</button>
-<INPUT type="button" value="Add Row" onclick="save_watch('dataTable')" >
 
-<p id="demo">Let AJAX change this text.</p>
-
-<button type="button" onclick="loadDoc()">Change Content</button>
-
-<script>
-function loadDoc() {
-  var xhttp;
-  if (window.XMLHttpRequest) {
-    // code for modern browsers
-    xhttp = new XMLHttpRequest();
-    } else {
-    // code for IE6, IE5
-    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4 && xhttp.status == 200) {
-      document.getElementById("demo").innerHTML = xhttp.responseText;
-    }
-  };
-  xhttp.open("GET", "cd_catalog.xml", true);
-  xhttp.send();
-}
-</script>
-
+<br>
+<br>
+<br>
+<br>
 
 </body>
 </html>
