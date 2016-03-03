@@ -1,11 +1,8 @@
-#!/usr/bin/python
-
 import os.path
 import get_history
 import Gnuplot
 import time
 from mechanize import Browser
-import MySQLdb
 import sys
 from yahoo_finance import Share
 import datetime

@@ -41,6 +41,10 @@ from xlrd import open_workbook
 #			[0]: 買入日期 [1]: 買入價 [2]: 最後一次配股日期 [3]: 配股價格 [4] 股票價值ROI [5] 股利價值ROI [6] 總值ROI
 
 
+# self.favlist: type: list
+#	[ symbol, date, memo ]
+#
+
 class ticker():
 
 	def __init__(self):
@@ -67,6 +71,12 @@ class ticker():
 		finally:
 			pass
 
+	def load_favlist(self):
+		try:
+			with open( 'user/favlist.cpickle2', 'rb') as f:
+				self.favlist = cPickle.load(f)
+		except Exception as e:
+			self.favlist = []
 
 	def __getitem__(self, key):
 		return self.ticker[key]
