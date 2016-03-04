@@ -47,9 +47,23 @@ get_list = form.getvalue('get_list')
 
 add_one = form.getvalue('add_one')
 
+del_one = form.getvalue('del_one')
+
 print "Content-type:text/html; charset=utf-8\r\n\r\n"
 
 #print "form:" , form, '<br>'
+
+if del_one != None:
+	target = form.getvalue('target')
+	print target
+
+	favlist = load_favlist()
+	for x in favlist:
+		if x[0] == target:
+			favlist.remove(x)
+			break
+	save_favlist( favlist )
+
 
 if add_one != None:
 	target = form.getvalue('target')

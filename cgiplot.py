@@ -17,7 +17,7 @@ form = cgi.FieldStorage()
 if form.getvalue('textcontent'):
     text_content = form.getvalue('textcontent')
 else:
-    text_content = 'MSFT GOOD TAXI FUCK NONE'
+    text_content = 'PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB'
 
 if form.getvalue('country'):
     country_ext = form.getvalue('country')
@@ -34,8 +34,6 @@ for x in text_content.splitlines():
 		for xxx in xx.split(' '):
 			if xxx != '':
 				target.append( xxx.upper() + ext_table[country_ext] )
-
-
 
 #print "Content-type:text/html; charset=utf-8\r\n\r\n"
 

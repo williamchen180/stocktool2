@@ -143,10 +143,8 @@ class	plot:
 		p('set size 1, 0.4')
 		p('set origin 0, 0.6')
 		if os.path.isfile( ROI_file ) is False:
-			print 'here'
 			p('plot RRI9(x) title "9%",RRI11(x) title "11%", RRI14(x) title "14%", "' + price_file + '" using 1:7 notitle with lines')
 		else:
-			print 'there'
 			cmd = 'plot "%s" using 1:3 title "9%%" with lines, "%s" using 1:4 title "11%%" with lines, "%s" using 1:5 title "14%%" with lines, "%s" using 1:5 notitle with lines' % (ROI_file, ROI_file, ROI_file, price_file )
 
 			p(cmd)

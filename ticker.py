@@ -486,7 +486,8 @@ class ticker():
 		
 		for tname in target:
 			if self.ticker['DB'].has_key( tname ):
-				ret.append( self.ticker['DB'][tname] )
+				if self.ticker['DB'][tname]['AVAILABLE'] == True:
+					ret.append( self.ticker['DB'][tname] )
 		return ret
 
 	def get_dividends( self, tname ):
@@ -506,10 +507,10 @@ class ticker():
 		for x in stocks:
 			dst.append( (x['ROI'][4], x ) )
 
+
 		ddst = sorted( dst, reverse = True )
 
 		print "Content-type:text/html; charset=utf-8\r\n\r\n"
-		print '<!DOCTYPE html>'
 		print '<html>'
 		print '<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />'
 		print "<head>";
@@ -546,13 +547,24 @@ class ticker():
 		}
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				document.getElementById("add2fav").innerHTML = "added";
+				alert("add2fav" + target);
+				if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
+					alert( document.getElementById("add2fav" + target).innerHTML );
+					document.getElementById("add2fav" + target).innerHTML = "加入觀察名單";
+				} else {
+					alert( document.getElementById("add2fav" + target).innerHTML );
+					document.getElementById("add2fav" + target).innerHTML = "已加入觀察名單";
+				}
 				document.getElementById("debug").innerHTML = xhttp.responseText;
 			}
 		};
 		xhttp.open("POST", "favlist.py", true);
 		xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
-		xhttp.send("add_one=1&target=" + target );
+		if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
+			xhttp.send("del_one=1&target=" + target );
+		} else {
+			xhttp.send("add_one=1&target=" + target );
+		}
 	}
 		</script>'''
 		print "<p>"
@@ -605,7 +617,7 @@ class ticker():
 					status = u"已加入觀察名單".encode('UTF-8')
 				else:
 					status = u"加入觀察名單".encode('UTF-8')
-				print u'<center><button id="add2fav" style="font-size: 16pt" onclick="add2fav(\'%s\')">%s</button></center>'.encode('UTF-8') % (t['SYMBOL'] , status )
+				print u'<center><button id="add2fav%s" style="font-size: 16pt" onclick="add2fav(\'%s\')">%s</button></center>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'] , status )
 
 				for i in range(0,5):
 					print u'<h3><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</center></h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
