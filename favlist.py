@@ -5,8 +5,39 @@
 import sys
 import cgi, cgitb 
 import cPickle
+import time
 
 dbfile = 'user/favlist.cpickle'
+
+def save_favlist( org ):
+
+	try:
+		pickle_file = 'pickle/ticker.cpickle2'
+		with open(pickle_file, 'rb') as f:
+			ticker = cPickle.load(f)
+
+		favlist = []
+		for x in org:
+			if ticker['DB'].has_key( x[0] ) is True:
+				favlist.append( x )
+
+		with open( dbfile, 'wb') as f:
+			cPickle.dump( favlist, f )
+	except Exception as e:
+		print e
+
+	print 'Save to: <br>'
+	print favlist
+
+def load_favlist():
+	try:
+		with open( dbfile, 'rb') as f:
+			favlist = cPickle.load( f )
+	except Exception as e:
+		favlist = []
+	return favlist
+
+
 
 form = cgi.FieldStorage() 
 
@@ -24,10 +55,31 @@ if add_one != None:
 	target = form.getvalue('target')
 	print target
 
+	favlist = load_favlist()
+
+	year = int(time.strftime('%Y'))
+	month = int(time.strftime('%m'))
+	day = int(time.strftime('%d'))
+
+	timestr = "%d-%2.2d-%2.2d" % (year, month, day )
+
+	found = False
+	for x in favlist:
+		if x[0] == target:
+			x[1] = timestr
+			found = True
+			break
+
+	if found == False:
+		favlist.append( (target, timestr, "") )
+
+	save_favlist( favlist )
+
 
 
 if save_list != None:
 
+	print 'save list'
 	print "form:" , form, '<br>'
 
 	favlist = []
@@ -43,23 +95,13 @@ if save_list != None:
 		if text is None:
 			break
 
-		favlist.append( (text, date, memo ) )
+		favlist.append( (text.upper(), date, memo ) )
 
-		print 'favlist:', favlist, '<br>'
-
-	try:
-		with open( dbfile, 'wb') as f:
-			cPickle.dump( favlist, f )
-	except Exception as e:
-		print e
+	save_favlist( favlist )
 
 
 if get_list != None:
-	try:
-		with open( dbfile, 'rb') as f:
-			favlist = cPickle.load( f )
-	except Exception as e:
-		favlist = []
+	favlist = load_favlist()
 
 	print '''
 	<TABLE id="dataTable" width="350px" border="1">
@@ -95,4 +137,5 @@ if get_list != None:
 			idx += 1
 
 	print '''	</TABLE>'''
+
 

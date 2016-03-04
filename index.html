@@ -287,6 +287,29 @@
 							i--;
 						}
 					}
+
+					rowCount = table.rows.length;
+
+					for (var i=1;i<rowCount; i++) {
+						var row = table.rows[i];
+						var chkbox = row.cells[0].childNodes[0];
+						var cntbox = row.cells[1];
+						var textbox = row.cells[2].childNodes[0];
+						var datebox = row.cells[3].childNodes[0];
+						var memobox = row.cells[4].childNodes[0];
+
+						cntbox.innerHTML = i;
+
+						textbox.name = "text" + (i-1);
+						textbox.id = "text" + (i-1);
+
+						datebox.name = "date" + (i-1);
+						datebox.id = "date" + (i-1);
+						
+						memobox.name = "memo" + (i-1);
+						memobox.id = "memo" + (i-1);
+					}
+
 				}catch(e) {
 					alert(e);
 				}
