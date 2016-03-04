@@ -359,7 +359,20 @@
 			function fav_onchange() {
 				document.getElementById("result").innerHTML = "未儲存"; 
 			}
+
+			function flick_check(tableID) {
+				var gchkbox = document.getElementById('flickchk');
+				var table = document.getElementById(tableID);
+				var rowCount = table.rows.length;
+		
+				for(var i=0; i<rowCount; i++) {
+					var row = table.rows[i];
+					var chkbox = row.cells[0].childNodes[0];
+					chkbox.checked = gchkbox.checked;
+				}
+			}
 		</SCRIPT>
+		<input type="checkbox" id="flickchk" onchange="flick_check('dataTable')">
 		<INPUT type="button" value="增加列" onclick="addRow('dataTable')" >
 		<INPUT type="button" value="刪除列" onclick="deleteRow('dataTable')" >
 		<form id="favorite_list">

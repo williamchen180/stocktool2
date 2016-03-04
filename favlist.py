@@ -129,7 +129,7 @@ if get_list != None:
 	T = ticker()
 
 	print '''
-	<TABLE id="dataTable" width="350px" border="1">
+	<TABLE id="dataTable" width="350px" border="1" class="sortable">
 		<tr>
 			<th>選取</th>
 			<th>項次</th>
