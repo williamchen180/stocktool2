@@ -320,6 +320,7 @@
 					var table = document.getElementById(tableID);
 					var rowCount = table.rows.length;
 			
+					document.getElementById("result").innerHTML = "儲存中"; 
 			
 					ret = "rowCount=" + rowCount + "&";
 					for(var i=0; i < rowCount; i++) {
@@ -351,6 +352,8 @@
 				} catch(e) {
 					alert(e);
 				}	
+
+				loadPreset();
 			}
 
 			function fav_onchange() {
@@ -367,6 +370,10 @@
 					<th>代號</th>
 					<th>日期</th>
 					<th>註解</th>
+					<th>起始價格</th>
+					<th>當前價格</th>
+					<th>獲利</th>
+					<th>百分比</th>
 				</tr>
 				<tr>
 					<TD><INPUT type="checkbox" name="chk"></TD>

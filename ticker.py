@@ -218,8 +218,37 @@ class ticker():
 					with open( name, 'w') as f:
 						f.write( '#' + html)
 
+	def update_last_price( self ):
+		for tname in self.ticker['DB']:
+
+			t = self.ticker['DB'][tname]
+
+			if t['AVAILABLE'] == False:
+				continue
+			price_file = self.price_file_format % tname
+
+			if os.path.isfile( price_file) == False:
+				continue
+
+			with open( price_file, 'r') as f:
+				l = f.readline()
+				if len(l) == 0:
+					t['AVAILABLE'] = False
+					continue
+				if l[0] == '#':
+					l = f.readline()
+				if len(l) == 0:
+					t['AVAILABLE'] = False
+					continue
+
+				last_price = float( l.split(',')[-3] )
+
+			t['LASTPRICE'] = last_price
+
 	def update_price( self, skip_to = None ):
 		self.update_item( self.price_file_format, self.priurl, skip_to ) 
+
+		self.update_last_price()
 
 	def update_dividend( self, skip_to = None):
 		self.update_item( self.dividend_file_format, self.divurl, skip_to ) 
@@ -899,6 +928,32 @@ class ticker():
 					last_ROI11 = ROI11
 					last_ROI14 = ROI14
 
+
+
+	def get_price_by_date( self, symbol, target_date = '9999-99-99' ):
+
+		if self.ticker['DB'].has_key( symbol ) == False:
+			return 0
+
+		price_file = self.price_file_format % symbol 
+
+		if os.path.isfile( price_file) == False:
+			return 0
+
+		price = 0
+		with open( price_file, 'r') as f:
+			for l in f.readlines():
+				if len(l) == 0:
+					continue
+				if l[0] == '#':
+					continue
+
+				date = l.split(',')[0]
+
+				if target_date >= date:
+					price = float(l.split(',')[-3])
+					break
+		return price
 
 	def simulate(self):
 		pass
