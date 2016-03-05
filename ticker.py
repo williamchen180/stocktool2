@@ -576,13 +576,8 @@ class ticker():
 		}
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				alert("add2fav" + target);
 				if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
-					alert( document.getElementById("add2fav" + target).innerHTML );
-					document.getElementById("add2fav" + target).innerHTML = "加入觀察名單";
 				} else {
-					alert( document.getElementById("add2fav" + target).innerHTML );
-					document.getElementById("add2fav" + target).innerHTML = "已加入觀察名單";
 				}
 				document.getElementById("debug").innerHTML = xhttp.responseText;
 			}
@@ -590,8 +585,10 @@ class ticker():
 		xhttp.open("POST", "favlist.py", true);
 		xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
 		if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
+			document.getElementById("add2fav" + target).innerHTML = "加入觀察名單";
 			xhttp.send("del_one=1&target=" + target );
 		} else {
+			document.getElementById("add2fav" + target).innerHTML = "已加入觀察名單";
 			xhttp.send("add_one=1&target=" + target );
 		}
 	}

@@ -28,7 +28,7 @@ def save_favlist( org ):
 					price = T.get_price_by_date( x[0], x[1])
 				else:
 					price = 0
-				favlist.append( x + (price, ) )
+                                favlist.append( x[0:3] + (price, ) )
 
 		with open( dbfile, 'wb') as f:
 			cPickle.dump( favlist, f )
