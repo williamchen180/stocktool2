@@ -592,7 +592,7 @@ class ticker():
 		}
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				alert( xhttp.responseText );
+				alert('已儲存')
 				document.getElementById("debug").innerHTML = xhttp.responseText;
 			}
 		};

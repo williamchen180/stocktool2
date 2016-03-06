@@ -17,7 +17,7 @@
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
 					document.getElementById("favorite_list").innerHTML = xhttp.responseText;
-					document.getElementById("debug").innerHTML = xhttp.responseText;
+					document.getElementById("debug").innerHTML += '\n' + xhttp.responseText;
 				}
 			};
 			xhttp.open("POST", "favlist.py", true);
@@ -343,7 +343,8 @@
 						xhttp.onreadystatechange = function() {
 							if (xhttp.readyState == 4 && xhttp.status == 200) {
 								document.getElementById("result").innerHTML = "已儲存"; 
-								document.getElementById("debug").innerHTML = xhttp.responseText; 
+								document.getElementById("favorite_list").innerHTML = xhttp.responseText;
+								document.getElementById("debug").innerHTML += '\n' + xhttp.responseText;
 							}
 						};
 						xhttp.open("POST", "favlist.py", true);
@@ -353,8 +354,6 @@
 				} catch(e) {
 					alert(e);
 				}	
-
-				loadPreset();
 			}
 
 			function fav_onchange() {
@@ -417,7 +416,7 @@
 		<br>
 		<br>
 		<hr>
-		<textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>
+		<textarea id="debug" name="textcontent" cols="200" rows="16" placeholder="除錯"></textarea>
 	</body>
 </html>
 
