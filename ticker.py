@@ -565,7 +565,23 @@ class ticker():
 }
 </style>'''
 		print '''<script src="sorttable.js" type="text/javascript"></script><script>
-	function add2fav(target) {
+	function myInit() {
+	}
+	function save_fav() {
+		var table = document.getElementById("main");
+		var rowCount = table.rows.length;
+		var gchkbox = table.rows[0].cells[0].childNodes[0];
+		var idx = 0;
+		var req = "";
+		for( var i=1; i<rowCount; i++) {
+			var row = table.rows[i];
+			var chkbox = row.cells[0].childNodes[0];
+			if (chkbox.checked == true) {
+				req += "text" + idx + "=" + row.cells[1].childNodes[0].innerHTML + "&"
+				idx += 1;
+			}
+		}
+
 		var xhttp;
 		if (window.XMLHttpRequest) {
 			// code for modern browsers
@@ -576,20 +592,36 @@ class ticker():
 		}
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
-				} else {
-				}
+				alert( xhttp.responseText );
 				document.getElementById("debug").innerHTML = xhttp.responseText;
 			}
 		};
 		xhttp.open("POST", "favlist.py", true);
 		xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("save_list=1&" + req );
+	}
+
+	function add2fav(target) {
+		var chkbox = document.getElementById("chk" + target);
+
 		if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
 			document.getElementById("add2fav" + target).innerHTML = "加入觀察名單";
-			xhttp.send("del_one=1&target=" + target );
+			chkbox.checked = false;
 		} else {
 			document.getElementById("add2fav" + target).innerHTML = "已加入觀察名單";
-			xhttp.send("add_one=1&target=" + target );
+			chkbox.checked = true;
+		}
+
+	}
+
+	function flick_check() {
+		var table = document.getElementById("main");
+		var rowCount = table.rows.length;
+		var gchkbox = table.rows[0].cells[0].childNodes[0];
+		for( var i=1; i<rowCount; i++) {
+			var row = table.rows[i];
+			var chkbox = row.cells[0].childNodes[0];
+			chkbox.checked = gchkbox.checked;
 		}
 	}
 		</script>'''
@@ -598,6 +630,7 @@ class ticker():
 
 		if True:
 			print u'''<center><table id="main" class="sortable"><thead><tr>
+				<th><input type="checkbox" onclick="flick_check()"></th>
 				<th>代號</th>
 				<th>買進日期</th>
 				<th>買進價位</th>
@@ -608,16 +641,20 @@ class ticker():
 				<th>市值成長比率</th>
 				</tr></thead>'''.encode('UTF-8')
 			for x in stocks:
-				if x.has_key('SIMRESULT') is False:
-					continue
+				if x.has_key('SIMRESULT') is True:
+					sr = x['SIMRESULT']
+					print '<tr><td><input type="checkbox" id="chk%s"></td>' % x['SYMBOL']
+					print '<td><a id="symbol" href="#%s">%s</a></td>' % (x['SYMBOL'], x['SYMBOL'] )
+					print '<td>%s</td><td>%.2f</td><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % sr
+				else:
+					print '<tr><td><input type="checkbox" id="chk%s"></td>' % x['SYMBOL']
+					print '<td><a href="#%s">%s</a></td>' % (x['SYMBOL'], x['SYMBOL'] )
+					print '<td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' 
 
-				sr = x['SIMRESULT']
-
-
-				print '<tr><td><p><a href="#%s">%s</a></p></td>' % (x['SYMBOL'], x['SYMBOL'] )
-				print '<td>%s</td><td>%.2f</td><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % sr
 
 				
+			print u'<center><button style="font-size: 16pt" onclick="save_fav()">儲存觀察名單</button></center>'.encode('UTF-8') 
+			print u'<center><div id="save_result"></div></center>'
 			print '<tfoot></tfoot></table></center><hr>'
 
 

@@ -29,12 +29,12 @@ else:
 if form.getvalue('yearROI'):
 	_yearROI = form.getvalue('yearROI')
 else:
-	_yearROI = "5"
+	_yearROI = "3"
 
 if form.getvalue('yearCompany'):
 	_yearCompany = form.getvalue('yearCompany')
 else:
-	_yearCompany = "5"
+	_yearCompany = "3"
 
 if form.getvalue('price'):
 	_price = form.getvalue('price')
@@ -44,7 +44,7 @@ else:
 if form.getvalue('dividends'):
 	_dividends = form.getvalue('dividends')
 else:
-	_dividends = "12"
+	_dividends = "-3"
 
 if form.getvalue('simulate'):
 	_simulate = form.getvalue('simulate')

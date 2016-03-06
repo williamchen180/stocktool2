@@ -15,6 +15,8 @@ dbfile = 'user/favlist.cpickle'
 
 def save_favlist( org ):
 
+	print 'org:<br>'
+	print org
 	try:
 		T = ticker()
 		pickle_file = 'pickle/ticker.cpickle2'
@@ -24,11 +26,17 @@ def save_favlist( org ):
 		favlist = []
 		for x in org:
 			if t['DB'].has_key( x[0] ) is True:
+				if x[1] == None:
+					year = int(time.strftime('%Y'))
+					month = int(time.strftime('%m'))
+					day = int(time.strftime('%d'))
+					x[1] = "%d-%2.2d-%2.2d" % (year, month, day )
+
 				if len(x[1]) == 10: 
 					price = T.get_price_by_date( x[0], x[1])
 				else:
 					price = 0
-                                favlist.append( x[0:3] + (price, ) )
+                                favlist.append( x[0:3] + [price] )
 
 		with open( dbfile, 'wb') as f:
 			cPickle.dump( favlist, f )
@@ -94,7 +102,7 @@ if add_one != None:
 			break
 
 	if found == False:
-		favlist.append( (target, timestr, "") )
+		favlist.append( [target, timestr, ""] )
 
 	save_favlist( favlist )
 
@@ -118,7 +126,7 @@ if save_list != None:
 		if text is None:
 			break
 
-		favlist.append( (text.upper(), date, memo ) )
+		favlist.append( [text.upper(), date, memo ] )
 
 	save_favlist( favlist )
 
