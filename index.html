@@ -5,6 +5,7 @@
 	<meta http-equiv="cache-control" content="no-cache">
 	<script>
 		function loadPreset() {
+			//alert('here');
 			var xhttp;
 			if (window.XMLHttpRequest) {
 				// code for modern browsers
@@ -371,6 +372,17 @@
 					chkbox.checked = gchkbox.checked;
 				}
 			}
+
+			function global_change_date() {
+				var ele = document.getElementById('gdate');
+				var table = document.getElementById('dataTable');
+				var rowCount = table.rows.length;
+		
+				for(var i=0; i<rowCount; i++) {
+					var row = table.rows[i];
+					row.cells[3].childNodes[0].value = ele.value;
+				}
+			}
 		</SCRIPT>
 		<input type="checkbox" id="flickchk" onchange="flick_check('dataTable')">
 		<INPUT type="button" value="增加列" onclick="addRow('dataTable')" >
@@ -381,7 +393,7 @@
 					<th>選取</th>
 					<th>項次</th>
 					<th>代號</th>
-					<th>日期</th>
+					<th>日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
 					<th>註解</th>
 					<th>起始價格</th>
 					<th>當前價格</th>

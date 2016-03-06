@@ -142,7 +142,7 @@ if get_list != None:
 			<th>選取</th>
 			<th>項次</th>
 			<th>代號</th>
-			<th>日期</th>
+			<th>日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
 			<th>註解</th>
 			<th>起始價格</th>
 			<th>當前價格</th>
