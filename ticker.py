@@ -695,8 +695,8 @@ class ticker():
 				print '</a>'
 
 		print "</p>"
-		print '''<br><hr><textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
-		print "</body>"
+		print '''<br><hr><textarea id="debug" style="display:none" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
+		print "<br><br><br></body>"
 		print "</html>"
 
 

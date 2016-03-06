@@ -18,17 +18,17 @@ def get_favlist():
 	T = ticker()
 	print '''
 	<TABLE id="dataTable" width="350px" border="1" class="sortable">
-		<tr>
+		<thead>
 			<th>選取</th>
 			<th>項次</th>
 			<th>代號</th>
-			<th>日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
-			<th>註解</th>
 			<th>起始價格</th>
 			<th>當前價格</th>
 			<th>獲利</th>
 			<th>百分比</th>
-		</tr>'''
+			<th>日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
+			<th>註解</th>
+		</thead><tbody>'''
 
 	if len(favlist) == 0:
 		print '''
@@ -36,12 +36,12 @@ def get_favlist():
 				<TD><INPUT type="checkbox" name="chk"></TD>
 				<TD> 1 </TD>
 				<TD><INPUT type="text" id="text0" name="text0" value="" onchange="fav_onchange()"/></TD>
+				<TD><input type="text" /></TD>
+				<TD><input type="text" /></TD>
+				<TD><input type="text" /></TD>
+				<TD><input type="text" /></TD>
 				<TD><input type="date" id="date0" name="date0" value="" onchange="fav_onchange()"/> </TD>
 				<TD><input type="text" id="memo0" name="memo0" value="" onchange="fav_onchange()"/></TD>
-				<TD><input type="text" /></TD>
-				<TD><input type="text" /></TD>
-				<TD><input type="text" /></TD>
-				<TD><input type="text" /></TD>
 				</tr>'''
 	else:
 		idx = 0
@@ -61,17 +61,17 @@ def get_favlist():
 			<TD><INPUT type="checkbox" name="chk"></TD>
 			<TD> %d </TD>
 			<TD><INPUT type="text" id="text%d" name="text%d" value="%s" onchange="fav_onchange()" /></TD>
-			<TD><input type="date" id="date%d" name="date%d" value="%s" onchange="fav_onchange()" /> </TD>
-			<TD><input type="text" id="memo%d" name="memo%d" value="%s" onchange="fav_onchange()" /></TD>
 			<TD><input type="text" value="%.2f"/></TD>
 			<TD><input type="text" value="%.2f"/></TD>
 			<TD><input type="text" value="%.2f"/></TD>
 			<TD><input type="text" value="%.2f %%"/></TD>
-		</tr>''' % (idx+1, idx, idx, x[0], idx, idx, x[1], idx, idx, x[2], x[3], price, delta, perc )
+			<TD><input type="date" id="date%d" name="date%d" value="%s" onchange="fav_onchange()" /> </TD>
+			<TD><input type="text" id="memo%d" name="memo%d" value="%s" onchange="fav_onchange()" /></TD>
+		</tr>''' % (idx+1, idx, idx, x[0], x[3], price, delta, perc, idx, idx, x[1], idx, idx, x[2] )
 
 			idx += 1
 
-	print '''	</TABLE>'''
+	print '''	</tbody><tfoot></tfoot></TABLE>'''
 
 
 

@@ -5,7 +5,6 @@
 	<meta http-equiv="cache-control" content="no-cache">
 	<script>
 		function loadPreset() {
-			//alert('here');
 			var xhttp;
 			if (window.XMLHttpRequest) {
 				// code for modern browsers
@@ -18,6 +17,9 @@
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
 					document.getElementById("favorite_list").innerHTML = xhttp.responseText;
 					document.getElementById("debug").innerHTML += '\n' + xhttp.responseText;
+					ele = document.getElementById('dataTable' );
+					//alert(ele);
+					sorttable.makeSortable( ele ); 
 				}
 			};
 			xhttp.open("POST", "favlist.py", true);
@@ -28,7 +30,7 @@
 			loadPreset()
 		}
 	</script>
-	<body onload="myInit()">
+	<body>
 		<style type="text/css">
 			#main {
 			padding: 5px;
@@ -345,6 +347,10 @@
 								document.getElementById("result").innerHTML = "已儲存"; 
 								document.getElementById("favorite_list").innerHTML = xhttp.responseText;
 								document.getElementById("debug").innerHTML += '\n' + xhttp.responseText;
+							
+								ele = document.getElementById('dataTable' );
+								sorttable.makeSortable( ele ); 
+
 							}
 						};
 						xhttp.open("POST", "favlist.py", true);
@@ -392,17 +398,21 @@
 					<th>選取</th>
 					<th>項次</th>
 					<th>代號</th>
-					<th>日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
-					<th>註解</th>
 					<th>起始價格</th>
 					<th>當前價格</th>
 					<th>獲利</th>
 					<th>百分比</th>
+					<th>日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
+					<th>註解</th>
 				</tr>
 				<tr>
 					<TD><INPUT type="checkbox" name="chk"></TD>
 					<TD> 1 </TD>
 					<TD><INPUT type="text" id="text0" name="text0" value="" onchange="fav_onchange()"/></TD>
+					<TD><input type="text" /></TD>
+					<TD><input type="text" /></TD>
+					<TD><input type="text" /></TD>
+					<TD><input type="text" /></TD>
 					<TD><input type="date" id="date0" name="date0" value="" onchange="fav_onchange()"/> </TD>
 					<TD><input type="text" id="memo0" name="memo0" value="" onchange="fav_onchange()"/></TD>
 				</tr>
@@ -416,7 +426,7 @@
 		<br>
 		<br>
 		<hr>
-		<textarea id="debug" name="textcontent" cols="200" rows="16" placeholder="除錯"></textarea>
+		<textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯" style="display:none"></textarea>
 	</body>
 </html>
 
