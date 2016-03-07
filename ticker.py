@@ -545,6 +545,7 @@ class ticker():
 		print "<head>";
 		print "<title>Stock information</title>"
 		print "</head>"
+                print '<script src="sorttable.js" type="text/javascript"></script>'
 		print '<body onload="myInit()">'
 		print '''
 <style type="text/css">
@@ -564,7 +565,7 @@ class ticker():
 	background-color: #CCFFCC;
 }
 </style>'''
-		print '''<script src="sorttable.js" type="text/javascript"></script><script>
+		print '''<script>
 	function load_recent_change() {
 
 		var xhttp;
