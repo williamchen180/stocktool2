@@ -545,7 +545,7 @@ class ticker():
 		print "<head>";
 		print "<title>Stock information</title>"
 		print "</head>"
-		print "<body>"
+		print '<body onload="myInit()">'
 		print '''
 <style type="text/css">
 #main {
@@ -565,7 +565,52 @@ class ticker():
 }
 </style>'''
 		print '''<script src="sorttable.js" type="text/javascript"></script><script>
+	function load_recent_change() {
+
+		var xhttp;
+		if (window.XMLHttpRequest) {
+			// code for modern browsers
+			xhttp = new XMLHttpRequest();
+		} else {
+			// code for IE6, IE5
+			xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				document.getElementById("recent_change").innerHTML = xhttp.responseText;
+				document.getElementById("debug").innerHTML += xhttp.responseText;
+				ele = document.getElementById('recent_change_table' );
+				sorttable.makeSortable( ele ); 
+			}
+		};
+
+		document.getElementById("recent_change").innerHTML = "載入中....";
+
+		var table = document.getElementById( "main" );
+		var rowCount = table.rows.length;
+		var req = "";
+		for(var i=1;i<rowCount; i++) {
+			var row = table.rows[i];
+			req += row.cells[1].childNodes[0].innerHTML + ",";
+		}
+
+	
+		var ele = document.getElementById( "gdate" );
+
+
+		if (ele != null) {
+			var datestr = ele.value;
+		} else {
+			var datestr = "9999-99-99";
+		}
+
+
+		xhttp.open("POST", "recent_change.py", true);
+		xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("list=" + req + "&date=" + datestr);
+	}
 	function myInit() {
+		load_recent_change();
 	}
 	function save_fav() {
 		var table = document.getElementById("main");
@@ -657,6 +702,13 @@ class ticker():
 			print u'<center><div id="save_result"></div></center>'
 			print '<tfoot></tfoot></table></center><hr>'
 
+		if True:
+			print '<center></center>'
+			print '<input type="date" id="gdate" onchange="load_recent_change()" class="sortable"></center>'
+			print '<hr><p id="recent_change">'
+			print '</p><hr>'
+
+
 
 
 		if missing != []:
@@ -696,6 +748,7 @@ class ticker():
 
 		print "</p>"
 		print '''<br><hr><textarea id="debug" style="display:none" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
+		#print '''<br><hr><textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
 		print "<br><br><br></body>"
 		print "</html>"
 
@@ -989,13 +1042,58 @@ class ticker():
 					break
 		return price
 
+	def recent_change(self, strlist='GOOD,MSFT,TAXI', strdate='NOW'):
+
+		print '''<TABLE id="recent_change_table" style="width:100%" border="1">
+	<tr>
+		<th>代號</th>
+		<th>起始價格</th>
+		<th>當前價格</th>
+		<th>獲利</th>
+		<th>百分比</th>
+	</tr>'''
+		try:
+			for x in strlist.split(','):
+				if len(x) == 0:
+					continue
+
+				if self.ticker['DB'].has_key( x ) == False:
+					continue
+
+				S = self.ticker['DB'][x]
+
+			
+				org_price = self.get_price_by_date( x, strdate )
+				last_price = S['LASTPRICE']
+
+				delta = last_price - org_price
+
+				if org_price != 0:
+					perc = 100.0 * delta / org_price
+				else:
+					perc = 0.0
+
+
+				print '<tr><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></td>' % \
+						(x, org_price, last_price, delta, perc )
+		except Exception as e:
+			print e
+
+		print '''	</tbody><tfoot></tfoot></TABLE>'''
+
+
+
+
+
+
+
 	def simulate(self):
 		pass
 
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
-		print 'Usage: %s [init | get | build | update | filte | select | sim ]'
+		print 'Usage: %s [init | get | build | update | filte | select | sim | recent_change]'
 		sys.exit(0)
 
 	t = ticker()
@@ -1028,6 +1126,8 @@ if __name__ == '__main__':
 		t.simulate()
 	elif sys.argv[1] == 'test':
 		pass
+	elif sys.argv[1] == 'recent_change':
+		t.recent_change()
 
 
 

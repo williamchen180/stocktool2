@@ -17,7 +17,7 @@ def get_favlist():
 	favlist = load_favlist()
 	T = ticker()
 	print '''
-	<TABLE id="dataTable" width="350px" border="1" class="sortable">
+	<TABLE id="dataTable" style="width:100%" border="1" class="sortable">
 		<thead>
 			<th>選取</th>
 			<th>項次</th>
@@ -36,10 +36,10 @@ def get_favlist():
 				<TD><INPUT type="checkbox" name="chk"></TD>
 				<TD> 1 </TD>
 				<TD><INPUT type="text" id="text0" name="text0" value="" onchange="fav_onchange()"/></TD>
-				<TD><input type="text" /></TD>
-				<TD><input type="text" /></TD>
-				<TD><input type="text" /></TD>
-				<TD><input type="text" /></TD>
+				<TD></TD>
+				<TD></TD>
+				<TD></TD>
+				<TD></TD>
 				<TD><input type="date" id="date0" name="date0" value="" onchange="fav_onchange()"/> </TD>
 				<TD><input type="text" id="memo0" name="memo0" value="" onchange="fav_onchange()"/></TD>
 				</tr>'''
@@ -61,10 +61,10 @@ def get_favlist():
 			<TD><INPUT type="checkbox" name="chk"></TD>
 			<TD> %d </TD>
 			<TD><INPUT type="text" id="text%d" name="text%d" value="%s" onchange="fav_onchange()" /></TD>
-			<TD><input type="text" value="%.2f"/></TD>
-			<TD><input type="text" value="%.2f"/></TD>
-			<TD><input type="text" value="%.2f"/></TD>
-			<TD><input type="text" value="%.2f %%"/></TD>
+			<TD>%.2f</TD>
+			<TD>%.2f</TD>
+			<TD>%.2f</TD>
+			<TD>%.2f</TD>
 			<TD><input type="date" id="date%d" name="date%d" value="%s" onchange="fav_onchange()" /> </TD>
 			<TD><input type="text" id="memo%d" name="memo%d" value="%s" onchange="fav_onchange()" /></TD>
 		</tr>''' % (idx+1, idx, idx, x[0], x[3], price, delta, perc, idx, idx, x[1], idx, idx, x[2] )

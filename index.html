@@ -16,7 +16,7 @@
 			xhttp.onreadystatechange = function() {
 				if (xhttp.readyState == 4 && xhttp.status == 200) {
 					document.getElementById("favorite_list").innerHTML = xhttp.responseText;
-					document.getElementById("debug").innerHTML += '\n' + xhttp.responseText;
+					document.getElementById("debug").innerHTML += xhttp.responseText;
 					ele = document.getElementById('dataTable' );
 					//alert(ele);
 					sorttable.makeSortable( ele ); 
@@ -51,14 +51,6 @@
 		</style>
 		<script src="sorttable.js" type="text/javascript"></script>
 		<script>
-			function load_preset() {
-				document.getElementById("preset").value = "PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB";
-			
-			}
-			
-			function clear_preset() {
-				document.getElementById("preset").value = "";
-			}
 			
 			function check() {
 				for(i=1;i<38;i++) {
@@ -84,8 +76,6 @@
 				<input type="radio" name="country" value="Hong Kong"/>Hone Kong<br>
 				<input type="submit" value="搜尋" style="font-size: 16pt"  />
 			</form>
-			<button onclick="load_preset()">PRESET</button>
-			<button onclick="clear_preset()">CLEAR</button><br>
 		</div>
 		<hr>
 		<hr>
@@ -385,13 +375,19 @@
 		
 				for(var i=0; i<rowCount; i++) {
 					var row = table.rows[i];
-					row.cells[3].childNodes[0].value = ele.value;
+					row.cells[7].childNodes[0].value = ele.value;
 				}
+			}
+			function load_preset() {
+				document.getElementById("preset").value = "PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB";
 			}
 		</SCRIPT>
 		<input type="checkbox" id="flickchk" onchange="flick_check('dataTable')">
 		<INPUT type="button" value="增加列" onclick="addRow('dataTable')" >
 		<INPUT type="button" value="刪除列" onclick="deleteRow('dataTable')" >
+		<input type="button" value="儲存" onclick="save_watch('dataTable')">
+		<input type="button" value="開啟觀察名單" onclick="load_preset()">
+		<div id="result"><h2></h2></div><br>
 		<form id="favorite_list">
 			<TABLE id="dataTable" width="350px" border="1">
 				<tr>
@@ -420,13 +416,11 @@
 			</TABLE>
 
 		</form>
-		<button style="font-size: 16pt" onclick="save_watch('dataTable')">儲存</button>
 		<br>
-		<div id="result"><h2></h2></div><br>
 		<br>
 		<br>
 		<hr>
-		<textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯" style="display:none"></textarea>
+		<textarea id="debug" name="textcontent" style="display:none" cols="200" rows="40" placeholder="除錯" ></textarea>
 	</body>
 </html>
 
