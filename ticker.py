@@ -1046,6 +1046,7 @@ class ticker():
 
 		print '''<TABLE id="recent_change_table" style="width:100%" border="1">
 	<tr>
+		<th>No</th>
 		<th>代號</th>
 		<th>起始價格</th>
 		<th>當前價格</th>
@@ -1053,6 +1054,7 @@ class ticker():
 		<th>百分比</th>
 	</tr>'''
 		try:
+			idx = 1
 			for x in strlist.split(','):
 				if len(x) == 0:
 					continue
@@ -1074,8 +1076,9 @@ class ticker():
 					perc = 0.0
 
 
-				print '<tr><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></td>' % \
-						(x, org_price, last_price, delta, perc )
+				print '<tr><td>%d</td><td><a href="#%s">%s</a></td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % \
+						(idx, x, x, org_price, last_price, delta, perc )
+				idx += 1
 		except Exception as e:
 			print e
 

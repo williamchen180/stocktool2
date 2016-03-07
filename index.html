@@ -30,8 +30,7 @@
 			loadPreset()
 		}
 	</script>
-	<script src="sorttable.js" type="text/javascript"></script>
-	<body onload="myInit()">
+	<body>
 		<style type="text/css">
 			#main {
 			padding: 5px;
@@ -50,6 +49,7 @@
 			background-color: #CCFFCC;
 			}
 		</style>
+		<script src="sorttable.js" type="text/javascript"></script>
 		<script>
 			
 			function check() {
@@ -379,7 +379,16 @@
 				}
 			}
 			function load_preset() {
-				document.getElementById("preset").value = "PFD AWF GOF GDF EHI FCO HHY HIX MCR PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB";
+
+				var table = document.getElementById('dataTable');
+				var rowCount = table.rows.length;
+
+				var targets = ""
+				for(var i=1; i<rowCount; i++) {
+					var row = table.rows[i];
+					targets += row.cells[2].childNodes[0].value + ' ';
+				}
+				document.getElementById("preset").value = targets; 
 			}
 		</SCRIPT>
 		<input type="checkbox" id="flickchk" onchange="flick_check('dataTable')">
