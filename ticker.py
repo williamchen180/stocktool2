@@ -42,7 +42,7 @@ from xlrd import open_workbook
 
 
 # self.favlist: type: list
-#	[ symbol, date, memo ]
+#	[ symbol, date, memo, category ]
 #
 
 class ticker():
@@ -84,6 +84,40 @@ class ticker():
 			if x[0] == symbol:
 				return True
 		return False
+
+
+	def get_cate( self, symbol ):
+		found = False
+		for x in self.favlist:
+			if x[0] == symbol:
+				found = True
+				break
+		if found == True:
+			return x[3]
+		else:
+			return None
+
+	def get_cate_html( self, symbol ):
+		cate = self.get_cate( symbol )
+		cate_html = '<select name="%s" onchange="cate_selected(this)"><option value="None">None</option>' % symbol
+		if cate == 'A':
+			cate_html += '<option value="A" selected="selected">A</option>'
+		else:
+			cate_html += '<option value="A">A</option>'
+		if cate == 'B':
+			cate_html += '<option value="B" selected="selected">B</option>'
+		else:
+			cate_html += '<option value="B">B</option>'
+		if cate == 'C':
+			cate_html += '<option value="C" selected="selected">C</option>'
+		else:
+			cate_html += '<option value="C">C</option>'
+		if cate == 'D':
+			cate_html += '<option value="D" selected="selected">D</option>'
+		else:
+			cate_html += '<option value="D">D</option>'
+		cate_html += '</select>'
+		return cate_html
 
 	def __getitem__(self, key):
 		return self.ticker[key]
@@ -536,17 +570,22 @@ class ticker():
 		for x in stocks:
 			dst.append( (x['ROI'][4], x ) )
 
+		self.load_favlist()
 
 		ddst = sorted( dst, reverse = True )
 
-		print "Content-type:text/html; charset=utf-8\r\n\r\n"
-		print '<html>'
-		print '<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />'
-		print "<head>";
-		print "<title>Stock information</title>"
-		print "</head>"
-		print '<body onload="myInit()">'
-		print '''
+		#
+		# Show HTML header & script
+		#
+
+		print '''Content-type:text/html; charset=utf-8\r\n\r\n
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+<head>
+<title>Stock information</title>
+</head>
+<body onload="myInit()">
 <style type="text/css">
 #main {
 	padding: 5px;
@@ -563,120 +602,154 @@ class ticker():
 	border: 1px solid #000000;
 	background-color: #CCFFCC;
 }
-</style>'''
-		print '''<script src="sorttable.js" type="text/javascript"></script><script>
-	function load_recent_change() {
+table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+	content: " \\25B4\\25BE" 
+}
 
-		var xhttp;
-		if (window.XMLHttpRequest) {
-			// code for modern browsers
-			xhttp = new XMLHttpRequest();
-		} else {
-			// code for IE6, IE5
-			xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		xhttp.onreadystatechange = function() {
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				document.getElementById("recent_change").innerHTML = xhttp.responseText;
-				document.getElementById("debug").innerHTML += xhttp.responseText;
-				ele = document.getElementById('recent_change_table' );
-				sorttable.makeSortable( ele ); 
-			}
-		};
+#wrap {
+   width:100%;
+   margin:1 auto;
+}
+#left_col {
+   float:left;
+   width:50%;
+}
+#right_col {
+   float:right;
+   width:50%;
+}
 
-		document.getElementById("recent_change").innerHTML = "載入中....";
+</style>
+<script src="sorttable.js" type="text/javascript"></script><script>
+function load_recent_change() {
 
-		var table = document.getElementById( "main" );
-		var rowCount = table.rows.length;
-		var req = "";
-		for(var i=1;i<rowCount; i++) {
-			var row = table.rows[i];
-			req += row.cells[1].childNodes[0].innerHTML + ",";
-		}
-
-	
-		var ele = document.getElementById( "gdate" );
-
-
-		if (ele != null) {
-			var datestr = ele.value;
-		} else {
-			var datestr = "9999-99-99";
-		}
-
-
-		xhttp.open("POST", "recent_change.py", true);
-		xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
-		xhttp.send("list=" + req + "&date=" + datestr);
+	var xhttp;
+	if (window.XMLHttpRequest) {
+		// code for modern browsers
+		xhttp = new XMLHttpRequest();
+	} else {
+		// code for IE6, IE5
+		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	function myInit() {
-		load_recent_change();
-	}
-	function save_fav() {
-		var table = document.getElementById("main");
-		var rowCount = table.rows.length;
-		var gchkbox = table.rows[0].cells[0].childNodes[0];
-		var idx = 0;
-		var req = "";
-		for( var i=1; i<rowCount; i++) {
-			var row = table.rows[i];
-			var chkbox = row.cells[0].childNodes[0];
-			if (chkbox.checked == true) {
-				req += "text" + idx + "=" + row.cells[1].childNodes[0].innerHTML + "&"
-				idx += 1;
-			}
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			document.getElementById("recent_change").innerHTML = xhttp.responseText;
+			document.getElementById("debug").innerHTML += xhttp.responseText;
+			ele = document.getElementById('recent_change_table' );
+			sorttable.makeSortable( ele ); 
 		}
+	};
 
-		var xhttp;
-		if (window.XMLHttpRequest) {
-			// code for modern browsers
-			xhttp = new XMLHttpRequest();
-		} else {
-			// code for IE6, IE5
-			xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		xhttp.onreadystatechange = function() {
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				alert('已儲存')
-				document.getElementById("debug").innerHTML = xhttp.responseText;
-			}
-		};
-		xhttp.open("POST", "favlist.py", true);
-		xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
-		xhttp.send("save_list=1&" + req );
+	document.getElementById("recent_change").innerHTML = "載入中....";
+
+	var table = document.getElementById( "main" );
+	var rowCount = table.rows.length;
+	var req = "";
+	for(var i=1;i<rowCount; i++) {
+		var row = table.rows[i];
+		req += row.cells[1].childNodes[0].innerHTML + ",";
 	}
 
-	function add2fav(target) {
-		var chkbox = document.getElementById("chk" + target);
 
-		if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
-			document.getElementById("add2fav" + target).innerHTML = "加入觀察名單";
-			chkbox.checked = false;
-		} else {
-			document.getElementById("add2fav" + target).innerHTML = "已加入觀察名單";
-			chkbox.checked = true;
-		}
+	var ele = document.getElementById( "gdate" );
 
+
+	if (ele != null) {
+		var datestr = ele.value;
+	} else {
+		var datestr = "9999-99-99";
 	}
 
-	function flick_check() {
-		var table = document.getElementById("main");
-		var rowCount = table.rows.length;
-		var gchkbox = table.rows[0].cells[0].childNodes[0];
-		for( var i=1; i<rowCount; i++) {
-			var row = table.rows[i];
-			var chkbox = row.cells[0].childNodes[0];
-			chkbox.checked = gchkbox.checked;
+
+	xhttp.open("POST", "recent_change.py", true);
+	xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("list=" + req + "&date=" + datestr);
+}
+function myInit() {
+	load_recent_change();
+}
+function save_fav() {
+	var table = document.getElementById("main");
+	var rowCount = table.rows.length;
+	var gchkbox = table.rows[0].cells[0].childNodes[0];
+	var idx = 0;
+	var req = "";
+	for( var i=1; i<rowCount; i++) {
+		var row = table.rows[i];
+		var chkbox = row.cells[0].childNodes[0];
+		if (chkbox.checked == true) {
+			req += "text" + idx + "=" + row.cells[1].childNodes[0].innerHTML + "&";
+			idx += 1;
 		}
 	}
-		</script>'''
-		print "<p>"
-                print u'<center><h1>搜尋出 %d 個項目</h1></center>'.encode('UTF-8') % len(stocks)
+
+	var xhttp;
+	if (window.XMLHttpRequest) {
+		// code for modern browsers
+		xhttp = new XMLHttpRequest();
+	} else {
+		// code for IE6, IE5
+		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			alert('已儲存');
+			document.getElementById("debug").innerHTML = xhttp.responseText;
+		}
+	};
+	xhttp.open("POST", "favlist.py", true);
+	xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("save_list=1&" + req );
+}
+
+function add2fav(target) {
+	var chkbox = document.getElementById("chk" + target);
+
+	if (document.getElementById("add2fav" + target).innerHTML == "已加入觀察名單") {
+		document.getElementById("add2fav" + target).innerHTML = "加入觀察名單";
+		chkbox.checked = false;
+	} else {
+		document.getElementById("add2fav" + target).innerHTML = "已加入觀察名單";
+		chkbox.checked = true;
+	}
+
+}
+
+function flick_check() {
+	var table = document.getElementById("main");
+	var rowCount = table.rows.length;
+	var gchkbox = table.rows[0].cells[0].childNodes[0];
+	for( var i=1; i<rowCount; i++) {
+		var row = table.rows[i];
+		var chkbox = row.cells[0].childNodes[0];
+		chkbox.checked = gchkbox.checked;
+	}
+}
+
+function cate_selected( target ) {
+	var ele = document.getElementById( target.name + "cate" );
+
+	ele.innerHTML = target.value;
+
+}
+
+</script>
+
+'''
+                print u'<div align="center"><h1>搜尋出 %d 個項目</h1></div>'.encode('UTF-8') % len(stocks)
+
+		print u'<div align="center"><button style="font-size: 16pt" onclick="save_fav()">儲存觀察名單</button></div>'.encode('UTF-8') 
+		print '<hr>'
+
+		#
+		# Show management table
+		#
 
 		if True:
-			print u'''<center><table id="main" class="sortable"><thead><tr>
-				<th><input type="checkbox" onclick="flick_check()"></th>
+			print u'''<div align="center"><table id="main" class="sortable"><thead><tr>
+				<th class="sorttable_nosort"><input type="checkbox" onclick="flick_check()"></th>
 				<th>代號</th>
+				<th>評等</th>
 				<th>買進日期</th>
 				<th>買進價位</th>
 				<th>當前日期</th>
@@ -686,67 +759,87 @@ class ticker():
 				<th>市值成長比率</th>
 				</tr></thead>'''.encode('UTF-8')
 			for x in stocks:
+				print '<tr><td><input type="checkbox" id="chk%s"></td>' % x['SYMBOL']
+				print '<td><a href="#%s">%s</a></td>' % (x['SYMBOL'], x['SYMBOL'] )
+				print '<td id="%scate">%s</td>' % ( x['SYMBOL'], self.get_cate( x['SYMBOL'] ) )
+
 				if x.has_key('SIMRESULT') is True:
 					sr = x['SIMRESULT']
-					print '<tr><td><input type="checkbox" id="chk%s"></td>' % x['SYMBOL']
-					print '<td><a id="symbol" href="#%s">%s</a></td>' % (x['SYMBOL'], x['SYMBOL'] )
 					print '<td>%s</td><td>%.2f</td><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % sr
 				else:
-					print '<tr><td><input type="checkbox" id="chk%s"></td>' % x['SYMBOL']
-					print '<td><a href="#%s">%s</a></td>' % (x['SYMBOL'], x['SYMBOL'] )
 					print '<td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' 
 
+			print '</table></div><hr>'
 
-				
-			print u'<center><button style="font-size: 16pt" onclick="save_fav()">儲存觀察名單</button></center>'.encode('UTF-8') 
-			print u'<center><div id="save_result"></div></center>'
-			print '<tfoot></tfoot></table></center><hr>'
+		#
+		# Show recent change table
+		#
 
 		if True:
-			print '<center></center>'
-			print '<input type="date" id="gdate" onchange="load_recent_change()" class="sortable"></center>'
-			print '<hr><p id="recent_change">'
+			print '<div align="center">'
+			print '<h2>根據日期計算近期變動</h2>'
+			print '<input type="date" id="gdate" onchange="load_recent_change()" class="sortable"></div>'
+			print '<br><p id="recent_change">'
 			print '</p><hr>'
 
-
-
+		#
+		# Show missing part
+		#
 
 		if missing != []:
 			print '<hr>'
-			print u'<center><h1>找不到以下紀錄</h1>'.encode('UTF-8')
+			print u'<div align="center"><h1>找不到以下紀錄</h1>'.encode('UTF-8')
 			for x in missing:
 				print x + '<br>'
-			print '</center><hr>'
+			print '</div><hr>'
 
-		self.load_favlist()
+		#
+		# Show detail information: name, category, dividend, PNG
+		#
 
 		for x in ddst:
 			t = x[1]
 
+			cate_html = self.get_cate_html( t['SYMBOL'] )
+
 			pngfile =  self.png_file_format % t['SYMBOL'] 
 			if os.path.isfile( pngfile ):
-				print '<hr>' 
-				print u'<h1 id="%s"><center>%s @ %s [%s] </center></h1>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
+				print '<hr><div align="center">' 
+				print u'<h1 id="%s">%s @ %s [%s]</h1>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
+
 
 				if self.is_fav( t['SYMBOL'] ) == True: 
 					status = u"已加入觀察名單".encode('UTF-8')
 				else:
 					status = u"加入觀察名單".encode('UTF-8')
-				print u'<center><button id="add2fav%s" style="font-size: 16pt" onclick="add2fav(\'%s\')">%s</button></center>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'] , status )
+				print u'<button id="add2fav%s" style="font-size: 16pt" onclick="add2fav(\'%s\')">%s</button>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'] , status )
+
+
+				print u'<h1>評等'.encode('UTF-8')
+				print cate_html
+				print '</h1>'
+
+
+				print '<br>'
+
+				print '<div id="wrap"><div id="left_col">'
 
 				for i in range(0,5):
-					print u'<h3><center>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</center></h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
+					print u'<h3>過去 %d 年數股利 %.3f USD, 過去 %d 年ROI: %.3f %%</h3>'.encode('UTF-8') % ( i+1, t['DIVIDEND'][i], i+1, t['ROI'][i] ) 
+				print '</div>'
+				print '<div id="right_col">'
 
-				print '<center><textarea style="font-size: 16pt" rows="2" cols="40">'
+				print '<textarea style="font-size: 16pt" rows="8" cols="40">'
 				dividends = self.get_dividends( t['SYMBOL'] )
 				for x in dividends:
 					print x,
-				print '</textarea></center>'
+				print '</textarea>'
+				print '</div></div>'
 				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank">' % t['SYMBOL']
 				print '<img border=10 src="%s"/>' % pngfile 
 				print '</a>'
+				print '</div>'
 
-		print "</p>"
 		print '''<br><hr><textarea id="debug" style="display:none" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
 		#print '''<br><hr><textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
 		print "<br><br><br></body>"
