@@ -621,7 +621,6 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 }
 
 </style>
-<script src="sorttable.js" type="text/javascript"></script><script>
 function load_recent_change() {
 
 	var xhttp;
