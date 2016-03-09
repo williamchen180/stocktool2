@@ -585,6 +585,7 @@ class ticker():
 <head>
 <title>Stock information</title>
 </head>
+<script src="sorttable.js" type="text/javascript"></script>
 <body onload="myInit()">
 <style type="text/css">
 #main {
