@@ -701,7 +701,6 @@ function save_fav() {
 	xhttp.open("POST", "favlist.py", true);
 	xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("add_list=1&" + req );
-	alert(req);
 }
 
 function add2fav(target) {

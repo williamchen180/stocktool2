@@ -300,7 +300,7 @@
 					var table = document.getElementById(tableID);
 					var rowCount = table.rows.length;
 			
-					for(var i=0; i<rowCount; i++) {
+					for(var i=1; i<rowCount; i++) {
 						var row = table.rows[i];
 						var chkbox = row.cells[0].childNodes[0];
 						if(null != chkbox && true == chkbox.checked) {
@@ -356,7 +356,6 @@
 
 					var xhttp = new XMLHttpRequest();
 					xhttp.onreadystatechange = function() {
-						alert( xhttp.readyState + " " + xhttp.status );
 						if (xhttp.readyState == 4 && xhttp.status == 200) {
 							document.getElementById("result").innerHTML = "已儲存"; 
 							document.getElementById("favorite_list").innerHTML = xhttp.responseText;
@@ -368,7 +367,6 @@
 					xhttp.open("POST", "favlist.py", true);
 					xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
 					xhttp.send( "save_list=1&" + ret );
-					alert(ret);
 				} catch(e) {
 					alert(e);
 				}	
