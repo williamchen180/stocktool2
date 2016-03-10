@@ -585,7 +585,6 @@ class ticker():
 <head>
 <title>Stock information</title>
 </head>
-<script src="sorttable.js" type="text/javascript"></script>
 <body onload="myInit()">
 <style type="text/css">
 #main {
@@ -621,6 +620,7 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 }
 
 </style>
+<script src="sorttable.js" type="text/javascript"></script><script>
 function load_recent_change() {
 
 	var xhttp;
@@ -679,6 +679,7 @@ function save_fav() {
 		var chkbox = row.cells[0].childNodes[0];
 		if (chkbox.checked == true) {
 			req += "text" + idx + "=" + row.cells[1].childNodes[0].innerHTML + "&";
+			req += "cate" + idx + "=" + row.cells[2].innerHTML + "&";
 			idx += 1;
 		}
 	}
@@ -699,7 +700,8 @@ function save_fav() {
 	};
 	xhttp.open("POST", "favlist.py", true);
 	xhttp.setRequestHeader( "Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("save_list=1&" + req );
+	xhttp.send("add_list=1&" + req );
+	alert(req);
 }
 
 function add2fav(target) {
@@ -716,14 +718,32 @@ function add2fav(target) {
 }
 
 function flick_check() {
+
 	var table = document.getElementById("main");
 	var rowCount = table.rows.length;
 	var gchkbox = table.rows[0].cells[0].childNodes[0];
 	for( var i=1; i<rowCount; i++) {
 		var row = table.rows[i];
 		var chkbox = row.cells[0].childNodes[0];
-		chkbox.checked = gchkbox.checked;
+		chkbox.checked = !gchkbox.checked;
+		chkbox.click();
 	}
+}
+
+function select2_click(target) {
+	var id = target.id;
+	var len = id.length;
+
+	var tmp = id.substring( 0, id.length - 1 );
+	var end = id.substring( id.length -1 , id.length);
+	if (end == "1") {
+		var dst = tmp + "2";
+	} else {
+		var dst = tmp + "1";
+	}
+	var ele = document.getElementById( dst );
+
+	ele.checked = target.checked;
 }
 
 function cate_selected( target ) {
@@ -759,8 +779,13 @@ function cate_selected( target ) {
 				<th>市值成長比率</th>
 				</tr></thead>'''.encode('UTF-8')
 			for x in stocks:
-				print '<tr><td><input type="checkbox" id="chk%s"></td>' % x['SYMBOL']
+				if self.is_fav( x['SYMBOL' ] ) == True:
+					print '<tr><td><input type="checkbox" checked id="chk%s1" onclick="select2_click(this)"></td>' % x['SYMBOL']
+				else:
+					print '<tr><td><input type="checkbox" id="chk%s1" onclick="select2_click(this)"></td>' % x['SYMBOL']
+
 				print '<td><a href="#%s">%s</a></td>' % (x['SYMBOL'], x['SYMBOL'] )
+				
 				print '<td id="%scate">%s</td>' % ( x['SYMBOL'], self.get_cate( x['SYMBOL'] ) )
 
 				if x.has_key('SIMRESULT') is True:
@@ -808,6 +833,7 @@ function cate_selected( target ) {
 				print u'<h1 id="%s">%s @ %s [%s]</h1>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
 
 
+				'''
 				if self.is_fav( t['SYMBOL'] ) == True: 
 					status = u"已加入觀察名單".encode('UTF-8')
 				else:
@@ -818,6 +844,13 @@ function cate_selected( target ) {
 				print u'<h1>評等'.encode('UTF-8')
 				print cate_html
 				print '</h1>'
+				'''
+
+				if self.is_fav( t['SYMBOL' ] ) == True:
+					print '<input type="checkbox" id="chk%s2" checked onclick="select2_click(this)">' % t['SYMBOL']
+				else:
+					print '<input type="checkbox" id="chk%s2" onclick="select2_click(this)">' % t['SYMBOL']
+				print cate_html
 
 
 				print '<br>'

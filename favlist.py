@@ -112,31 +112,31 @@ def get_favlist():
 
 def save_favlist( org ):
 
-	try:
-		T = ticker()
-		pickle_file = 'pickle/ticker.cpickle2'
-		with open(pickle_file, 'rb') as f:
-			t = cPickle.load(f)
+	T = ticker()
+	pickle_file = 'pickle/ticker.cpickle2'
+	with open(pickle_file, 'rb') as f:
+		t = cPickle.load(f)
 
-		favlist = []
-		for x in org:
-			if t['DB'].has_key( x[0] ) is True:
-				if x[1] == None:
-					year = int(time.strftime('%Y'))
-					month = int(time.strftime('%m'))
-					day = int(time.strftime('%d'))
-					x[1] = "%d-%2.2d-%2.2d" % (year, month, day )
 
-				if len(x[1]) == 10: 
-					price = T.get_price_by_date( x[0], x[1])
-				else:
-					price = 0
-                                favlist.append( x[0:4] + [price] )
 
-		with open( dbfile, 'wb') as f:
-			cPickle.dump( favlist, f )
-	except Exception as e:
-		print e
+	favlist = []
+
+	for x in org:
+		if t['DB'].has_key( x[0] ) is True:
+			if x[1] == None:
+				year = int(time.strftime('%Y'))
+				month = int(time.strftime('%m'))
+				day = int(time.strftime('%d'))
+				x[1] = "%d-%2.2d-%2.2d" % (year, month, day )
+
+			if len(x[1]) == 10: 
+				price = T.get_price_by_date( x[0], x[1])
+			else:
+				price = 0
+			favlist.append( x[0:4] + [price] )
+
+	with open( dbfile, 'wb') as f:
+		cPickle.dump( favlist, f )
 
 	get_favlist()
 
@@ -154,53 +154,12 @@ def load_favlist():
 form = cgi.FieldStorage() 
 
 save_list = form.getvalue('save_list')
-
 get_list = form.getvalue('get_list')
+add_list = form.getvalue('add_list')
 
-add_one = form.getvalue('add_one')
 
-del_one = form.getvalue('del_one')
 
 print "Content-type:text/html; charset=utf-8\r\n\r\n"
-
-#print "form:" , form, '<br>'
-
-if del_one != None:
-	target = form.getvalue('target')
-	print target
-
-	favlist = load_favlist()
-	for x in favlist:
-		if x[0] == target:
-			favlist.remove(x)
-			break
-	save_favlist( favlist )
-
-
-if add_one != None:
-	target = form.getvalue('target')
-	print target
-
-	favlist = load_favlist()
-
-	year = int(time.strftime('%Y'))
-	month = int(time.strftime('%m'))
-	day = int(time.strftime('%d'))
-
-	timestr = "%d-%2.2d-%2.2d" % (year, month, day )
-
-	found = False
-	for x in favlist:
-		if x[0] == target:
-			x[1] = timestr
-			found = True
-			break
-
-	if found == False:
-		favlist.append( [target, timestr, ""] )
-
-	save_favlist( favlist )
-
 
 
 if save_list != None:
@@ -218,8 +177,43 @@ if save_list != None:
 	save_favlist( favlist )
 
 
-if get_list != None:
 
+
+if add_list != None:
+	favlist = load_favlist()
+	idx = 0
+	while True:
+		text = form.getvalue('text%d' % idx )
+		date = form.getvalue('date%d' % idx )
+		memo = form.getvalue('memo%d' % idx )
+		cate = form.getvalue('cate%d' % idx )
+		idx += 1
+		if text is None:
+			break
+		text = text.upper()
+		exist = False
+		for x in favlist:
+			if x[0] == text:
+				if date != None:
+					x[1] = date
+				if memo != None:
+					x[2] = memo
+				if cate != None:
+					x[3] = cate
+				exist = True
+				break
+		if exist == False:
+			if date == None:
+				date = ''
+			if memo == None:
+				memo = ''
+			if cate == None:
+				cate = 'None'
+			favlist.append( [text.upper(), date, memo, cate ] )
+	save_favlist( favlist )
+
+
+if get_list != None:
 	get_favlist()
 	
 
