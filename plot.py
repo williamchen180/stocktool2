@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#coding=UTF-8
+
 import os.path
 import get_history
 import Gnuplot
@@ -160,6 +163,7 @@ class	plot:
 		p('set format x ""')
 		p('set size 1.0, 0.3')
 		p('set origin 0.0, 0.3')
+		p('set key left')
 		p('plot "' + price_file + '" using 1:($6/1000) title "volume x1000" with impulses')
 
 		p('set xdata time')
