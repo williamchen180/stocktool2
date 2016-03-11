@@ -35,11 +35,8 @@ sorttable = {
       if (table.className.search(/\bsortable\b/) != -1) {
         sorttable.makeSortable(table);
       }
-    }
-
-    myinit();
-    );
-
+    });
+    myInit();
   },
 
   makeSortable: function(table) {
