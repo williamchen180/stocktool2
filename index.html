@@ -28,7 +28,7 @@
 			document.getElementById("result").innerHTML = "載入中"; 
 		}
 		function myInit() {
-			loadPreset()
+			loadPreset();
 		}
 	</script>
 	<body>
@@ -388,22 +388,38 @@
 				}
 			}
 
-			function global_change_date() {
-				var ele = document.getElementById('gdate');
+			function global_change_cate(me) {
+				var table = document.getElementById('dataTable');
+				var rowCount = table.rows.length;
+
+		
+				for(var i=1; i<rowCount; i++) {
+					var row = table.rows[i];
+					var chkbox = row.cells[0].childNodes[0];
+					if (chkbox.checked == true) {
+						row.cells[8].childNodes[0].selectedIndex = me.selectedIndex;
+					}
+				}
+			}
+
+			function global_change_date(me) {
 				var table = document.getElementById('dataTable');
 				var rowCount = table.rows.length;
 		
-				for(var i=0; i<rowCount; i++) {
+				for(var i=1; i<rowCount; i++) {
 					var row = table.rows[i];
-					row.cells[7].childNodes[0].value = ele.value;
+					var chkbox = row.cells[0].childNodes[0];
+					if (chkbox.checked == true)
+						row.cells[7].childNodes[0].value = me.value;
 				}
 			}
+
 			function fill_preset_to_search() {
 
 				var table = document.getElementById('dataTable');
 				var rowCount = table.rows.length;
 
-				var targets = ""
+				var targets = "";
 				for(var i=1; i<rowCount; i++) {
 					var row = table.rows[i];
 					targets += row.cells[2].childNodes[0].value + ' ';
@@ -427,7 +443,7 @@
 		<INPUT type="button" value="刪除列" onclick="deleteRow('dataTable')" >
 		<input type="button" value="儲存" onclick="save_watch('dataTable')">
 		<input type="button" value="載入觀察名單" onclick="fill_preset_to_search()">
-		<div id="result"><h2></h2></div><br>
+		<h2 id="result"></h2><br>
 		<form id="favorite_list">
 			<TABLE id="dataTable" width="350px" border="1">
 				<tr>
@@ -438,15 +454,19 @@
 					<th>當前價格</th>
 					<th>獲利</th>
 					<th class="sorttable_nosort">百分比</th>
-					<th class="sorttable_nosort">日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
-					<th class="sorttable_nosort">評等<br><select name="cate">
-						<option value="None" selected="selected">None</option>
-						<option value="A">A</option>
-						<option value="B">B</option>
-						<option value="C">C</option>
-						<option value="D">D</option>
-						<option value="E">E</option>
-					</select></th>
+					<th class="sorttable_nosort">日期<br>
+						<input type="date" id="gdate" onchange="global_change_date(this)">
+					</th>
+					<th class="sorttable_nosort">評等<br>
+						<select name="cate" onchange="global_change_cate(this)">
+							<option value="None" selected="selected">None</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="E">E</option>
+						</select>
+					</th>
 					<th class="sorttable_nosort">註解</th>
 				</tr>
 				<tr>

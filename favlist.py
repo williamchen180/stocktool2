@@ -26,15 +26,19 @@ def get_favlist():
 		<th>當前價格</th>
 		<th>獲利</th>
 		<th class="sorttable_nosort">百分比</th>
-		<th class="sorttable_nosort">日期<br><input type="date" id="gdate" onchange="global_change_date()"></th>
+		<th class="sorttable_nosort">日期<br>
+			<input type="date" id="gdate" onchange="global_change_date(this)">
+		</th>
 		<th class="sorttable_nosort">評等<br>
-			<select name="cate">
+			<select name="cate" onchange="global_change_cate(this)">
 				<option value="None" selected="selected">None</option>
 				<option value="A">A</option>
 				<option value="B">B</option>
 				<option value="C">C</option>
 				<option value="D">D</option>
 				<option value="E">E</option>
+				<option value="F">G</option>
+				<option value="G">G</option>
 			</select>
 		</th>
 		<th>註解</th>
@@ -59,6 +63,8 @@ def get_favlist():
 				<option value="C">C</option>
 				<option value="D">D</option>
 				<option value="E">E</option>
+				<option value="F">G</option>
+				<option value="G">G</option>
 				</select>
 			</TD>
 			<TD><input type="text" id="memo0" name="memo0" value="" onchange="fav_onchange()"></TD>

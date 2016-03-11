@@ -116,6 +116,18 @@ class ticker():
 			cate_html += '<option value="D" selected="selected">D</option>'
 		else:
 			cate_html += '<option value="D">D</option>'
+		if cate == 'E':
+			cate_html += '<option value="E" selected="selected">E</option>'
+		else:
+			cate_html += '<option value="E">E</option>'
+		if cate == 'F':
+			cate_html += '<option value="F" selected="selected">F</option>'
+		else:
+			cate_html += '<option value="F">F</option>'
+		if cate == 'G':
+			cate_html += '<option value="G" selected="selected">G</option>'
+		else:
+			cate_html += '<option value="G">G</option>'
 		cate_html += '</select>'
 		return cate_html
 
