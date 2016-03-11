@@ -764,6 +764,46 @@ function cate_selected( target ) {
 
 }
 
+function orderPanel2() {
+	var panel = document.getElementById( "panel" );
+	var table = document.getElementById( "recent_change_table" );
+	var rowCount = table.rows.length;
+	var newOrder = [];
+	for( var i=1; i<rowCount; i++) {
+		var row = table.rows[i];
+		var symbol = row.cells[1].childNodes[0].innerHTML;
+		newOrder.push( document.getElementById( symbol ) );
+	}
+	while( panel.firstChild ) {
+		panel.removeChild( panel.firstChild );
+	}
+	for( var i=0; i<newOrder.length; i++) {
+		panel.appendChild( newOrder[i] );
+	}
+}
+function sort_panel2() {
+	setTimeout( function() { orderPanel2()}, 1000 );
+}
+function orderPanel() {
+	var panel = document.getElementById( "panel" );
+	var table = document.getElementById( "main" );
+	var rowCount = table.rows.length;
+	var newOrder = [];
+	for( var i=1; i<rowCount; i++) {
+		var row = table.rows[i];
+		var symbol = row.cells[1].childNodes[0].innerHTML;
+		newOrder.push( document.getElementById( symbol ) );
+	}
+	while( panel.firstChild ) {
+		panel.removeChild( panel.firstChild );
+	}
+	for( var i=0; i<newOrder.length; i++) {
+		panel.appendChild( newOrder[i] );
+	}
+}
+function sort_panel() {
+	setTimeout( function() { orderPanel()}, 1000 );
+}
 </script>
 
 '''
@@ -779,15 +819,15 @@ function cate_selected( target ) {
 		if True:
 			print u'''<div align="center"><table id="main" class="sortable"><thead><tr>
 				<th class="sorttable_nosort"><input type="checkbox" onclick="flick_check()"></th>
-				<th>代號</th>
-				<th>評等</th>
-				<th>買進日期</th>
-				<th>買進價位</th>
-				<th>當前日期</th>
-				<th>當前價位</th>
-				<th>股票成長比率</th>
-				<th>股利成長比率</th>
-				<th>市值成長比率</th>
+				<th><button onclick="sort_panel()">代號</button></th>
+				<th><button onclick="sort_panel()">評等</button></th>
+				<th><button onclick="sort_panel()">買進日期</button></th>
+				<th><button onclick="sort_panel()">買進價位</button></th>
+				<th><button onclick="sort_panel()">當前日期</button></th>
+				<th><button onclick="sort_panel()">當前價位</button></th>
+				<th><button onclick="sort_panel()">股票成長比率</button></th>
+				<th><button onclick="sort_panel()">股利成長比率</button></th>
+				<th><button onclick="sort_panel()">市值成長比率</button></th>
 				</tr></thead>'''.encode('UTF-8')
 			for x in stocks:
 				if self.is_fav( x['SYMBOL' ] ) == True:
@@ -833,6 +873,8 @@ function cate_selected( target ) {
 		# Show detail information: name, category, dividend, PNG
 		#
 
+		print '<div id="panel">'
+
 		for x in ddst:
 			t = x[1]
 
@@ -840,8 +882,8 @@ function cate_selected( target ) {
 
 			pngfile =  self.png_file_format % t['SYMBOL'] 
 			if os.path.isfile( pngfile ):
-				print '<hr><div align="center">' 
-				print u'<h1 id="%s">%s @ %s [%s]</h1>'.encode('UTF-8') % (t['SYMBOL'], t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
+				print '<div align="center" id="%s"><hr>' % t['SYMBOL']
+				print u'<h1>%s @ %s [%s]</h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
 
 
 				'''
@@ -883,6 +925,8 @@ function cate_selected( target ) {
 				print '<img border=10 src="%s"/>' % pngfile 
 				print '</a>'
 				print '</div>'
+
+		print '</div>'
 
 		print '''<br><hr><textarea id="debug" style="display:none" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
 		#print '''<br><hr><textarea id="debug" name="textcontent" cols="200" rows="40" placeholder="除錯"></textarea>'''
@@ -1183,12 +1227,12 @@ function cate_selected( target ) {
 
 		print '''<TABLE id="recent_change_table" style="width:100%" border="1">
 	<tr>
-		<th>No</th>
-		<th>代號</th>
-		<th>起始價格</th>
-		<th>當前價格</th>
-		<th>獲利</th>
-		<th>百分比</th>
+		<th><button onclick="sort_panel2()">No</button></th>
+		<th><button onclick="sort_panel2()">代號</button></th>
+		<th><button onclick="sort_panel2()">起始價格</button></th>
+		<th><button onclick="sort_panel2()">當前價格</button></th>
+		<th><button onclick="sort_panel2()">獲利</button></th>
+		<th><button onclick="sort_panel2()">百分比</button></th>
 	</tr>'''
 		try:
 			idx = 1
