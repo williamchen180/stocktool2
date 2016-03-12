@@ -44,18 +44,25 @@ else:
 if form.getvalue('dividends'):
 	_dividends = form.getvalue('dividends')
 else:
-	_dividends = "-3"
+	_dividends = "-1"
 
-if form.getvalue('simulate'):
-	_simulate = form.getvalue('simulate')
+if form.getvalue('total_dividends'):
+	_total_dividends = form.getvalue('total_dividends')
 else:
-	_simulate = None
+	_total_dividends = 10
+
+if form.getvalue('dividend_up'):
+	_dividend_up = form.getvalue('dividend_up')
+else:
+	_dividend_up = 1
 
 _ROI = int(_ROI)
 _yearROI = int(_yearROI)
 _yearCompany = int(_yearCompany)
 _price = float(_price)
 _dividends = int(_dividends)
+_total_dividends = int(_total_dividends)
+_dividend_up = float(_dividend_up)
 
 if type(_country) == str:
 	_country = [_country]
@@ -63,7 +70,15 @@ if type(_country) == str:
 T = ticker()
 
 
-ret = T.filte( kind = _kind, rate = _ROI, year = _yearROI, country = _country, yearsaround = _yearCompany, pricelimit = _price, dividends = _dividends )
+ret = T.filte( kind = _kind, \
+		rate = _ROI, \
+		year = _yearROI, \
+		country = _country, \
+		yearsaround = _yearCompany, \
+		pricelimit = _price, \
+		dividends = _dividends, \
+		total_dividends = _total_dividends, \
+		dividend_up = _dividend_up )
 
 p = plot()
 for x in ret:

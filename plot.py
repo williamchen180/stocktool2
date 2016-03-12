@@ -115,6 +115,7 @@ class	plot:
 		p = Gnuplot.Gnuplot()
 
 		p('reset')
+		p('set key left')
 		p('RRI9(x)=%f' % RRI9 ) 
 		p('RRI11(x)=%f' % RRI11 ) 
 		p('RRI14(x)=%f' % RRI14 ) 
@@ -163,7 +164,6 @@ class	plot:
 		p('set format x ""')
 		p('set size 1.0, 0.3')
 		p('set origin 0.0, 0.3')
-		p('set key left')
 		p('plot "' + price_file + '" using 1:($6/1000) title "volume x1000" with impulses')
 
 		p('set xdata time')
@@ -176,7 +176,7 @@ class	plot:
 		p('set xrange [ "%s":"%s" ]' % (left_x, right_x))
 		p('plot "' + dividend_file + '" using 1:2 title "dividend" with linespoints')
 		p('clear')
-		p('set yr [GPVAL_DATA_Y_MIN:GPVAL_DATA_Y_MAX *1.01]')
+		p('set yr [GPVAL_DATA_Y_MIN*0.9:GPVAL_DATA_Y_MAX *1.1]')
 		p('replot')
 		p('unset multiplot')
 

@@ -499,7 +499,15 @@ class ticker():
 			t['DIVIDENDS'] = dividends_last_year
 
 				
-	def filte(self, kind = 'all', rate = 5, year = 5, country=['USA'], yearsaround = 0, pricelimit = 0, dividends = 0):
+	def filte(self, kind = 'all', \
+			rate = 5, \
+			year = 5, \
+			country=['USA'], \
+			yearsaround = 0, \
+			pricelimit = 0, \
+			dividends = 0,
+			total_dividends = 0,
+			dividend_up = 0):
 
 		#print rate, year, country, yearsaround
 
@@ -549,6 +557,30 @@ class ticker():
 			if t['ROI'][year-1] < float(rate):
 				continue
 
+			if total_dividends != 0 or dividend_up != 0:
+				with open( self.dividend_file( tname ), 'r') as f:
+					lines = f.readlines()
+
+					if total_dividends != 0:
+						if len(lines) < total_dividends:
+							continue
+
+					if dividend_up != 0:
+						last_dividend = 99999
+						divup = True
+						for l in lines:
+							if len(l) == 0:
+								continue
+							if l[0] == '#':
+								continue
+							this_dividend = float(l.split(',')[1])
+
+							if this_dividend > (last_dividend * dividend_up):
+								divup = False
+								break
+							last_dividend = this_dividend
+						if divup == False or last_dividend == 9999:
+							continue
 			#print t
 			#print t['ROI'][year-1], float(rate)
 			#print t['YEARSAROUND']
@@ -1267,17 +1299,13 @@ function sort_panel() {
 
 
 
-
-
-
-
 	def simulate(self):
 		pass
 
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
-		print 'Usage: %s [init | get | build | update | filte | select | sim | recent_change]'
+		print 'Usage: %s [init | get | build | update | filte | select | sim | recent_change ]'
 		sys.exit(0)
 
 	t = ticker()
@@ -1298,10 +1326,18 @@ if __name__ == '__main__':
 		t.save()
 	elif sys.argv[1] == 'filte':
 		numbers = 0
-		ret = t.filte( kind = 'all', rate = 40, year = 5, country = ['USA'], yearsaround = 5, pricelimit = 1  )
+		ret = t.filte( kind = 'all', \
+				rate = 0, \
+				year = 3, \
+				country = ['USA'], \
+				yearsaround = 3, \
+				pricelimit = 0, \
+				dividends = -1,
+				total_dividends = 10,
+				dividend_up = 1)
 		for x in ret:
 			numbers += 1
-			print x
+			print x['SYMBOL']
 		print numbers,  'stocks'
 	elif sys.argv[1] == 'select':
 		ret = t.select( ['MSFT', 'GOOD' ] )

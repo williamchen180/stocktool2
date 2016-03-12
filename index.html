@@ -204,22 +204,49 @@
 						<h2>年股利次數：</h2>
 						<select name="dividends">
 							<option value="0" selected="selected">不限</option>
-							<option value="1" >1次</option>
 							<option value="-1" >1次以上</option>
-							<option value="3" >3次</option>
 							<option value="-3" >3次以上</option>
-							<option value="4" >4次</option>
 							<option value="-4" >4次以上</option>
-							<option value="6" >6次</option>
 							<option value="-6" >6次以上</option>
-							<option value="12" >12次</option>
 							<option value="-12" >12次以上</option>
+							<option value="1" >1次</option>
+							<option value="3" >3次</option>
+							<option value="4" >4次</option>
+							<option value="6" >6次</option>
+							<option value="12" >12次</option>
 						</select>
+					</td>
+					<td>
+						<h2>總股利次數：</h2>
+						<select name="total_dividends">
+							<option value="0" selected="selected">不限</option>
+							<option value="5" >5次以上</option>
+							<option value="10" >10次以上</option>
+							<option value="20" >20次以上</option>
+							<option value="30" >30次以上</option>
+							<option value="40" >40次以上</option>
+							<option value="50" >50次以上</option>
+						</select>
+
+					</td>
+					<td>
+						<h2>股利成長：</h2>
+						<select name="dividend_up">
+							<option value="0" selected="selected">不限</option>
+							<option value="1" >永遠成長</option>
+							<option value="1.05" >1.05</option>
+							<option value="1.10" >1.10</option>
+							<option value="1.15" >1.15</option>
+							<option value="1.20" >1.20</option>
+						</select>
+
 					</td>
 				</tr>
 			</table>
 			<td>
-				<input type="submit" value="Submit">
+			<div align="center">
+				<input type="submit" style="font-size: 16pt" value="Submit">
+			</div>
 		</form>
 		<hr>
 		<hr>
