@@ -849,18 +849,28 @@ function sort_panel() {
 		#
 
 		if True:
+			show_sim = False
 			print u'''<div align="center"><table id="main" class="sortable"><thead><tr>
 				<th class="sorttable_nosort"><input type="checkbox" onclick="flick_check()"></th>
 				<th><button onclick="sort_panel()">代號</button></th>
-				<th><button onclick="sort_panel()">評等</button></th>
-				<th><button onclick="sort_panel()">買進日期</button></th>
-				<th><button onclick="sort_panel()">買進價位</button></th>
-				<th><button onclick="sort_panel()">當前日期</button></th>
-				<th><button onclick="sort_panel()">當前價位</button></th>
-				<th><button onclick="sort_panel()">股票成長比率</button></th>
-				<th><button onclick="sort_panel()">股利成長比率</button></th>
-				<th><button onclick="sort_panel()">市值成長比率</button></th>
-				</tr></thead>'''.encode('UTF-8')
+				<th><button onclick="sort_panel()">評等</button></th>'''.encode('UTF-8')
+			if show_sim == True:
+				print u'''<th><button onclick="sort_panel()">買進日期</button></th>
+<th><button onclick="sort_panel()">買進價位</button></th>
+<th><button onclick="sort_panel()">當前日期</button></th>
+<th><button onclick="sort_panel()">當前價位</button></th>
+<th><button onclick="sort_panel()">股票成長比率</button></th>
+<th><button onclick="sort_panel()">股利成長比率</button></th>
+<th><button onclick="sort_panel()">市值成長比率</button></th>
+</tr></thead>'''.encode('UTF-8')
+			else:
+				print u'''<th><button onclick="sort_panel()">過去一年ROI</button></th>
+<th><button onclick="sort_panel()">過去二年ROI</button></th>
+<th><button onclick="sort_panel()">過去三年ROI</button></th>
+<th><button onclick="sort_panel()">過去四年ROI</button></th>
+<th><button onclick="sort_panel()">過去五年ROI</button></th>
+</tr></thead>'''.encode('UTF-8')
+
 			for x in stocks:
 				if self.is_fav( x['SYMBOL' ] ) == True:
 					print '<tr><td><input type="checkbox" checked id="chk%s1" onclick="select2_click(this)"></td>' % x['SYMBOL']
@@ -871,11 +881,15 @@ function sort_panel() {
 				
 				print '<td id="%scate">%s</td>' % ( x['SYMBOL'], self.get_cate( x['SYMBOL'] ) )
 
-				if x.has_key('SIMRESULT') is True:
-					sr = x['SIMRESULT']
-					print '<td>%s</td><td>%.2f</td><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % sr
+				if show_sim == True:
+					if x.has_key('SIMRESULT') is True:
+						sr = x['SIMRESULT']
+						print '<td>%s</td><td>%.2f</td><td>%s</td><td>%.2f</td><td>%.2f</td><td>%.2f</td><td>%.2f</td></tr>' % sr
+					else:
+						print '<td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' 
 				else:
-					print '<td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>' 
+					print '<td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td><td>%2.2f</td></tr>' % \
+						( x['ROI'][0], x['ROI'][1], x['ROI'][2], x['ROI'][3], x['ROI'][4] )
 
 			print '</table></div><hr>'
 
