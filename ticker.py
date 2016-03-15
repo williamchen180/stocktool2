@@ -2,6 +2,7 @@
 #coding=UTF-8
 # Note: Date,Open,High,Low,Close,Volume,Adj Close
 
+import gc
 import pprint
 import cPickle
 import os
@@ -301,7 +302,16 @@ class ticker():
 
 	def update_item(self, filename, _url, skip_to = None, delete_cache = True):
 		mech = Browser()
+		idx = 0
 		for tname in self.ticker['DB']:
+
+			idx += 1
+			if idx == 100:
+				mech = Browser()
+				idx = 0
+				print 'DO GC'
+				print gc.garbage
+				gc.collect()
 
 			t = self.ticker['DB'][tname]
 
