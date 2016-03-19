@@ -770,7 +770,7 @@ function add2fav(target) {
 
 }
 
-function flick_check() {
+function flick_check(type) {
 
 	var table = document.getElementById("main");
 	var rowCount = table.rows.length;
@@ -778,8 +778,12 @@ function flick_check() {
 	for( var i=1; i<rowCount; i++) {
 		var row = table.rows[i];
 		var chkbox = row.cells[0].childNodes[0];
-		chkbox.checked = !gchkbox.checked;
-		chkbox.click();
+		if (type == 0) {
+			chkbox.checked = !gchkbox.checked;
+			chkbox.click();
+		} else {
+			chkbox.click();
+		}
 	}
 }
 
@@ -861,7 +865,9 @@ function sort_panel() {
 		if True:
 			show_sim = False
 			print u'''<div align="center"><table id="main" class="sortable"><thead><tr>
-				<th class="sorttable_nosort"><input type="checkbox" onclick="flick_check()"></th>
+				<th class="sorttable_nosort"><input type="checkbox" onclick="flick_check(0)">
+					<input type="checkbox" onclick="flick_check(1)">
+				</th>
 				<th><button onclick="sort_panel()">代號</button></th>
 				<th><button onclick="sort_panel()">評等</button></th>'''.encode('UTF-8')
 			if show_sim == True:
