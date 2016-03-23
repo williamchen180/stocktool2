@@ -1076,7 +1076,7 @@ function sort_panel() {
 				print '</textarea>'
 				print '</div></div>'
 				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank">' % t['SYMBOL']
-				print '<img border=10 src="%s"/>' % pngfile 
+				print '<img border=10 src="%s?%f"/>' % ( pngfile , os.path.getmtime(pngfile) )
 				print '</a>'
 				print '</div>'
 
