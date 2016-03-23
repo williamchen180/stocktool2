@@ -13,6 +13,7 @@ import socket
 import mechanize
 from mechanize import Browser
 from xlrd import open_workbook
+import get_history
 
 #
 # self.ticker: type of dict
@@ -21,6 +22,8 @@ from xlrd import open_workbook
 #	['KIND']: type of dict
 #		{ 'Stock': 個數 }
 #		{ 'ETF': 個數 }
+#	['COUNTRY_EXT']: type of dict. Country database by stock symbol extension
+#		{ 'COUNTRY NAME' : 'Exention string' }
 #	
 #	ticker: type of dict
 #		'EXCHANGE': 交易所
@@ -29,6 +32,7 @@ from xlrd import open_workbook
 #		'SYMBOL': symbol
 #		'SHORT': 簡介
 #		'KIND': Stock or ETF
+#
 #		'DIVIDEND': list。過去N年的股利總和 (-1, -2, -3, -4, -5)
 #		'ROI': list。根據過去N年所計算出的ROI。(-1, -2, -3, -4, -5)
 #		'LASTPRICE': 最近股價
@@ -392,8 +396,17 @@ class ticker():
 					    
 
 
-	def build_data(self):
+	def build_data(self, newlist = None):
 		for tname in self.ticker['DB']:
+
+			if newlist != None:
+				found = False
+				for x in newlist:
+					if tname == x:
+						found = True
+						break
+				if found == False:
+					continue
 
 			t = self.ticker['DB'][tname]
 			
@@ -598,14 +611,93 @@ class ticker():
 			ret.append( t )
 		return ret
 
+	def get_country_ext_list(self):
+		ext = {}
+		for tname in self.ticker['DB']:
+			if self.ticker['DB'][tname]['AVAILABLE'] == False:
+				continue
+
+			x = tname.split('.')
+			if len(x) == 1:
+				cext = ''
+			else:
+				cext = x[1]
+ 
+			if ext.has_key(cext) == False:
+				ext[cext] = self.ticker['DB'][tname]['COUNTRY'] 
+		pprint.pprint(ext)
+		self.ticker['COUNTRY_EXT'] = ext
+
+	def get_country(self, tname ):
+		x = tname.split('.')
+		if len(x) == 1:
+			cext = ''
+		else:
+			cext = x[1]
+
+		if self.ticker['COUNTRY_EXT'].has_key( cext ):
+			return self.ticker['COUNTRY_EXT'].has_key( cext )
+
 	def select( self, target ):
-		ret = []
-		
+		#print 'ticker.select:', target
+		available = []
 		for tname in target:
 			if self.ticker['DB'].has_key( tname ):
 				if self.ticker['DB'][tname]['AVAILABLE'] == True:
-					ret.append( self.ticker['DB'][tname] )
-		return ret
+					available.append( tname )
+
+		#print 'target:', pprint.pprint( target )
+		#print 'available:', pprint.pprint( available )
+
+		ghost = list(set(target) - set(available))
+
+
+		#print 'ghost:', pprint.pprint( ghost )
+
+		h = get_history.get_history()
+
+		man = []
+
+		for x in ghost:
+			ret = h.get( x )
+			if ret == True:
+				#print 'found:', x
+
+				man.append( x )
+				self.ticker['DB'][ x ] = {}
+				self.ticker['DB'][ x ]['EXCHANGE'] = 'unknown'
+				self.ticker['DB'][ x ]['INDEX'] = self.ticker['KIND']['Stock']
+				self.ticker['KIND']['Stock'] += 1
+				self.ticker['DB'][ x ]['COUNTRY'] = self.get_country( x )
+				self.ticker['DB'][ x ]['SYMBOL'] = x
+				self.ticker['DB'][ x ]['SHORT'] = 'User defined'
+				self.ticker['DB'][ x ]['KIND'] = 'Stock'
+				self.ticker['DB'][ x ]['AVAILABLE'] = True
+				#pprint.pprint( self.ticker['DB'][x] )
+
+		#print 'man:', man
+
+		with open( os.devnull, 'w') as f:
+			sys.stdout = f
+			self.build_data( newlist = man )
+			self.build_simulation_data( newlist = man )
+			self.do_simulation( newlist = man )
+			self.build_simulation_result( newlist = man )
+			self.build_ROI_lines_data( newlist = man )
+
+		sys.stdout = sys.__stdout__
+
+
+		available = []
+		for tname in target:
+			if self.ticker['DB'].has_key( tname ):
+				if self.ticker['DB'][tname]['AVAILABLE'] == True:
+					available.append( self.ticker['DB'][tname] )
+		self.save()
+
+		#print 'available:', available
+
+		return available
 
 	def get_dividends( self, tname ):
 		ret = []
@@ -1000,13 +1092,21 @@ function sort_panel() {
 		return int(ts[0:4]) * 12 + int( ts[5:7] ) 
 
 
-	def build_simulation_data(self, years = 3):
+	def build_simulation_data(self, years = 3, newlist = None):
 		count = 0
 		#skip_to = 'AKSO.OL'
 		skip_to = None
 
 		for tname in self.ticker['DB']:
 
+			if newlist != None:
+				found = False
+				for x in newlist:
+					if tname == x:
+						found = True
+						break
+				if found == False:
+					continue
 			print tname
 
 			if skip_to != None:
@@ -1125,17 +1225,27 @@ function sort_panel() {
 
 		print count
 
-	def do_simulation(self):
+	def do_simulation(self, newlist = None):
 		count = 0
-		for x in self.ticker['DB']:
-			S = self.ticker['DB'][x]
+		for tname in self.ticker['DB']:
+
+			if newlist != None:
+				found = False
+				for x in newlist:
+					if tname == x:
+						found = True
+						break
+				if found == False:
+					continue
+
+			S = self.ticker['DB'][tname]
 
 			if S.has_key('ROIs'):
 				count += 1
 			else:
 				continue
 
-			print x, count
+			print tname, count
 
 			#pprint.pprint( S['ROIs'] )
 
@@ -1173,8 +1283,17 @@ function sort_panel() {
 
 			#pprint.pprint( S['SIM'] )
 
-	def build_simulation_result(self):
+	def build_simulation_result(self, newlist = None):
 		for tname in self.ticker['DB']:
+			if newlist != None:
+				found = False
+				for x in newlist:
+					if tname == x:
+						found = True
+						break
+				if found == False:
+					continue
+
 			S = self.ticker['DB'][tname]
 
 			if S.has_key('SIM') is False:
@@ -1219,13 +1338,20 @@ function sort_panel() {
 
 			S['SIMRESULT'] = sim_result
 
-	def build_ROI_lines_data(self):
+	def build_ROI_lines_data(self, newlist = None):
 		for tname in self.ticker['DB']:
-			if False:
-				if tname != 'CRF':
+
+			if newlist != None:
+				found = False
+				for x in newlist:
+					if tname == x:
+						found = True
+						break
+				if found == False:
 					continue
 
 			print tname
+
 			S = self.ticker['DB'][tname]
 			if S.has_key( 'ROIs') is False:
 				continue
@@ -1353,6 +1479,7 @@ if __name__ == '__main__':
 		t.do_simulation()
 		t.build_simulation_result()
 		t.build_ROI_lines_data()
+		t.get_country_ext_list()
 		t.save()
 	elif sys.argv[1] == 'filte':
 		numbers = 0
@@ -1370,7 +1497,7 @@ if __name__ == '__main__':
 			print x['SYMBOL']
 		print numbers,  'stocks'
 	elif sys.argv[1] == 'select':
-		ret = t.select( ['MSFT', 'GOOD' ] )
+		ret = t.select( ['MSFT', 'GOOD', 'BAG.L', 'CSN.L', 'SOG.L', 'FUCK' ] )
 		pprint.pprint(ret)
 	elif sys.argv[1] == 'sim':
 		t.simulate()

@@ -18,7 +18,9 @@ if form.getvalue('textcontent'):
     text_content = form.getvalue('textcontent')
 else:
     #text_content = 'AWF GOF GDF EHI FCO HHY HIX MCR MPV PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFD PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB RDS.A'
-    text_content = 'MSFT GOOD NUS'
+    #text_content = 'MSFT GOOD NUS'
+    #text_content = 'POWL'
+    text_content = 'BAG.L CSN.L FDP.L'
 
 if form.getvalue('country'):
     country_ext = form.getvalue('country')
@@ -27,6 +29,7 @@ else:
 
 ext_table = {'None':'', 'UK':'.L', 'Germany':'.DE', 'Singapore':'.SI', 'Hong Kong':'.HK' }
 
+T = ticker()
 
 target = []
 
@@ -36,17 +39,15 @@ for x in text_content.splitlines():
 			if xxx != '':
 				target.append( xxx.upper() + ext_table[country_ext] )
 
-#print "Content-type:text/html; charset=utf-8\r\n\r\n"
+print "Content-type:text/html; charset=utf-8\r\n\r\n"
 
+stocks = T.select( target ) 
 
 p = plot()
 for x in target:
 	p.plot(symbol = x, path='PNG' )
 
 time.sleep(1)
-
-T = ticker()
-stocks = T.select( target ) 
 
 result = []
 for x in stocks:
