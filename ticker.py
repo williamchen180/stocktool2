@@ -731,7 +731,7 @@ class ticker():
 <head>
 <title>Stock information</title>
 </head>
-<body onload="myInit()">
+<body background="waterfall.jpg" onload="myInit()">
 <style type="text/css">
 #main {
 	padding: 5px;
