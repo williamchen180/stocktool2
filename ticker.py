@@ -1397,6 +1397,7 @@ function sort_panel() {
 			return 0
 
 		price = 0
+		last_price = 0
 		with open( price_file, 'r') as f:
 			for l in f.readlines():
 				if len(l) == 0:
@@ -1404,12 +1405,15 @@ function sort_panel() {
 				if l[0] == '#':
 					continue
 
+				if last_price == 0:
+					last_price = float(l.split(',')[-3])
+
 				date = l.split(',')[0]
 
 				if target_date >= date:
 					price = float(l.split(',')[-3])
 					break
-		return price
+		return (price, last_price)
 
 	def recent_change(self, strlist='GOOD,MSFT,TAXI', strdate='NOW'):
 
@@ -1434,8 +1438,7 @@ function sort_panel() {
 				S = self.ticker['DB'][x]
 
 			
-				org_price = self.get_price_by_date( x, strdate )
-				last_price = S['LASTPRICE']
+				(org_price, last_price) = self.get_price_by_date( x, strdate )
 
 				delta = last_price - org_price
 
@@ -1453,15 +1456,47 @@ function sort_panel() {
 
 		print '''	</tbody><tfoot></tfoot></TABLE>'''
 
-
-
 	def simulate(self):
 		pass
+
+	def sort_price_diff( self, target_date, country=['USA']  ):
+
+		result = []
+		for tname in self.ticker['DB']:
+
+			t = self.ticker['DB'][tname]
+
+			if t['AVAILABLE'] == False:
+				continue
+
+			if country[0] != 'all':
+				found = False
+				for c  in country:
+					if c == t['COUNTRY']:
+						found = True
+						break
+				if found == False:
+					continue
+
+			(price, last_price) = self.get_price_by_date( tname, '2016-03-01')
+
+			delta = last_price - price
+			if last_price != 0:
+				perc = delta * 100 / last_price
+			else:
+				prec = 0
+
+			if delta > 0:
+				result.append( ( perc, tname, price, last_price ) )
+
+		result.sort()
+		pprint.pprint( result)
+
 
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
-		print 'Usage: %s [init | get | build | update | filte | select | sim | recent_change ]'
+		print 'Usage: %s [init | get | build | update | filte | select | sim | recent_change | sort_price_diff ]'
 		sys.exit(0)
 
 	t = ticker()
@@ -1505,6 +1540,8 @@ if __name__ == '__main__':
 		pass
 	elif sys.argv[1] == 'recent_change':
 		t.recent_change()
+	elif sys.argv[1] == 'sort_price_diff':
+		t.sort_price_diff( '2016-03-01' )
 
 
 
