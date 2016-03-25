@@ -112,6 +112,7 @@ table, th, td {
 					<td><input type="checkbox" id="6" name="country" value="Germany">Germany<br></td>
 				</tr>
 			</table>
+			<h2>條件：</h2>
 			<table style="width:100%">
 				<tr>
 					<td>
@@ -201,7 +202,10 @@ table, th, td {
 							<option value="1.15" >1.15</option>
 							<option value="1.20" >1.20</option>
 						</select>
-
+					</td>
+					<td>
+						<h2>近期漲幅：</h2>
+						<input type="date" id="date_up" name="date_up">
 					</td>
 				</tr>
 			</table>
@@ -210,16 +214,6 @@ table, th, td {
 				<input type="submit" style="font-size: 16pt" value="Submit">
 			</div>
 		</form>
-		<hr>
-		<hr>
-
-		<div align="center">
-			<h1>近期漲幅排行</h1>
-			<form action="/sort_up.py" target="_blank">
-				<input type="date" id="date_up" name="date_up">
-				<input type="submit" value="Submit">
-			</form>
-		</div>
 		<hr>
 		<hr>
 		<div align="center">

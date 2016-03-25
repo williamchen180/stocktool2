@@ -56,6 +56,11 @@ if form.getvalue('dividend_up'):
 else:
 	_dividend_up = 1
 
+if form.getvalue('date_up'):
+	_date_up = form.getvalue('date_up')
+else:
+	_date_up = '2016-01-01'
+
 _ROI = int(_ROI)
 _yearROI = int(_yearROI)
 _yearCompany = int(_yearCompany)
@@ -78,7 +83,8 @@ ret = T.filte( kind = _kind, \
 		pricelimit = _price, \
 		dividends = _dividends, \
 		total_dividends = _total_dividends, \
-		dividend_up = _dividend_up )
+		dividend_up = _dividend_up,
+		target_date = _date_up)
 
 p = plot()
 for x in ret:

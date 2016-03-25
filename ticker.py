@@ -530,7 +530,8 @@ class ticker():
 			pricelimit = 0, \
 			dividends = 0,
 			total_dividends = 0,
-			dividend_up = 0):
+			dividend_up = 0, 
+			target_date = None):
 
 		#print rate, year, country, yearsaround
 
@@ -540,6 +541,7 @@ class ticker():
 			year = 1
 
 		ret = []
+		result = []
 
 		for tname in self.ticker['DB']:
 
@@ -604,11 +606,31 @@ class ticker():
 							last_dividend = this_dividend
 						if divup == False or last_dividend == 9999:
 							continue
-			#print t
-			#print t['ROI'][year-1], float(rate)
-			#print t['YEARSAROUND']
 
-			ret.append( t )
+			if target_date != None:
+				(price, last_price) = self.get_price_by_date( tname, target_date)
+				delta = last_price - price
+				if last_price != 0:
+					perc = delta * 100 / last_price
+				else:
+					prec = 0
+
+				if delta > 0:
+					result.append( (perc, tname) )
+			else:
+				ret.append( t )
+		if target_date != None:
+			result.sort(reverse = True)
+			num = len(result)
+			if num > 100:
+				num = 100
+
+			ret = []
+			for x in result:
+				ret.append( self.ticker['DB'][x[1]] ) 
+				num -= 1
+				if num == 0:
+					break
 		return ret
 
 	def get_country_ext_list(self):
@@ -1557,7 +1579,8 @@ if __name__ == '__main__':
 				pricelimit = 0, \
 				dividends = -1,
 				total_dividends = 10,
-				dividend_up = 1)
+				dividend_up = 1, 
+				target_date = None)
 		for x in ret:
 			numbers += 1
 			print x['SYMBOL']
