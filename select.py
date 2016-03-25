@@ -56,10 +56,7 @@ if form.getvalue('dividend_up'):
 else:
 	_dividend_up = 1
 
-if form.getvalue('date_up'):
-	_date_up = form.getvalue('date_up')
-else:
-	_date_up = '2016-01-01'
+_date_up = form.getvalue('date_up')
 
 _ROI = int(_ROI)
 _yearROI = int(_yearROI)
