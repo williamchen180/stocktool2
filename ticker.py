@@ -731,6 +731,12 @@ class ticker():
 <head>
 <title>Stock information</title>
 </head>
+<style>
+table, th, td {
+	    border: 1px solid black;
+	    background-color:rgba(230, 126, 34,0.3);
+}
+</style>
 <body background="waterfall.jpg" onload="myInit()">
 <style type="text/css">
 #main {
