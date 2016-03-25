@@ -73,7 +73,7 @@ def get_favlist():
 		idx = 0
 		for x in favlist:
 
-			price = T.get_price_by_date( x[0] )
+			(price, last_price) = T.get_price_by_date( x[0] )
 
 			delta = price - x[4]
 
@@ -136,7 +136,7 @@ def save_favlist( org ):
 				x[1] = "%d-%2.2d-%2.2d" % (year, month, day )
 
 			if len(x[1]) == 10: 
-				price = T.get_price_by_date( x[0], x[1])
+				(price, last_price) = T.get_price_by_date( x[0], x[1])
 			else:
 				price = 0
 			favlist.append( x[0:4] + [price] )
