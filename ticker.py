@@ -1469,7 +1469,7 @@ function sort_panel() {
 
 		if target_date == None:
 			date = datetime.datetime( self.year, self.month, self.day )
-			date -= datetime.timedelta( days=60 )
+			date -= datetime.timedelta( days=7 )
 			
 			target_date = '%4d-%2.2d-%2.2d' % (date.year, date.month, date.day )
 
