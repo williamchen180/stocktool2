@@ -1467,6 +1467,14 @@ function sort_panel() {
 
 	def sort_price_diff( self, target_date, country=['USA']  ):
 
+		if target_date == None:
+			date = datetime.datetime( self.year, self.month, self.day )
+			date -= datetime.timedelta( days=60 )
+			
+			target_date = '%4d-%2.2d-%2.2d' % (date.year, date.month, date.day )
+
+		print target_date
+
 		result = []
 		for tname in self.ticker['DB']:
 
@@ -1484,7 +1492,9 @@ function sort_panel() {
 				if found == False:
 					continue
 
-			(price, last_price) = self.get_price_by_date( tname, '2016-03-01')
+			(price, last_price) = self.get_price_by_date( tname, target_date)
+
+			#print tname, price, last_price
 
 			delta = last_price - price
 			if last_price != 0:
@@ -1495,8 +1505,23 @@ function sort_panel() {
 			if delta > 0:
 				result.append( ( perc, tname, price, last_price ) )
 
-		result.sort()
-		pprint.pprint( result)
+		result.sort(reverse = True)
+
+		#print result
+
+		num = len(result)
+		if num > 100:
+			num = 100
+
+		ret = []
+		for x in result:
+			ret.append( self.ticker['DB'][x[1]] ) 
+			num -= 1
+			if num == 0:
+				break
+		return ret
+
+
 
 
 if __name__ == '__main__':
