@@ -20,9 +20,10 @@ class	plot:
 	def plot( self, symbol, path = 'PNG', years = 5, cached = True ):
 
 		png_file = './' + path + '/' + symbol + '.PNG'
+		png_file2 = './' + path + '/' + symbol + '_4.PNG'
 
 		if cached == True:
-			if os.path.isfile( png_file ):
+			if os.path.isfile( png_file ) and os.path.isfile( png_file2):
 				return
 
 		current_price = 0
@@ -60,11 +61,28 @@ class	plot:
 			x = l.split(',')
 			current_price = float( x[-1] )
 
-			right_x = x[0]
+			last_x = x[0]
 			left_x = lines[-1].split(',')[0]
 
+			if len( lines ) > 260:
+				year_date = lines[260].split(',')[0]
+			else:
+				year_date = None
+			if len( lines ) > 60:
+				three_month_date = lines[60].split(',')[0]
+			else:
+				three_month_date = None
+			if len( lines ) > 20:
+				month_date = lines[20].split(',')[0]
+			else:
+				month_date = None
+			if len( lines ) > 7:
+				week_date = lines[7].split(',')[0]
+			else:
+				week_date = None
+
 		if True:
-			date = datetime.datetime( int( right_x[0:4] ), int( right_x[5:7] ), int( right_x[8:10] ) )
+			date = datetime.datetime( int( last_x[0:4] ), int( last_x[5:7] ), int( last_x[8:10] ) )
 			date += datetime.timedelta( days = 90 )
 			right_x = '%d-%2.2d-%2.2d' % (date.year, date.month, date.day )
 
@@ -182,6 +200,29 @@ class	plot:
 
 		#time.sleep(1)
 		#os.system( 'open %s' % (symbol + '.png') ) 
+
+		p('reset')
+		p('set key left')
+		p('set output \'%s\'' % png_file2)
+		p('set datafile sep ","')
+		p('set timefmt "%Y-%m-%d"')
+		p('set xdata time')
+		p('unset grid')
+		p('set multiplot layout 2,2')
+
+		p('set xrange [ "%s":"%s" ]' % (year_date, last_x))
+		p('plot "' + price_file + '" using 1:7 title "1 year" with lines ' )
+
+		p('set xrange [ "%s":"%s" ]' % (three_month_date, last_x))
+		p('plot "' + price_file + '" using 1:7 title "3 monthes" with lines ' )
+
+		p('set xrange [ "%s":"%s" ]' % (month_date, last_x))
+		p('plot "' + price_file + '" using 1:7 title "1 month" with lines ' )
+
+		p('set xrange [ "%s":"%s" ]' % (week_date, last_x))
+		p('plot "' + price_file + '" using 1:7 title "1 week" with lines ' )
+
+
 
 
 if __name__ == '__main__':
