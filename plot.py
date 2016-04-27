@@ -217,10 +217,10 @@ class	plot:
 		p('plot "' + price_file + '" using 1:7 title "3 monthes" with lines ' )
 
 		p('set xrange [ "%s":"%s" ]' % (month_date, last_x))
-		p('plot "' + price_file + '" using 1:7 title "1 month" with lines ' )
+		p('plot "' + price_file + '" using 1:7 title "1 month" with linespoints pt 5' )
 
 		p('set xrange [ "%s":"%s" ]' % (week_date, last_x))
-		p('plot "' + price_file + '" using 1:7 title "1 week" with lines ' )
+		p('plot "' + price_file + '" using 1:7 title "1 week" with linespoints pt 5 ' )
 
 
 
