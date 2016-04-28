@@ -57,6 +57,7 @@ class ticker():
 		self.dividend_file_format = 'history/%s.dividend'
 		self.price_file_format = 'history/%s.price'
                 self.png_file_format = 'PNG/%s.PNG'
+                self.png_file4_format = 'PNG/%s_4.PNG'
 		self.ROI_lines_data_format = 'history/%s.ROI'
 		self.user_db_file = 'user/favlist.cpickle' 
 
@@ -391,8 +392,11 @@ class ticker():
 
 				if delete_cache == True:
 					png_file = self.png_file_format % tname
+					png_file4 = self.png_file4_format % tname
 					if os.path.isfile(png_file) == True:
 						os.unlink( png_file )
+					if os.path.isfile(png_file4) == True:
+						os.unlink( png_file4 )
 					    
 
 
@@ -1063,6 +1067,7 @@ function sort_panel() {
 			cate_html = self.get_cate_html( t['SYMBOL'] )
 
 			pngfile =  self.png_file_format % t['SYMBOL'] 
+			pngfile4 =  self.png_file4_format % t['SYMBOL'] 
 			if os.path.isfile( pngfile ):
 				print '<div align="center" id="%s"><hr>' % t['SYMBOL']
 				print u'<h1>%s @ %s [%s]</h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
@@ -1103,8 +1108,16 @@ function sort_panel() {
 					print x,
 				print '</textarea>'
 				print '</div></div>'
+                                print '<div style="clear:both;"></div>'
 				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank">' % t['SYMBOL']
-				print '<img border=10 src="%s?%f"/>' % ( pngfile , os.path.getmtime(pngfile) )
+                                print '<table><tr>'
+                                print '<td>'
+                                print '<img border=10 src="%s?%f"/>' % ( pngfile , os.path.getmtime(pngfile) )
+                                print '</td>'
+                                print '<td>'
+                                print '<img border=10 src="%s?%f"/>' % ( pngfile4 , os.path.getmtime(pngfile4) )
+                                print '</td>'
+                                print '</tr></table>'
 				print '</a>'
 				print '</div>'
 
