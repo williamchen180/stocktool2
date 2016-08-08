@@ -225,12 +225,26 @@ class ticker():
 
 	def get_price_and_dividend(self):
 		mech = Browser()
-		skip_to = None 
+		skip_to = 'METRO.IS'
 
 
+                idx = 0
 		for t in self.ticker['DB']:
 
+                        idx += 1
+                        if idx == 100:
+                                gc.collect()
+                                idx = 0
+                                print '\033[1;33mGC GC GC GC\033[0m'
+
 			print t
+
+			if skip_to != None:
+				if t == skip_to:
+					skip_to = None
+				else:
+					print 'skip'
+					continue
 
 			divurl = self.divurl % (t, 1990, 1, 1, self.year, self.month, self.day ) 
 			try:
