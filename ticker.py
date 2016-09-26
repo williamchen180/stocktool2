@@ -224,8 +224,8 @@ class ticker():
 			cPickle.dump( ret, f, protocol=2)
 
 	def get_price_and_dividend(self):
+		skip_to = None
 		mech = Browser()
-		skip_to = 'METRO.IS'
 
 
                 idx = 0
@@ -233,6 +233,8 @@ class ticker():
 
                         idx += 1
                         if idx == 100:
+                                del mech
+			        mech = Browser()
                                 gc.collect()
                                 idx = 0
                                 print '\033[1;33mGC GC GC GC\033[0m'
@@ -326,6 +328,7 @@ class ticker():
 
 			idx += 1
 			if idx == 100:
+                                del mech
 				mech = Browser()
 				idx = 0
 				print 'DO GC'
