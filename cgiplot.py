@@ -38,6 +38,13 @@ for x in text_content.splitlines():
 	for xx in x.split('\t'):
 		for xxx in xx.split(' '):
 			if xxx != '':
+				if ext_table[country_ext] == '.HK':
+					if len(xxx) == 3:
+						xxx = '0' + xxx
+					if len(xxx) == 2:
+						xxx = '00' + xxx
+					if len(xxx) == 1:
+						xxx = '000' + xxx
 				target.append( xxx.upper() + ext_table[country_ext] )
 
 print "Content-type:text/html; charset=utf-8\r\n\r\n"
