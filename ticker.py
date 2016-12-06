@@ -309,7 +309,7 @@ class ticker():
 					t['AVAILABLE'] = False
 					continue
 
-				last_price = float( l.split(',')[-3] )
+				last_price = float( l.split(',')[-1] )
 
 			t['LASTPRICE'] = last_price
 
@@ -1464,12 +1464,12 @@ function sort_panel() {
 					continue
 
 				if last_price == 0:
-					last_price = float(l.split(',')[-3])
+					last_price = float(l.split(',')[-1])
 
 				date = l.split(',')[0]
 
 				if target_date >= date:
-					price = float(l.split(',')[-3])
+					price = float(l.split(',')[-1])
 					break
 		return (price, last_price)
 
