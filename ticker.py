@@ -14,6 +14,8 @@ import mechanize
 from mechanize import Browser
 from xlrd import open_workbook
 import get_history
+from BeautifulSoup import BeautifulSoup
+import codecs
 
 #
 # self.ticker: type of dict
@@ -74,7 +76,8 @@ class ticker():
 			with open(self.pickle_file, 'rb') as f:
 				self.ticker = cPickle.load(f)
 		except Exception as e:
-			self.init_data()
+                        print '__init__', e
+			#self.init_data()
 		finally:
 			pass
 
@@ -1089,6 +1092,15 @@ function sort_panel() {
 				print '<div align="center" id="%s"><hr>' % t['SYMBOL']
 				print u'<h1>%s @ %s [%s]</h1>'.encode('UTF-8') % (t['SYMBOL'], t['COUNTRY'], t['SHORT'] )
 
+                                if os.path.isfile( 'info/' + t['SYMBOL']) == True:
+                                        with codecs.open('info/' + t['SYMBOL'], 'r', 'utf-8') as f:
+
+                                                print '<div>'
+				                print '<textarea style="font-size: 16pt" rows="8" cols="80">'
+                                                print f.read().encode('utf-8')
+				                print '</textarea>'
+                                                print '</div>'
+
 
 				'''
 				if self.is_fav( t['SYMBOL'] ) == True: 
@@ -1129,7 +1141,7 @@ function sort_panel() {
 				print '<a href="http://finance.yahoo.com/q?s=%s" target="_blank">' % t['SYMBOL']
                                 print '<table><tr>'
                                 print '<td>'
-                                print '<img border=10 src="%s?%f"/>' % ( pngfile , os.path.getmtime(pngfile) )
+                                print '<img border=10 src="%s?%f" />' % ( pngfile , os.path.getmtime(pngfile) )
                                 print '</td>'
                                 print '<td>'
                                 print '<img border=10 src="%s?%f"/>' % ( pngfile4 , os.path.getmtime(pngfile4) )
@@ -1574,12 +1586,64 @@ function sort_panel() {
 		return ret
 
 
+        def moneyDJ(self):
+		skip_to = None
+
+                if os.path.isdir( 'info' ) == False:
+                        os.mkdir( 'info' )
+
+		mech = Browser()
+                idx = 0
+		for tname in self.ticker['DB']:
+
+			if skip_to != None:
+				if tname == skip_to:
+					skip_to = None
+				else:
+					continue
+
+                        if self.ticker['DB'][tname]['COUNTRY'] != 'USA':
+                                continue
+                        print tname
+
+                        url = "http://money.moneydj.com/us/basic/basic0001/" + tname
+
+                        idx += 1
+                        if idx == 100:
+                                del mech
+                                mech = Browser()
+                                gc.collect()
+                                idx = 0
+                                print '\033[1;33mGC GC GC GC\033[0m'
+
+                        try:
+                                page = mech.open(url)
+                        except Exception as e:
+                                continue
+
+
+                        html = page.read()
+
+                        soup = BeautifulSoup( html.decode('utf-8') )
+
+                        table = soup.find('table', attrs={'class':'DataTable spacer-5 Basic0001 '})
+
+                        table_body = table.find('tbody')
+
+                        tds = table_body.findAll('td')
+
+                        info = tds[-2].text
+
+                        print info
+
+                        with codecs.open( 'info/' + tname, 'w', 'utf-8' ) as f:
+                                f.write( info ) 
 
 
 if __name__ == '__main__':
 
 	if len(sys.argv) == 1:
-		print 'Usage: %s [init | get | build | update | filte | select | sim | recent_change | sort_price_diff ]'
+		print 'Usage: %s [init | get | build | update | filte | select | sim | recent_change | sort_price_diff | moneyDJ]'
 		sys.exit(0)
 
 	t = ticker()
@@ -1626,6 +1690,10 @@ if __name__ == '__main__':
 		t.recent_change()
 	elif sys.argv[1] == 'sort_price_diff':
 		t.sort_price_diff( '2016-03-01' )
+        elif sys.argv[1] == 'moneyDJ':
+                t.moneyDJ()
+        else:
+                print 'nothing..'
 
 
 

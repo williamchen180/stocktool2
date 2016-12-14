@@ -18,7 +18,7 @@ if form.getvalue('textcontent'):
     text_content = form.getvalue('textcontent')
 else:
     #text_content = 'AWF GOF GDF EHI FCO HHY HIX MCR MPV PCN PFL PFN PHK PTY RCS WEA MMT FFC CGO ETO PFD PFO CHI CLM LOR GGT UTG GOOD LTC O ORC OLP WPC HCP NNN SNH MNR MFA NYMT PSA UHT JNK SJNK HYG PHB YYY REM VIG VNQ PFF CEFL PCEF PGX SPFF AMLP AMJ MLPI MLPN AMU MLPA PFLT SBR CODI DPM NGLS TGP TOO AHGP ARLP APU BPL CLMT CPLP EEP ETP GLP HHS MMLP NS NSH OKE OKS PAA SPH Ston TCP TLP CTL FGP PNNT SFL SSI TDW TK WMB RDS.A'
-    text_content = 'MSFT GOOD NUS'
+    text_content = 'KTOS'
     #text_content = 'POWL'
     #text_content = 'bag csn fdp sog ite smj irv abc aht hcft mer nicl hils dph brk bnkr clln hlma imt cnc ba bmy jd ng hsp'
 
