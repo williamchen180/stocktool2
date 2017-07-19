@@ -10,6 +10,9 @@ import sys
 from yahoo_finance import Share
 import datetime
 
+L1 = 0.05
+L2 = 0.07
+L3 = 0.10
 
 
 class	plot:
@@ -121,13 +124,13 @@ class	plot:
 		#print "Last average dividend: ", div_last
 
 
-		RRI9 = div_total / float(years) / 0.09
-		RRI11 = div_total / float(years) / 0.11
-		RRI14= div_total / float(years) / 0.14
+		RRI9 = div_total / float(years) / L1 
+		RRI11 = div_total / float(years) / L2
+		RRI14= div_total / float(years) / L3 
 
-		RRI9Last = div_last / 0.09
-		RRI11Last = div_last / 0.11
-		RRI14Last = div_last / 0.14
+		RRI9Last = div_last / L1
+		RRI11Last = div_last / L2
+		RRI14Last = div_last / L3
 
                 
 		p = Gnuplot.Gnuplot()
@@ -143,8 +146,8 @@ class	plot:
 		p('RRI14Last(x)=%f' % RRI14Last )
 
 		p('set title "%s, Price: %.2f ' \
-		' (9,11,14)%% = (%.2f, %.2f, %.2f) '
-		' (9,11,14)%% = (%.2f, %.2f, %.2f)%%"' \
+		' (5,7,10)%% = (%.2f, %.2f, %.2f) '
+		' (5,7,10)%% = (%.2f, %.2f, %.2f)%%"' \
 			% (symbol, current_price, \
 			RRI9, RRI11, RRI14, RRI9Last, RRI11Last, RRI14Last ) )
 

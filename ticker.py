@@ -17,6 +17,11 @@ import get_history
 from BeautifulSoup import BeautifulSoup
 import codecs
 
+L1 = 0.05
+L2 = 0.07
+L3 = 0.10
+
+
 #
 # self.ticker: type of dict
 #
@@ -1096,9 +1101,11 @@ function sort_panel() {
                                         with codecs.open('info/' + t['SYMBOL'], 'r', 'utf-8') as f:
 
                                                 print '<div>'
+				                print '<a href="http://money.moneydj.com/us/basic/basic0001/%s" target="_blank">' % t['SYMBOL']
 				                print '<textarea style="font-size: 16pt" rows="8" cols="80">'
                                                 print f.read().encode('utf-8')
 				                print '</textarea>'
+				                print '</a>'
                                                 print '</div>'
 
 
@@ -1439,9 +1446,9 @@ function sort_panel() {
 					datetime = r[0]
 					divavg = r[2]
 
-					ROI9 = divavg / 0.09
-					ROI11 = divavg / 0.11
-					ROI14 = divavg / 0.14
+					ROI9 = divavg / L1
+					ROI11 = divavg / L2 
+					ROI14 = divavg / L3 
 
 					if first_record == True:
 						first_record = False
